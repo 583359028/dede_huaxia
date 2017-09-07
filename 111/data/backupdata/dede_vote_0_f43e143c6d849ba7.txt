@@ -1,0 +1,1 @@
+INSERT INTO `dede_vote` VALUES('1','华夏夫人投票','1500220800','1584547200','9','0','1','0','0','0','<v:note id=\'1\' count=\'3\'>姓名：李</v:note>\r\n<v:note id=\'2\' count=\'6\'>姓名：王</v:note>\r\n');

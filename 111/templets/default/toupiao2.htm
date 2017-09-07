@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>华夏夫人投票</title>
+	<meta name="Keywords" content="{dede:field.keywords/}">
+  <meta name="Description" content="{dede:field.description function='html2text(@me)'/}">
+   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"> 
+   <link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/mobile.css"> 
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/style.css">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+  <style>
+     table{width:80%;margin:54px auto!important;overflow: hidden}
+     table tr:nth-of-type(1) td{font-size: 2em;line-height: 2em;}
+    table tr td{font-size: 1.5em;line-height: 2em;}
+    .infoot{background: none!important}
+    table .btn-1{background: #a62728;border: none;color: #fff;padding: 6px 10px;border-radius: 5px;width:100px;}
+    body{background:url(/templets/default/img/toupiaobg.jpg)0 0 no-repeat;background-size: cover;}
+    input[type="radio"]{width:50px;}
+  </style>
+</head>
+<body>
+<!--内页头部部分-->
+{dede:include filename="inhead.htm"/}
+<!--top is over-->
+<table width='80%' style="overflow: hidden" border='0' cellspacing='1' cellpadding='1' id='voteitem'>
+<form name='voteform' method='post' action='/plus/vote.php' target='_blank'>
+<input type='hidden' name='dopost' value='send' />
+<input type='hidden' name='aid' value='1' />
+<input type='hidden' name='ismore' value='0' />
+<tr align='center'><td height='30' id='votetitle' style='border-bottom:1px dashed #999999;' ><strong>华夏夫人投票</strong></td></tr>
+<tr><td height=30 bgcolor=#FFFFFF style='color:#666666'><input type='radio' name='voteitem' value='1' />姓名：李</td></tr>
+<tr><td height=30 bgcolor=#FFFFFF style='color:#666666'><input type='radio' name='voteitem' value='2' />姓名：王</td></tr>
+<tr><td height='30' style="text-align: center;">
+<input type='submit' class='btn-1' name='vbt1' value='投票' />
+<input type='button' class='btn-1' name='vbt2' value='查看结果' onClick=window.open('/plus/vote.php?dopost=view&aid=1'); /></td></tr>
+</form>
+</table>
+<section class="infoot">
+ <div class="infoot_process">
+<ul><li><span></span><em>选拔流程Process</em></li>
+<li><span>1</span><em>免费报名</em></li>
+<li><span>2</span><em>第一轮海选</em></li>
+<li><span>3</span><em>第二轮市选</em></li>
+<li><span>4</span><em>第三轮省选</em></li>
+<li><span>5</span><em>第四轮国选</em></li>
+<li><span>6</span><em>第五轮丝路巡</em></li></ul>
+ </div>
+</section>
+{dede:include filename="foot.htm"/}
+<script src="{dede:global.cfg_templets_skin/}/js/menu.js"></script>  
+</body>
+</html>

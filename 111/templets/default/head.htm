@@ -1,0 +1,83 @@
+<script type="text/javascript" src="{dede:global.cfg_templets_skin/}/js/app.js"></script>
+<script type="text/javascript">
+  aa();
+</script>
+<header class="top">
+<div class="top_tel top_box">
+  <div class="top_tel_top">
+  <nav>
+    <div class="top_tel_l">全国客服热线：<span>{dede:global.cfg_tel/}</span></div>
+    <div class="top_tel_r">
+    <ul id="quickMenu">
+    {dede:php}
+  //未登录显示的head
+
+  require_once(DEDEINC."/memberlogin.class.php");
+  $member = new MemberLogin();
+  $memberID = $member->M_LoginID;
+
+          //登录后显示的head
+  if($memberID) {
+
+          $a =   '<SPAN style="color:#fff;line-height: 28px">会员:</SPAN><a href="/member/index.php" class="userName" style="color:#fff;line-height: 28px">'.$memberID.'</a>'.'   <a href="/member/index_do.php?fmdo=login&dopost=exit#" style="color:#fff;line-height: 28px">[退出]</a>';
+          echo $a;
+  }
+  else {
+
+          echo    '
+          <li><a title="登录" rel="nofollow" href="/member/login.php">登录</a> </li>
+          <li></li>
+          <li><a title="注册" rel="nofollow" href="/member/index_do.php?fmdo=user&dopost=regnew">注册</a> </li>';
+  }
+  {/dede:php}
+    </ul></div>
+    </nav>
+  </div>
+  <div class="menu_nav">
+     <section>
+     <div class="pc_logo"><a href="/"><img src="{dede:global.cfg_templets_skin/}/img/logo.png" alt="华夏夫人官网"></a></div>
+     <div class="nav"><ul>
+     <li class="on"><a href="/"><span></span><em>华夏夫人首页</em></a></li>
+     {dede:channel type='top' currentstyle=" <li><a href='~typelink~' class='on'><span></span><em>~typename~</em></a></li> "}
+  <li><a href="[field:typelink/]"><span></span><em>[field:typename/] </em></a></li>{/dede:channel}
+     </ul></div>
+     </section>
+  </div>
+</div>
+<section class="mobile_menu"><a class="back" onclick="history.go(-1)"></a><h1>华夏夫人首页</h1>
+<div class="menu">
+   <span id="menu"></span>
+   <div class="menu_li">
+   <div id="menu_left"></div>
+    <ul>
+     <li><a href="/"> 华夏夫人首页</a></li>
+{dede:channel type='top' currentstyle=" <li><a href='~typelink~' class="on">~typename~</a></li> "}
+ <li><a href="[field:typelink/]"> [field:typename/] </a></li>
+{/dede:channel}
+    {dede:php}
+  //未登录显示的head
+
+  require_once(DEDEINC."/memberlogin.class.php");
+  $member = new MemberLogin();
+  $memberID = $member->M_LoginID;
+
+          //登录后显示的head
+  if($memberID) {
+
+          $a =   '<SPAN style="color:#fff;line-height: 28px">会员:</SPAN><a href="#" class="userName" style="color:#fff;line-height: 28px">'.$memberID.'</a>'.'   <a href="/member/index_do.php?fmdo=login&dopost=exit#" style="color:#fff;line-height: 28px">[退出]</a>';
+          echo $a;
+  }
+  else {
+
+          echo    '
+          <li><a title="登录" rel="nofollow" href="/member/login.php">登录</a> </li>
+          <li><a title="注册" rel="nofollow" href="/member/index_do.php?fmdo=user&dopost=regnew">注册</a> </li>';
+  }
+  {/dede:php}
+    </ul>
+   </div>
+</div>
+</section>
+</header>
+<!--top is over-->
+{dede:include filename="left.htm"/}

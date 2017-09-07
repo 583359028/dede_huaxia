@@ -1,0 +1,10 @@
+[03-Aug-2017 15:42:38 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 1310720) (tried to allocate 2048 bytes) in F:\themeroot\theme1320\wwwroot\include\dedetag.class.php on line 860
+[03-Aug-2017 15:42:42 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 1310720) (tried to allocate 49152 bytes) in F:\themeroot\theme1320\wwwroot\include\dedetag.class.php on line 932
+[03-Aug-2017 15:42:44 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 1835008) (tried to allocate 21504 bytes) in F:\themeroot\theme1320\wwwroot\include\taglib\arclist.lib.php on line 594
+[03-Aug-2017 15:42:47 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 32768 bytes) in F:\themeroot\theme1320\wwwroot\include\dedetag.class.php on line 763
+[03-Aug-2017 15:42:52 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 16384 bytes) in F:\themeroot\theme1320\wwwroot\include\taglib\php.lib.php on line 36
+[03-Aug-2017 18:08:49 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 11264 bytes) in F:\themeroot\theme1320\wwwroot\data\tplcache\gdrk.htmbe5168ca09cab523.inc on line 90
+[03-Aug-2017 18:08:51 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 11264 bytes) in F:\themeroot\theme1320\wwwroot\data\tplcache\gdrk.htmbe5168ca09cab523.inc on line 90
+[03-Aug-2017 18:08:54 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 1310720) (tried to allocate 3584 bytes) in F:\themeroot\theme1320\wwwroot\include\dedetag.class.php on line 932
+[03-Aug-2017 18:08:57 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 1572864) (tried to allocate 49152 bytes) in F:\themeroot\theme1320\wwwroot\data\tplcache\index.htm2f3bb29574a57e5c.inc on line 57
+[05-Aug-2017 17:48:56 Etc/GMT-8] PHP Fatal error:  Out of memory (allocated 1835008) (tried to allocate 196608 bytes) in F:\themeroot\theme1320\wwwroot\include\taglib\arclist.lib.php on line 508

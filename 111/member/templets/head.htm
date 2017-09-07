@@ -1,0 +1,55 @@
+<!--内页头部部分-->
+<style></style>
+<header class="top top_peixun">
+<section class="top_box">
+    <div class="logo"><a href="index.html"><img src="{dede:global.cfg_templets_skin/}/img/logo.png" alt="华夏夫人官网"></a></div>
+    <div class="top_right"><p>全国客服热线：{dede:global.cfg_tel/}</p>
+    <ul id="quickMenu">
+
+  {dede:php}
+//未登录显示的head
+if(!$cfg_ml->IsLogin()) {
+{/dede:php}
+        <li><a title="注册" href="/member/index_do.php?fmdo=user&dopost=regnew">注册</a> </li>
+        <li><a title="登录" href="/member/login.php">登录</a> </li>
+{dede:php}
+}
+//登录后显示的head
+else {
+{/dede:php}
+
+ <a href="#" class="userName">{dede:php} echo $cfg_ml->M_UserName{/dede:php}</a>
+  &nbsp;&nbsp;<a href="/member/index_do.php?fmdo=login&dopost=exit#" style="color:#fff">[退出]</a>
+
+{dede:php}
+}
+{/dede:php}   
+      </ul>
+    <nav class="menu">
+   <ul>
+    <li><a href="{dede:global.cfg_basehost/}">首页</a></li>
+{dede:channel type='top' currentstyle=" <li><a href='~typelink~' class='on'>~typename~</a></li> "}
+ <li><a href="[field:typelink/]"> [field:typename/] </a></li>
+{/dede:channel}
+  </ul>
+    </nav>
+    </div>
+</section>
+<section class="mobile_menu"><a class="back" onclick="history.go(-1)"></a><h1>首页</h1>
+<div class="menu">
+   <span id="menu"></span>
+   <div class="menu_li">
+   <div id="menu_left"></div>
+    <ul> 
+     <li><a href="{dede:global.cfg_basehost/}"> 首页</a></li>
+{dede:channel type='top' currentstyle=" <li><a href='~typelink~'>~typename~</a></li> "}
+ <li><a href="[field:typelink/]"> [field:typename/] </a></li>
+{/dede:channel}
+<li><a title="注册" href="/member/index_do.php?fmdo=user&dopost=regnew">注册</a> </li>
+        <li><a title="登录" href="/member/login.php">登录</a> </li>
+    </ul>
+   </div>
+</div>
+</section>
+</header>
+<!--top is over-->

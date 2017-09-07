@@ -1,0 +1,1 @@
+<div class="tp_box" style="float: left;width:375px;"><span>[field:title/]</span><p><a href="[field:arcurl/]"><img src="[field:litpic/]" class="furen" alt="[field:title/]"><img src="/templets/default/img/tpfr.png" class="furenbg" alt="华夏夫人相框"></a></p><button style="cursor: pointer;" class="tou_box" onclick='ajax_tp([field:id/])'>投票</button></div>
