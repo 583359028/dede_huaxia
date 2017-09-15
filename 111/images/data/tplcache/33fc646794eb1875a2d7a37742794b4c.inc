@@ -1,1 +1,0 @@
-<div class="tp_box"><span>16493</span><p><a href="[field:arcurl/]"><img src="[field:litpic/]" class="furen" alt="[field:bianhao/]"><img src="/templets/default/img/tpfr.png" class="furenbg" alt="华夏夫人相框"></a></p><a href="">投票</a></div>

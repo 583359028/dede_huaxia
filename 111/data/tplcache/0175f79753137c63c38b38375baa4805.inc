@@ -1,2 +1,0 @@
-<div class="jjcc_dec1 jjcc_dec"><a href="[field:arcurl/]"><div class="dec1_left"><img src="[field:litpic/]" alt="[field:title/]"></div><div class="dec1_right">[field:description function='cn_substr(@me,200)'/]......</div></a></div>
-<div class="clear"></div>

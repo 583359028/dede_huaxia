@@ -1,1 +1,0 @@
-<div class="tp_box"><span>[field:title/]</span><p><a href="[field:arcurl/]"><img src="[field:litpic/]" class="furen" alt="[field:title/]"><img src="/templets/default/img/tpfr.png" class="furenbg" alt="华夏夫人相框"></a></p><a class="tou_box" style="cursor: pointer;">投票</a></div>

@@ -1,1 +1,0 @@
-<div class="tp_box"><span>16493</span><p><a href="toupiao_article.html"><img src="{dede:global.cfg_templets_skin/}/img/furen1.png" class="furen" alt="华夏夫人"><img src="{dede:global.cfg_templets_skin/}/img/tpfr.png" class="furenbg" alt="华夏夫人相框"></a></p><a href="">投票</a></div>

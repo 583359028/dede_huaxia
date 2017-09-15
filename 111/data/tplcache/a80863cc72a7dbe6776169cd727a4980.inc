@@ -1,1 +1,0 @@
-<li>标题：[field:title/] 昵称：[field:mid function="GetMemberInfos('uname',@me)"/]</li>

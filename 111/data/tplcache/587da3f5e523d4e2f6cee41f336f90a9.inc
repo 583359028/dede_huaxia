@@ -1,1 +1,0 @@
-SELECT * FROM `#@__archives` WHERE id ='313'

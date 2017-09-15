@@ -1,1 +1,0 @@
-<li><table><tr><td>[field:csz/]</td><td>[field:bmbh/]</td><td>[field:sh/]</td><td>[field:cy/]</td><td>[field:pubdate function="MyDate('Y-m-d',@me)"/]</td></tr></table></li>

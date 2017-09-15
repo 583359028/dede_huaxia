@@ -1,4 +1,0 @@
-INSERT INTO `dede_vote_member` VALUES('1','1','admin','1501154489');
-INSERT INTO `dede_vote_member` VALUES('2','1','zoudong','1501209514');
-INSERT INTO `dede_vote_member` VALUES('3','1','123','1501337339');
-INSERT INTO `dede_vote_member` VALUES('4','1','1222','1501499418');

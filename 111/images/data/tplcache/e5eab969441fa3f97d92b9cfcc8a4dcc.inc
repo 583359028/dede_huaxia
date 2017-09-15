@@ -1,1 +1,0 @@
-<span>[field:c /]</span>注册

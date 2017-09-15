@@ -1,1 +1,0 @@
-<div class="tp_box"><span>[field:title/]</span><p><a href="toupiao_article.html"><img src="[field:litpic/]" class="furen" alt="[field:title/]"><img src="/templets/default/img/tpfr.png" class="furenbg" alt="华夏夫人相框"></a></p><a href="">投票</a></div>

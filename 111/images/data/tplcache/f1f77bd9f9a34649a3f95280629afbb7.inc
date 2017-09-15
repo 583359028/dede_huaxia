@@ -1,1 +1,0 @@
-<li><table><tr><td>[field:csz/]</td><td id="bmbh">[field:bmbh/]</td><td id="s_province">[field:s_province/]</td><td id="caiyi">[field:caiyi function='cn_substr(@me,12)'/]</td><td>[field:pubdate function="MyDate('Y-m-d',@me)"/]</td></tr></table></li>
