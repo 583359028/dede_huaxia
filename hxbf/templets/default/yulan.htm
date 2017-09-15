@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>华夏夫人-{dede:field.typename/}</title>
+ <meta name="Keywords" content="{dede:field.keywords/}">
+  <meta name="Description" content="{dede:field.description function='html2text(@me)'/}">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"> 
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/style.css">
+  <link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/mobile.css"> 
+  <link href="{dede:global.cfg_templets_skin/}/css/video-js.css" rel="stylesheet">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+  <!-- If you'd like to support IE8 -->
+  <script src="{dede:global.cfg_templets_skin/}/js/videojs-ie8.min.js"></script>
+  <style>
+.toupiao .fr_dec p>span{width:47%!important;}
+  #my-video{width: 100%;height:540px;background:url(/templets/default/img/1.jpg)0 0 no-repeat;background-size:cover;}
+  </style>
+
+</head>
+<body>
+<!--内页头部部分-->
+{dede:include filename="inhead.htm"/}
+<!--top is over-->
+<section class="peixun_content newxq_content">
+<span class="position">当前位置：{dede:field name='position'/}</span>
+ <div class="toupiao">
+ <h1>佳人简介</h1>
+   <div class="tp_box mtp_box jrjj"><p><img src="{dede:field.litpic/}" class="furen" alt="{dede:field.title/}"><img src="{dede:global.cfg_templets_skin/}/img/tpfr.png" class="furenbg" alt="华夏夫人框"></p></div>
+   <div class="fr_dec">
+   <p>
+   <span>参赛者：{dede:field.csz/}</span>
+   <span>民族：{dede:field.mz/}</span>
+   <span>编号：{dede:field.bianhao/}</span>
+   <span>政治面貌：{dede:field.zzmm/}</span>
+   <span style="width:100%!important">身份证：{dede:field.sfzhm/}</span>
+   <span>电话：{dede:field.yddh/}</span>
+   <span style="width:100%!important">E-mail：{dede:field.email/}</span>
+   <span style="width:30%!important">报名省：{dede:field.sh/}</span>
+   <span style="width:30%!important;margin-left: 1%;">报名市：{dede:field.s_city/}</span>
+   <span style="width:30%!important;margin-left: 1%;">报名县：{dede:field.s_county/}</span>
+   </p>
+   <p id="caiyi">才艺：{dede:field.caiyi/}</p>
+   <p>自我评价：{dede:field.zwpj/}</p>
+   <!--<a class="tou_box" style="cursor: pointer;">投票</a>  <a class="gift" style="cursor: pointer;">送礼</a>-->
+   </div>
+   <div class="clear"></div>
+ </div>
+ <div class="video">
+    <h1>佳人展示视频</h1>
+    <div class="m">
+    <video id="my-video" class="video-js" controls preload="auto" 
+      poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
+      <source src="{dede:field.shipin/}" type="video/mp4">
+      <source src="{dede:field.shipin/}" type="video/webm">
+      <source src="{dede:field.shipin/}" type="video/ogv">
+      <p class="vjs-no-js">
+        <a href="http://videojs.com/html5-video-support/" target="_blank"></a>
+      </p>
+      </video>
+      <script src="http://vjs.zencdn.net/5.18.4/video.min.js"></script> 
+    
+	<script type="text/javascript">
+      var myPlayer = videojs('my-video');
+      videojs("my-video").ready(function(){
+        var myPlayer = this;
+        myPlayer.play();
+      });
+    </script>
+  </div>
+
+ </div>
+ <p class="frone"><a href="{dede:prenext get='pro' runphp="yes"}preg_match_all('/<a.*?(?: |\\t|\\r|\\n)?href=[\'"]?(.+?)[\'"]?(?:(?: |\\t|\\r|\\n)+.*?)?>(.+?)<\/a.*?>/sim', @me, $strResult, PREG_PATTERN_ORDER);@me=$strResult[1][0];{/dede:prenext}" class="on">上一位夫人</a><a href="{dede:prenext get='next' runphp="yes"}preg_match_all('/<a.*?(?: |\\t|\\r|\\n)?href=[\'"]?(.+?)[\'"]?(?:(?: |\\t|\\r|\\n)+.*?)?>(.+?)<\/a.*?>/sim', @me, $strResult, PREG_PATTERN_ORDER);@me=$strResult[1][0];{/dede:prenext}">下一位夫人</a></p>
+ </section> 
+<section class="infoot">
+   <!--pc新增滚动入口-->
+{dede:include filename="gdrk.htm"/}
+   </div>
+</section>  
+<a href="/a/new" class="jzmore jzmore2 mcss">查看更多</a> 
+<div class="clear"></div>
+ <div class="infoot_process">
+<ul><li><span></span><em>选拔流程Process</em></li>
+<li><span>1</span><em>免费报名</em></li>
+<li><span>2</span><em>第一轮海选</em></li>
+<li><span>3</span><em>第二轮市选</em></li>
+<li><span>4</span><em>第三轮省选</em></li>
+<li><span>5</span><em>第四轮国选</em></li>
+<li><span>6</span><em>第五轮丝路巡</em></li></ul>
+ </div>
+</section>
+<section class="hid_box">
+   <div class="show_box"><span class="close"></span>
+      <p>抱歉，您还没有登录，登录后才能投票哦~<br/>赶快去登录吧！</p>
+      <div class="show_btn"><a href="/member/login.php">去登录</a><a href="/member/index_do.php?fmdo=user&dopost=regnew" >去注册</a></div>
+   </div>
+</section>
+<section class="hid_box2">
+  <div class="show_box2">
+  <h2>送礼</h2>
+  <p>
+  <a href="#" id="gift1"><img src="{dede:global.cfg_templets_skin/}/img/gift1.png"><em><span class="bjprace">1</span>元<span class="addps">1</span>票</em></a>
+  <a href="#" id="gift2"><img src="{dede:global.cfg_templets_skin/}/img/gift2.png"><em><span class="bjprace">2</span>元<span class="addps">2</span>票</em></a>
+  <a href="#" id="gift3"><img src="{dede:global.cfg_templets_skin/}/img/gift3.png"><em><span class="bjprace">5</span>元<span class="addps">5</span>票</em></a>
+  <a href="#" id="gift4"><img src="{dede:global.cfg_templets_skin/}/img/gift4.png"><em><span class="bjprace">10</span>元<span class="addps">10</span>票</em></a>
+  <a href="#" id="gift5"><img src="{dede:global.cfg_templets_skin/}/img/gift5.png"><em><span class="bjprace">20</span>元<span class="addps">20</span>票</em></a>
+  <a href="#" id="gift6"><img src="{dede:global.cfg_templets_skin/}/img/gift6.png"><em><span class="bjprace">50</span>元<span class="addps">52</span>票</em></a>
+  <a href="#" id="gift7"><img src="{dede:global.cfg_templets_skin/}/img/gift7.png"><em><span class="bjprace">100</span>元<span class="addps">110</span>票</em></a>
+  <a href="#" id="gift8"><img src="{dede:global.cfg_templets_skin/}/img/gift8.png"><em><span class="bjprace">200</span>元<span class="addps">225</span>票</em></a>
+  <a href="#" id="gift9"><img src="{dede:global.cfg_templets_skin/}/img/gift9.png"><em><span class="bjprace">30</span>元<span class="addps">30</span>票</em></a></p>
+  <div class="clear"></div>
+  <div class="count_jg"><div class="count_left"><span>数量</span><a id="del">-</a><i id="count">1</i><a id="add">+</a></div>
+  <div class="count_right">支付：￥<span id="price">0</span></div></div>
+    <div class="clear"></div>
+   <div class="show_btn2"><a href="#">微信支付</a><a href="#" class="close2">关闭</a></div>
+  </div>
+</section>
+{dede:include filename="foot.htm"/}
+<script type="text/javascript" src="{dede:global.cfg_templets_skin/}/js/box.js"></script>
+<script src="{dede:global.cfg_templets_skin/}/js/menu.js"></script>
+<script src="{dede:global.cfg_templets_skin/}/js/lk.js"></script>  
+
+</body>
+</html>

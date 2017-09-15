@@ -1,0 +1,1 @@
+<div class="listab_box"><img src="[field:litpic/]" alt="[field:title/]"></div>

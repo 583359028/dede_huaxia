@@ -1,0 +1,11 @@
+[18-Apr-2016 09:02:58 Asia/Shanghai] PHP Notice:  Undefined index: scripts in D:\wwwroot\tclde\wwwroot\tclphpmyadmin\js\get_scripts.js.php on line 22
+[21-Apr-2016 11:32:20 Asia/Shanghai] PHP Notice:  Undefined index: scripts in D:\wwwroot\tclde\wwwroot\tclphpmyadmin\js\get_scripts.js.php on line 22
+[05-Aug-2017 17:45:39 Asia/Shanghai] PHP Fatal error:  Out of memory (allocated 7864320) (tried to allocate 3072 bytes) in F:\themeroot\theme1320\wwwroot\hxfrphpmyadmin\libraries\List_Database.class.php on line 64
+[05-Aug-2017 17:45:43 Asia/Shanghai] PHP Fatal error:  Out of memory (allocated 14417920) (tried to allocate 410381 bytes) in F:\themeroot\theme1320\wwwroot\hxfrphpmyadmin\libraries\Response.class.php on line 377
+[05-Aug-2017 17:45:43 Asia/Shanghai] PHP Fatal error:  Unknown: Cannot use output buffering in output buffering display handlers in Unknown on line 0
+[05-Aug-2017 17:45:46 Asia/Shanghai] PHP Fatal error:  Out of memory (allocated 14417920) (tried to allocate 196608 bytes) in F:\themeroot\theme1320\wwwroot\hxfrphpmyadmin\libraries\tcpdf\tcpdf.php on line 16483
+[05-Aug-2017 17:45:48 Asia/Shanghai] PHP Fatal error:  Out of memory (allocated 15204352) (tried to allocate 786432 bytes) in F:\themeroot\theme1320\wwwroot\hxfrphpmyadmin\libraries\tcpdf\tcpdf.php on line 18283
+[05-Aug-2017 17:45:48 Asia/Shanghai] PHP Fatal error:  Unknown: Cannot use output buffering in output buffering display handlers in Unknown on line 0
+[05-Aug-2017 17:45:57 Asia/Shanghai] PHP Fatal error:  Out of memory (allocated 2359296) (tried to allocate 196608 bytes) in F:\themeroot\theme1320\wwwroot\hxfrphpmyadmin\libraries\config.default.php on line 2712
+[05-Aug-2017 17:45:57 Asia/Shanghai] PHP Fatal error:  Out of memory (allocated 1835008) (tried to allocate 49152 bytes) in F:\themeroot\theme1320\wwwroot\hxfrphpmyadmin\libraries\Table.class.php on line 2206
+[05-Aug-2017 17:45:57 Asia/Shanghai] PHP Fatal error:  Out of memory (allocated 4718592) (tried to allocate 98304 bytes) in F:\themeroot\theme1320\wwwroot\hxfrphpmyadmin\js\get_scripts.js.php on line 55

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>华夏夫人-{dede:field.typename/}</title>
+  <meta name="Keywords" content="{dede:field.keywords/}">
+  <meta name="Description" content="{dede:field.description function='html2text(@me)'/}">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/style.css">
+   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"> 
+  <link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/mobile.css">
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+</head>
+<body>
+<!--内页头部部分-->
+{dede:include filename="inhead.htm"/}
+<!--top is over-->
+<section class="peixun_content about_content">
+<span class="position">当前位置：{dede:field name='position'/}</span>
+  <div class="about_banner"><img src="http://ou5bwo623.bkt.clouddn.com/aboutb.png" alt="关于我们大图"></div>
+<div class="about_dec"><img src="http://ou5bwo623.bkt.clouddn.com/about_boxb.png" alt="目标定位"></div>
+<div class="ab_display"><img src="{dede:global.cfg_templets_skin/}/img/frdis.png" alt="华夏夫人风采展示"></div>
+<div class="list_ab">
+ {dede:list pagesize='4' titlelen='40' orderby='weight' orderway='asc'}
+  <div class="listab_box"><img src="[field:litpic/]" alt="[field:title/]"></div>{/dede:list}
+</div>
+ <div class="clear"></div>
+    <div class="list_pages">
+    <ul>
+   {dede:pagelist listitem="info,index,end,pre,next,pageno" listsize="2"/}
+    </ul></div>
+<section class="infoot">
+{dede:include filename="gdrk.htm"/}
+   </div>
+</section>  
+<a href="/a/new" class="jzmore jzmore2 mcss">查看更多</a>
+<div class="clear"></div>
+ <div class="infoot_process">
+<ul><li><span></span><em>选拔流程Process</em></li>
+<li><span>1</span><em>免费报名</em></li>
+<li><span>2</span><em>第一轮海选</em></li>
+<li><span>3</span><em>第二轮市选</em></li>
+<li><span>4</span><em>第三轮省选</em></li>
+<li><span>5</span><em>第四轮国选</em></li>
+<li><span>6</span><em>第五轮丝路巡</em></li></ul>
+ </div>
+</section>
+</section> 
+{dede:include filename="foot.htm"/}
+<script src="{dede:global.cfg_templets_skin/}/js/menu.js"></script>
+<script src="{dede:global.cfg_templets_skin/}/js/lk.js"></script>  
+</body>
+</html>

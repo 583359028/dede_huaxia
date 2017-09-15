@@ -1,0 +1,13 @@
+[12-Aug-2017 18:28:35 Asia/Shanghai] PHP Notice:  Undefined index: sign in F:\themeroot\theme1320\wwwroot\alipay\aop\AopClient.php on line 648
+[14-Aug-2017 17:52:25 Asia/Shanghai] PHP Fatal error:  Call to undefined function dump() in F:\themeroot\theme1320\wwwroot\alipay\huaxia.php on line 26
+[14-Aug-2017 17:52:27 Asia/Shanghai] PHP Fatal error:  Call to undefined function dump() in F:\themeroot\theme1320\wwwroot\alipay\huaxia.php on line 26
+[14-Aug-2017 17:52:28 Asia/Shanghai] PHP Fatal error:  Call to undefined function dump() in F:\themeroot\theme1320\wwwroot\alipay\huaxia.php on line 26
+[14-Aug-2017 17:52:29 Asia/Shanghai] PHP Fatal error:  Call to undefined function dump() in F:\themeroot\theme1320\wwwroot\alipay\huaxia.php on line 26
+[31-Aug-2017 18:29:05 Asia/Shanghai] PHP Notice:  Undefined index: out_trade_no in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 24
+[31-Aug-2017 18:29:05 Asia/Shanghai] PHP Notice:  Undefined index: sign in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 25
+[31-Aug-2017 18:29:05 Asia/Shanghai] PHP Notice:  Undefined variable: db in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 28
+[31-Aug-2017 18:29:05 Asia/Shanghai] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 28
+[31-Aug-2017 18:29:13 Asia/Shanghai] PHP Notice:  Undefined index: out_trade_no in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 24
+[31-Aug-2017 18:29:13 Asia/Shanghai] PHP Notice:  Undefined index: sign in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 25
+[31-Aug-2017 18:29:13 Asia/Shanghai] PHP Notice:  Undefined variable: db in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 28
+[31-Aug-2017 18:29:13 Asia/Shanghai] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\gift_notify.php on line 28

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>华夏夫人-{dede:field.typename/}</title>
+ <meta name="Keywords" content="{dede:field.keywords/}">
+  <meta name="Description" content="{dede:field.description function='html2text(@me)'/}">
+   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/mobile.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/style.css">
+  <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+</head>
+<body>
+<!--内页头部部分-->
+{dede:include filename="inhead.htm"/}
+<!--top is over-->
+<section class="peixun_content newxq_content">
+<span class="position">当前位置：{dede:field name='position'/}</span>
+<div class="nav">
+<form class="search"  id="searchform" name="search" method="post"
+ action="{dede:global.cfg_cmsurl/}/plus/search.php">
+  <input type="hidden" name="kwtype" value="0" />
+    <input type="text" class="Keywords" id="keyword" name="keyword" placeholder="报名夫人在线搜索，姓名、编号查询">
+    <input type="submit" name="button" class="submit" id="button">
+ </form>
+ </div>
+ <div class="clear"></div>
+ <!--pc端-->
+ <div class="toupiao"  id="pageContent">
+   {dede:arclist typeid='2' orderby="id" row="10000"}
+   <div class="tp_box tp_box1" style="float: left;width:375px;" id="tp_box"><span>[field:title/]</span><p><a href="[field:arcurl/]"><img src="[field:litpic/]" class="furen" alt="[field:title/]"><img src="/templets/default/img/tpfr.png" class="furenbg" alt="华夏夫人相框"></a></p><button style="cursor: pointer;" class="tou_box" onclick='ajax_tp([field:id/])'>投票</button></div>  
+   {/dede:arclist}
+ </div>
+<div id="pages"> 
+<span id="spanFirst">首页</span> 
+<span id="spanPre">上一页</span> 
+<span id="spanNext">下一页</span> 
+<span id="spanLast">尾页
+</span> 第<strong id="spanPageNum">
+</strong>页/共<strong id="spanTotalPage">
+</strong>页
+</div> 
+
+<script>
+		function  ajax_tp(tp){
+
+		var a =$('.userName').text();
+		
+	 
+			if(a==''){
+				$(".hid_box").append("<div class='show_box'><span class='close' onclick='hideK()'></span><p>抱歉，您还没有登录，登录后才能投票哦~<br/>赶快去登录吧！</p><div class='show_btn'><a href='/member/login.php'>去登录</a><a href='/member/index_do.php?fmdo=user&dopost=regnew'>去注册</a></div></div>")
+			}else{
+		  $.ajax({
+		    type:'POST',
+		    dataType:'json',
+			url:'../../plus/tp.php',
+			data:{'id':tp,
+			     'uname':a},
+		  success:function(id){
+		 
+		  if(id.message==1){
+		    hideK();
+		  alert(id.status);
+		 // window.location.reload();
+		  }else{
+		   hideK();
+		  alert(id.status);
+		   
+		  } 
+		  }
+		  });	 	
+			}
+		}	
+function hideK(){
+			$('.hid_box').css('display','none');
+		}
+
+
+ </script>
+ </section>
+<section class="infoot">
+      <!--pc新增滚动入口-->
+{dede:include filename="gdrk.htm"/}
+   </div>
+</section>
+<a href="/a/new" class="jzmore jzmore2 mcss">查看更多</a>
+<div class="clear"></div>
+ <div class="infoot_process">
+<ul><li><span></span><em>选拔流程Process</em></li>
+<li><span>1</span><em>免费报名</em></li>
+<li><span>2</span><em>第一轮海选</em></li>
+<li><span>3</span><em>第二轮市选</em></li>
+<li><span>4</span><em>第三轮省选</em></li>
+<li><span>5</span><em>第四轮国选</em></li>
+<li><span>6</span><em>第五轮丝路巡</em></li></ul>
+ </div>
+</section>
+<script src="{dede:global.cfg_templets_skin/}/js/lk.js"></script>
+<script src="{dede:global.cfg_templets_skin/}/js/menu.js"></script>
+<section class="hid_box">
+   <!-- <div class="show_box"><span class="close"></span>
+      <p>抱歉，您还没有登录，登录后才能投票哦~<br/>赶快去登录吧！</p>
+      <div class="show_btn"><a href="/member/login.php">去登录</a><a href="/member/index_do.php?fmdo=user&dopost=regnew">去注册</a></div>
+   </div> -->
+</section>
+{dede:include filename="foot.htm"/}
+<script type="text/javascript" src="{dede:global.cfg_templets_skin/}/js/box.js"></script>
+</body>
+</html>

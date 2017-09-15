@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>华夏夫人-{dede:field.typename/}</title>
+ <meta name="Keywords" content="{dede:field.keywords/}">
+  <meta name="Description" content="{dede:field.description function='html2text(@me)'/}">
+   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/style.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/mobile.css">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+</head>
+<body>
+<!--内页头部部分-->
+{dede:include filename="inhead.htm"/}
+<!--top is over-->
+<!--页面大图-->
+<section class="baoming_banner"><img src="http://ou5bwo623.bkt.clouddn.com/jjcc_bannerb.png" alt="家教传承大图"></section>
+
+<section class="all">
+<span class="position">当前位置：{dede:field name='position'/}</span>
+<!--pc显示-->
+<section class="jjcc_content pc">
+{dede:arclist row='1' typeid='13'  addfields='body'  channelid='1'}<div class="jjcc_dec1 jjcc_dec"><a href="[field:arcurl/]"><div class="dec1_left"><img src="[field:litpic/]" alt="[field:title/]"></div><div class="dec1_right">[field:body/]</div></a></div>
+<div class="clear"></div>{/dede:arclist}
+{dede:arclist row='1' typeid='14'  addfields='body'  channelid='1'}
+<div class="jjcc_dec2 jjcc_dec"><a href="[field:arcurl/]"><div class="dec1_left">[field:body/]</div><div class="dec1_right"><img src="[field:litpic/]" alt="[field:title/]"></div></a></div>{/dede:arclist}
+{dede:arclist row='1' typeid='15'  addfields='body'  channelid='1'}
+<div class="jjcc_dec3 jjcc_dec"><a href="[field:arcurl/]"><div class="dec1_left"><img src="[field:litpic/]" alt="[field:title/]"></div><div class="dec1_right">[field:body/]</div></a></div>{/dede:arclist}
+</section>
+<!--移动端显示-->
+<section class="jjcc_content mcss">
+{dede:arclist row='1' typeid='13'}<div class="jjcc_dec1 jjcc_dec"><a href="[field:arcurl/]"><div class="dec1_left"><img src="[field:litpic/]" alt="[field:title/]"></div><div class="dec1_right">[field:description function='cn_substr(@me,200)'/]......</div></a></div>
+<div class="clear"></div>{/dede:arclist}
+{dede:arclist row='1' typeid='14'}<div class="jjcc_dec1 jjcc_dec"><a href="[field:arcurl/]"><div class="dec1_left"><img src="[field:litpic/]" alt="[field:title/]"></div><div class="dec1_right">[field:description function='cn_substr(@me,200)'/]......</div></a></div>
+<div class="clear"></div>{/dede:arclist}
+{dede:arclist row='1' typeid='15'}<div class="jjcc_dec1 jjcc_dec"><a href="[field:arcurl/]"><div class="dec1_left"><img src="[field:litpic/]" alt="[field:title/]"></div><div class="dec1_right">[field:description function='cn_substr(@me,200)'/]......</div></a></div>
+<div class="clear"></div>{/dede:arclist}
+</section>
+</section>
+<!--内页尾部-->
+<section class="infoot">
+{dede:include filename="gdrk.htm"/}
+   </div>
+</section>  
+<a href="/a/new" class="jzmore jzmore2 mcss">查看更多</a>
+<div class="clear"></div>
+ <div class="infoot_process">
+<ul><li><span></span><em>选拔流程Process</em></li>
+<li><span>1</span><em>免费报名</em></li>
+<li><span>2</span><em>第一轮海选</em></li>
+<li><span>3</span><em>第二轮市选</em></li>
+<li><span>4</span><em>第三轮省选</em></li>
+<li><span>5</span><em>第四轮国选</em></li>
+<li><span>6</span><em>第五轮丝路巡</em></li></ul>
+ </div>
+</section>
+{dede:include filename="foot.htm"/}
+ <script type="text/javascript" src="{dede:global.cfg_templets_skin/}/js/gundong.js"></script>
+ <script src="{dede:global.cfg_templets_skin/}/js/menu.js"></script>
+ <script src="{dede:global.cfg_templets_skin/}/js/lk.js"></script>  
+</body>
+</html>

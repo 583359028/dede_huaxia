@@ -1,0 +1,77 @@
+[24-Aug-2017 16:12:45 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 38
+[24-Aug-2017 16:13:03 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 38
+[24-Aug-2017 16:13:19 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 38
+[24-Aug-2017 16:13:51 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 38
+[24-Aug-2017 16:16:53 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 38
+[24-Aug-2017 16:24:27 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[24-Aug-2017 16:24:38 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[24-Aug-2017 16:24:56 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[24-Aug-2017 16:25:28 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[24-Aug-2017 16:28:30 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[24-Aug-2017 16:46:50 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:46:55 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:47:01 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:47:18 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:47:50 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:50:53 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:55:32 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:55:42 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:55:59 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:56:32 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:58:32 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 16:59:34 Etc/GMT-8] PHP Fatal error:  Call to a member function ExecuteNoneQuery() on a non-object in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 41
+[24-Aug-2017 23:31:59 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:32:27 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:32:36 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:32:53 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:33:25 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:34:04 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:34:20 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:34:36 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[24-Aug-2017 23:35:08 Etc/GMT-8] PHP Fatal error:  Call to undefined function data() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 12
+[25-Aug-2017 18:30:48 Asia/Shanghai] PHP Parse error:  syntax error, unexpected end of file in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 141
+[26-Aug-2017 02:42:22 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:42:35 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:43:03 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:43:41 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:44:30 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:44:34 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:44:40 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:44:55 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:44:56 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:44:58 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:44:58 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:45:39 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:46:51 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:47:02 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 58
+[26-Aug-2017 02:48:00 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 56
+[26-Aug-2017 02:48:15 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 56
+[26-Aug-2017 02:48:35 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'mch_id' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 56
+[26-Aug-2017 02:54:24 Asia/Shanghai] PHP Fatal error:  Can't use function return value in write context in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[26-Aug-2017 02:54:43 Asia/Shanghai] PHP Fatal error:  Can't use function return value in write context in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[26-Aug-2017 02:55:59 Asia/Shanghai] PHP Fatal error:  Can't use function return value in write context in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 62
+[26-Aug-2017 03:50:09 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:50:20 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:50:38 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:51:11 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:52:10 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:52:12 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:01 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:03 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:05 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:05 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:05 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:05 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:06 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:06 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:06 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 03:53:38 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 04:00:25 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 04:00:41 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 04:01:13 Etc/GMT-8] PHP Fatal error:  Call to undefined function ExecuteNoneQuery() in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 63
+[26-Aug-2017 10:54:36 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'MCH_ID' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 47
+[26-Aug-2017 10:55:08 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'MCH_ID' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 47
+[26-Aug-2017 11:52:54 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'MCH_ID' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 49
+[26-Aug-2017 11:52:56 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'MCH_ID' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 49
+[26-Aug-2017 11:53:13 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'MCH_ID' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 49
+[26-Aug-2017 11:54:09 Etc/GMT-8] PHP Fatal error:  Undefined class constant 'MCH_ID' in F:\themeroot\theme1320\wwwroot\payment\example\notify.php on line 49

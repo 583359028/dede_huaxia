@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $cfg_soft_lang; ?>" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"> 
+<title><?php echo $cfg_webname; ?>- 会员注册</title>
+<link href="templets/style/login.css" rel="stylesheet" type="text/css" />
+<link href="/templets/default/css/style.css" rel="stylesheet" type="text/css" />
+<link href="/templets/default/css/reset.css" rel="stylesheet" type="text/css" />
+<link href="/templets/default/css/mobile.css" rel="stylesheet" type="text/css" />
+<script src="templets/js/j.js" language="javascript" type="text/javascript"></script>
+<script src="templets/js/base.js" language="javascript" type="text/javascript"></script>
+<script src='templets/js/CheckPassStrength.js' type="text/javascript" language="javascript"></script>
+<script type="text/javascript" language="javascript" src='templets/js/reg_new.js'></script>
+ <script src="/templets/default/js/menu.js"></script>
+<script type="text/javascript" language="javascript">
+<!--
+var reMethod = "<?php echo ($cfg_soft_lang == 'utf-8') ? 'POST' : 'GET';?>",pwdmin = <?php echo $cfg_mb_pwdmin; ?>;
+
+function changeAuthCode() {
+  var num =   new Date().getTime();
+  var rand = Math.round(Math.random() * 10000);
+  num = num + rand;
+  $('#ver_code').css('visibility','visible');
+  if ($("#vdimgck")[0]) {
+    $("#vdimgck")[0].src = "../include/vdimgck.php?tag=" + num;
+  }
+  return false; 
+}
+
+function hideVc()
+{
+  $('#ver_code').css('visibility','hidden');
+}
+
+
+$(document).ready(function(){ 
+  $("#passwordLevel").removeClass().addClass("rank r0");
+  $("#vdcode").focus(function(){
+    var leftpos = $("#vdcode").position().left;
+    var toppos = $("#vdcode").position().top - 42;
+    $('#ver_code').css('left', leftpos+'px');
+    $('#ver_code').css('top', toppos+'px');
+    $('#ver_code').css('visibility','visible');
+  });
+  $("input[type='password']").click(function(){
+    hideVc()
+  });
+  $("#txtUsername").click(function(){
+    hideVc()
+  });
+  $("input[type='radio']").focus(function(){
+    hideVc()
+  });
+  /*
+  $("#vdcode").blur(function(){
+      $('#ver_code').css('visibility','hidden');
+  });
+  */
+})
+
+-->
+</script>
+<script type="text/javascript">
+$(function(){
+$(".j-sends").click(function(){
+var userid = $.trim($(".j-telphone").val());
+var isMobile=/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+if(!userid){
+$('.tel-msg').text('请输入手机号码，不能为空');
+return false;
+}else if (!isMobile.test(userid)) {
+$('.tel-msg').text('请输入有效的手机号码');
+return false;
+}else{
+//手机号码是否存在
+$.ajax({
+url : "/", //
+type:"post",
+dataType:"JSON",
+data:{
+userid: userid,
+}, 
+contentType:'application/json;charset=UTF-8', 
+//async: false,
+success:function(data){
+if (data.flag == "1") { //
+$('.tel-msg').html(data.errorInfo); //
+return false;
+}else{
+$('.tel-msg').html(data.errorInfo); //可
+}
+},
+error:function(){
+}
+}); 
+}
+})
+//验证码倒计时 
+var InterValObj; //timer变量，控制时间 
+var count = 30; //间隔函数，1秒执行 
+var curCount;//当前剩余秒数 
+var code = ""; //验证码 
+var regType;
+var phoneTemplet;
+var codeLength = 4;//验证码长度 
+$(".code-btn").click(function(){
+curCount = count; 
+var phone=$.trim($(".j-telphone").val());//手机号码 
+var isMobile=/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
+var jtel = $(".j-telphone");
+if(phone != "" && isMobile.test(phone) && phone.length==11){ 
+//设置button效果，开始计时 
+$("#btnSendCode").attr("disabled", "true"); 
+$("#btnSendCode").val("请在" + curCount + "秒内输入验证码"); 
+$('.tel-msg').text('手机号码正确'); 
+InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次 
+//产生验证码 
+for (var i = 0; i < codeLength; i++) { 
+code += parseInt(Math.random() * 9).toString(); 
+} 
+//向后台获验证码 
+$.ajax({ 
+url : base + "/", 
+type: "POST",
+// dataType: "text", 
+// data: "userid=" + phone + "&code=" + code, 
+dataType: "JSON",
+data:{
+userid:phone,
+code: code,
+regType:"1",
+phoneTemplet:"phone_uc"
+},
+success: function (data){
+if(data.flag=="F"){
+$(".code-msg").html(data.errorInfo); 
+}else{
+$(".code-msg").html(data.errorInfo);
+}
+} 
+}); 
+}else{ 
+$('.tel-msg').text('请输入有效的手机号码'); 
+} 
+});
+//timer处理函数 
+function SetRemainTime() { 
+if (curCount == 0) { 
+window.clearInterval(InterValObj);//停止计时器 
+$("#btnSendCode").removeAttr("disabled");//启用按钮 
+$("#btnSendCode").val("重新发送验证码"); 
+code = ""; //清除验证码。如果不清除，过时间后，输入收到的验证码依然有效 
+} 
+else { 
+curCount--; 
+$("#btnSendCode").val("请在" + curCount + "秒内输入验证码"); 
+} 
+} 
+})
+</script>
+<style>
+body{background: url(/templets/default/img/zxzcbg.png)0 0 no-repeat;}
+#login{background:rgba(255,255,255,0.5);}
+.infoot{background:none;}
+#login {margin:50px auto 100px ;}
+.zxbmlogo{margin-top: 50px;}
+.tip1{display: none;}
+.w200{width:300px;border:1px solid #e04649;border-radius: 30px;height:32px;}
+#login .theme span{font-size: 20px;line-height: 40px;text-align: left;width: 100px;display: inline-block;*display: block;*zoom:1;}
+.rank{margin:13px 0 0 5px;}
+#_userid,#_userpwd{font-size: 12px;}
+#_userpwdok b{font-size: 16px;color:red;}
+#_email{font-size: 16px;}
+.bor{width:92%;max-width: 800px;padding:2% 4% 3% 4%;}
+#login .theme{width:100%;padding:0;max-width: 675px;margin:0 auto!important;}
+.fLeft{float: none!important}
+#btnSignCheck{background: #a62727;font-size: 24px;border-radius: 30px;font-weight: normal;height: 45px;
+    line-height: 45px;
+    width: 137px;margin-left: 32px;}
+.qx{background: transparent;font-size: 24px;border-radius: 30px;border:1px solid #a62727;height: 45px;
+    line-height: 45px;
+    width: 137px;}
+    .form-group,#login .theme li {
+    margin-bottom:0;margin-top:25px;}
+    @media screen and (min-width:320px)and (max-width:370px){
+  .qx,.buttonGreen142{width:42%!important;}.form-group,#login .theme li{margin-top: 7px!important}
+#login .theme span.kong{width:0!important;}#_userid, #_userpwd{font-size: 15px!important}.w200{width:90%!important;}#login{margin:25px auto;}}
+ @media screen and (min-width:375px)and (max-width:768px){
+  #login .theme li,.form-group{margin-top: 5px!important}
+  #login .theme span.kong{width:0!important;}#_userid, #_userpwd{font-size: 15px!important}.w200{width:90%!important;}#login{margin:25px auto;}
+ }
+.form-group label{font-size: 20px;
+    line-height: 40px;
+    text-align: left;width: 100px;display: inline-block;*display: block;*zoom:1;}
+.vericode{width: 300px;
+    border: 1px solid #e04649;
+    border-radius: 30px;
+    height: 32px;
+    padding: 4px 5px;
+    background: url(../images/input_bg.gif) no-repeat 0 0;
+    color: #666;}
+    #btnSendCode{    background: #a62728;
+    border: none;
+    color: #fff;
+    padding: 2%;
+    border-radius: 30px;}
+</style>
+</head>
+<body>
+<!--内页头部部分-->
+<header class="top top_peixun">
+<section class="top_box">
+    <div class="logo"><a href="index.html"><img src="/templets/default/img/logo.png" alt="华夏夫人官网"></a></div>
+    <div class="top_right"><p>全国客服热线：400-</p>
+    <ul id="quickMenu">
+  <?php
+//未登录显示的head
+if(!$cfg_ml->IsLogin()) {
+?>
+        <li><a title="注册" href="../member/index_do.php?fmdo=user&dopost=regnew">注册</a> </li>
+        <li><a title="登录" href="../member/login.php">登录</a> </li>
+<?php
+}
+//登录后显示的head
+else {
+?> 
+
+ <a href="#" class="userName"><?php echo $cfg_ml->M_UserName?></a>
+ &nbsp;&nbsp;<a href="../member/index_do.php?fmdo=login&dopost=exit#" style="color:#fff">[退出]</a>
+
+<?php
+}
+?>      
+      </ul>
+    <nav class="menu">
+  <ul>
+    <li><a href="http://theme1320.leixunkj.com">首页</a></li>
+<li><a href='/a/new/'>新闻资讯</a></li>
+ <li><a href="/a/baoming/"> 夫人报名 </a></li>
+ <li><a href="/a/toupiao/"> 投票注册 </a></li>
+ <li><a href="/a/peixun/"> 培训系统 </a></li>
+ <li><a href="/a/zhaoshang/"> 招商加盟 </a></li>
+ <li><a href="/a/jiajiao/"> 家教传承 </a></li>
+ <li><a href="/a/about/"> 关于我们 </a></li>
+  </ul>
+    </nav>
+    </div>
+</section>
+<section class="mobile_menu"><a class="back" onclick="history.go(-1)"></a><h1>会员注册</h1>
+<div class="menu">
+   <span id="menu"></span>
+   <div class="menu_li">
+   <div id="menu_left"></div>
+    <ul> 
+     <li><a href="http://theme1320.leixunkj.com"> 首页</a></li>
+<li><a href='/a/new/'>新闻资讯</a></li>
+ <li><a href="/a/baoming/"> 夫人报名 </a></li>
+
+ <li><a href="/a/toupiao/"> 投票注册 </a></li>
+
+ <li><a href="/a/peixun/"> 培训系统 </a></li>
+
+ <li><a href="/a/zhaoshang/"> 招商加盟 </a></li>
+
+ <li><a href="/a/jiajiao/"> 家教传承 </a></li>
+
+ <li><a href="/a/about/"> 关于我们 </a></li>
+ <li><a href="../member/login.php"> 登录 </a></li>
+ <li><a href="../member/index_do.php?fmdo=user&dopost=regnew"> 注册 </a></li>
+    </ul>
+   </div>
+</div>
+</section>
+</header>
+<!--top is over-->
+<div class="zxbmlogo"><img src="/templets/default/img/zxzclogo.png"></div>
+<div id="login" class="bor" >
+  <div class="<?php echo ($cfg_mb_reginfo == 'Y')? '' : 's';?>tip1"></div>
+  <div class="theme fLeft">
+    <form method="post" action="reg_new.php" id="regUser" name="form2">
+      <input type="hidden" value="regbase" name="dopost"/>
+      <input type="hidden" value="1" name="step"/>
+      <input type="hidden" value="个人" name="mtype"/>
+      <p style="text-align: right;" class="mB10"/>
+      <ul>
+        <li><span>手机号：</span>
+          <input type="tel" class="intxt w200 input-control put-width440 j-telphone" id="txtUsername" name="userid" placeholder="请输入您的手机号码"/>
+        <i class="red">*</i> <em id="_userid" class="f12 red tel-msg"></em> 
+ <p class="c-login-errtips" style="display:none;"></p>
+        </li>
+         <!--<li><span>手机号：</span>
+          <input type="tel" class="intxt w200 input-control put-width440 j-telphone" id="inputtel" name="phones" autocomplete="off" placeholder="请输入您的电话号码"/>
+        <i class="red">*</i> <em class="f12 red tel-msg"></em>
+        <p class="c-login-errtips" style="display:none;"></p>
+</li>-->
+<div class="form-group">
+<div class="pull-left">
+<label for="inputEmail3" class="label-control label-width120 pull-left t-r-f f16">验证码：</label>
+<input type="tel" class="input-control put-with100 vericode" id="inputEmail3" name="code" placeholder="请输入验证码">
+<input id="btnSendCode" type="button" value="免费获取验证码" class="j-getcode f12 b-i-k btn code-btn c-p" />
+<span class="f12 red code-msg"></span>
+</div>
+</div>
+      <!-- <li><span id="uwname">用户笔名：</span>
+          <input type="text" class="intxt w200" size="20" id="uname" name="uname"/>
+          <i class="red">*</i> <em id="_uname"/> </li>-->
+        <li><span>登录密码：</span>
+          <input type="password" onkeyup="setPasswordLevel(this, document.getElementById('passwordLevel'));" style="font-family: verdana;" class="intxt w200" id="txtPassword" name="userpwd" placeholder="请输入您的密码"/>
+          <i class="red">*</i><em id="_userpwd">(不能小于3位数)</em> </li>
+        <li><span>密码强度：</span>
+          <input id="passwordLevel" class="rank r2" disabled="disabled" name="Input"/>
+        </li>
+        <li><span>确认密码：</span>
+          <input type="password" class="intxt w200" size="20" value="" id="userpwdok" name="userpwdok" placeholder="请再次输入您的密码"/>
+          <i class="red">*</i> <em id="_userpwdok"><font color="red"><b>×两次输入密码不一致</b></font></em> </li>
+          <?php
+            if($safe_faq_reg == '1'){
+            $faqkey = array_rand($safefaqs);
+          ?>
+          <li><span>请回答注册问题：</span>
+          <p class="cellBg">
+            <?php echo $safefaqs[$faqkey]['question'];?> (答案:<?php echo $safefaqs[$faqkey]['answer'];?>)
+           </li>
+          <li><span>您的回答是：</span>
+            <input name="rsafeanswer" type="text" id="rsafeanswer" size="25" style='width:200px;' class="intxt w200"/> 
+            <input type="hidden" name="faqkey" value="<?php echo $faqkey;?>" />
+            <i class="red">*</i> </li>
+          <?php
+            }
+          ?>
+         <!--<li><span>电子邮箱：</span>
+            <input type="text" class="intxt w200" id="email" name="email"/>
+            <i class="red">*</i> <em id="_email">(每个电子邮箱只能注册一个帐号)</em> </li>
+           <li><span>安全问题：</span>
+            <?php
+            require(DEDEDATA.'/safequestions.php');
+            echo GetSafequestion(0,'safequestion');
+            ?>
+          <em id="_safequestion">(忘记密码时重设密码用)</em> </li>
+          <li><span>问题答案：</span>
+          <input id="safeanswer" class="intxt w200" type="text" value="" name="safeanswer"/>
+          </li>
+        <li><span>性别：</span>
+            <input type="radio" value="男" name="sex"/>
+            男
+        <input type="radio" value="女" name="sex"/>
+            女
+            <input type="radio" checked="checked" value="" name="sex"/>
+          保密        </li>
+          <?php
+            if(preg_match("/1/",$safe_gdopen)){
+          ?>-->
+          <li><span>验证码：</span>
+            <input type="text" class="intxt w200" style="width: 50px; text-transform: uppercase;" id="vdcode" name="vdcode"/><img id="vdimgck" align="absmiddle" onclick="this.src=this.src+'?'" style="cursor: pointer;" alt="看不清？点击更换" src="'.$cfg_cmspath.'/include/vdimgck.php"/>
+           看不清？ <a href="javascript:void(0)" onclick="changeAuthCode();">点击更换</a></li>
+           <?php }?>
+      </ul>
+      <!--<div><span style="height: 110px; width: 15%;" class="fLeft">会员注册协议：</span>
+        <div class="contract"> 1、在本站注册的会员，必须遵守《互联网电子公告服务管理规定》，不得在本站发表诽谤他人，侵犯他人隐私，侵犯他人知识产权，传播病毒，政治言论，商业讯息等信息。<br/>
+          2、在所有在本站发表的文章，本站都具有最终编辑权，并且保留用于印刷或向第三方发表的权利，如果你的资料不齐全，我们将有权不作任何通知使用你在本站发布的作品。<br/>
+        3、在登记过程中，您将选择注册名和密码。注册名的选择应遵守法律法规及社会公德。您必须对您的密码保密，您将对您注册名和密码下发生的所有活动承担责任。</div>
+      </div>
+      <br />-->
+      <ul>
+        <!--<li><span>&nbsp;</span>
+          <input type="checkbox" checked="" value="" id="agree" name="agree"/>
+          我已阅读并完全接受服务协议 </li>-->
+        <li><span class="kong">&nbsp;</span>
+        <button type="reset" id="qx" class="qx">取消</button>
+          <button type="submit" id="btnSignCheck" class="buttonGreen142">注册</button>
+        </li>
+      </ul>
+    </form>
+  </div>
+  <br class="clear"/>
+</div>
+<script language="javascript" type="text/javascript">
+  window.onload=function (){
+    setInterval("document.getElementById('time').innerHTML=new Date().toLocaleString()+' 星期'+'日一二三四五六'.charAt(new Date().getDay());",1000);
+  }
+</script>
+<section class="infoot">
+ <div class="infoot_process">
+<ul><li><span></span><em>选拔流程<br/>Process</em></li>
+<li><span>1</span><em>免费报名</em></li>
+<li><span>2</span><em>第一轮海选</em></li>
+<li><span>3</span><em>第二轮市选</em></li>
+<li><span>4</span><em>第三轮省选</em></li>
+<li><span>5</span><em>第四轮国选</em></li>
+<li><span>6</span><em>第五轮丝路巡</em></li></ul>
+ </div>
+</section>
+</body>
+</html>

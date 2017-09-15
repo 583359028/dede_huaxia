@@ -1,0 +1,19 @@
+[14-Aug-2017 18:19:24 Asia/Shanghai] PHP Notice:  Undefined index: WIDout_trade_no in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 13
+[14-Aug-2017 18:19:24 Asia/Shanghai] PHP Notice:  Undefined index: WIDsubject in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 16
+[14-Aug-2017 18:19:24 Asia/Shanghai] PHP Notice:  Undefined index: WIDtotal_amount in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 19
+[14-Aug-2017 18:19:24 Asia/Shanghai] PHP Notice:  Undefined index: WIDbody in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 22
+[22-Aug-2017 14:38:28 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 127
+[22-Aug-2017 14:39:35 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 127
+[22-Aug-2017 14:41:13 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 127
+[22-Aug-2017 14:42:54 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:43:56 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:45:31 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:46:28 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:46:38 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:46:51 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:47:29 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:47:37 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:48:02 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 121
+[22-Aug-2017 14:49:06 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 122
+[22-Aug-2017 14:49:32 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 122
+[22-Aug-2017 14:50:03 Etc/GMT-8] PHP Fatal error:  Call to a member function setBody() on a non-object in F:\themeroot\theme1320\wwwroot\alipay\pagepay\pagepay.php on line 122

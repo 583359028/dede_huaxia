@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>华夏夫人-{dede:field.typename/}</title>
+ <meta name="Keywords" content="{dede:field.keywords/}">
+  <meta name="Description" content="{dede:field.description function='html2text(@me)'/}">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/reset.css">
+	<link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/style.css">
+  <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"> 
+  <link rel="stylesheet" type="text/css" href="{dede:global.cfg_templets_skin/}/css/mobile.css"> 
+</head>
+<body>
+<!--内页头部部分-->
+{dede:include filename="inhead.htm"/}
+<!--top is over-->
+<section class="peixun_content zs_content">
+<span class="position">当前位置：{dede:field name='position'/}</span>
+  <div class="zsfa">
+    <h1>招商方案</h1>
+    <div class="fa_box"><span>1</span><p>为合伙人提供相关文件,协调当地民委及有关部门。</p></div>
+    <div class="fa_box"><span>2</span><p>为合伙人提供相关赛事的规则和流程。</p></div>
+    <div class="fa_box"><span>3</span><p>协助合伙人成立省华夏夫人家庭委员会即分公司。</p></div>
+    <div class="fa_box"><span>4</span><p>收取的当地有关赛事所有费用，均按5:5分配。（冠名、赞助除外）</p></div>
+    <div class="fa_box"><span>5</span><p>所有合伙人共同持有深圳市华夏夫人品牌发展有限公司9%股权。</p></div>
+    <div class="fa_box"><span>6</span><p>后续产生的消费，有关教育类产品合伙人提成20%，其他品类产品提成10%。</p></div>
+    <div class="fa_box"><span>7</span><p>合伙人可按原始股参与56个民族电影、纪录片合作项目。</p></div>
+    <div class="fa_box"><span>8</span><p>提升合伙人的品牌价值和品牌知名度。</p></div>
+    <div class="fa_box"><span>9</span><p>华夏夫人品牌分公司的近百位联合股东，以及华夏夫人品牌总公司的几十位股东都将成为合伙人的合作伙伴，建立庞大的资源体。</p></div>
+    <div class="fa_box"><span>10</span><p>合伙人免费参与本项目，只需缴纳项目保证金20万元，活动结束后退还。</p></div>
+    <div class="clear"></div>
+    <h1>股权分配</h1>
+    <!--pc扇形图-->
+    <div id="container" class="pc">      
+      <canvas id="chart" width="790" height="300"></canvas>
+      <table id="chartData" style="display: none">
+        <tr>
+          <th>股权分配</th><th>百分比</th>
+         </tr>
+        <tr style="color: #ffc000">
+          <td>投资人</td><td>9%</td>
+        </tr>
+        <tr style="color: #5b9bd5">
+          <td>华夏夫人</td><td>51%</td>
+        </tr>
+        <tr style="color: #ed7d31">
+          <td>合伙人</td><td>30%</td>
+        </tr>
+        <tr style="color: #a5a5a5">
+          <td>当地省赛获胜夫人共同持有</td><td>10%</td>
+        </tr>
+      </table>
+    <p>投资人9%</p>
+    <p>华夏夫人总公司51%</p>
+    <p>当地省赛获胜夫人共同持有10%</p>
+    <p>合伙人30%</p>  
+    </div>
+     <div id="container" class="mcss">
+    <img src="{dede:global.cfg_templets_skin/}/mimg/sxtj.png">   
+    </div>
+    <div class="clear"></div>
+    <div class="zxxx">
+       <p>咨询电话：<span><a href="tel:{dede:global.cfg_tel/}">{dede:global.cfg_tel/}</a></span></p> 
+       <p>咨询QQ：<span>{dede:global.cfg_qq/}</span></p>
+       <p>E-mail:<span>{dede:global.cfg_email/}</span></p>
+    </div>
+  </div>
+<section class="infoot infoot2">
+    <div class="infoot_zx zsif_zx">
+        <h1></h1>
+        <form class="wyjm" action="/plus/diy.php" enctype="multipart/form-data" method="post">
+        <input type="hidden" name="action" value="post" />
+<input type="hidden" name="diyid" value="1" />
+<input type="hidden" name="do" value="2" />
+<input type="hidden" name="required" value="name,dwmc,gszw,jmqy,tel,lemail,desc" />
+ <div class="jmxx"> 
+ <p><label>姓名：</label><input type="text" placeholder="李xx" name='name' id='name' onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))"></p>
+  <p><label>单位名称：</label><input type="text" placeholder="深圳xxxxxx有限公司" name='dwmc' id='dwmc' onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))"></p>
+  <p><label>公司职位：</label><input type="text" placeholder="CEO" name='gszw' id='gszw'></p>
+  <p><label>加盟区域：</label><input type="text" placeholder="广东省" name='jmqy' id='jmqy' onkeyup="value=value.replace(/[^\u4E00-\u9FA5]/g,'')" onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/[^\u4E00-\u9FA5]/g,''))"></p>
+  <p><label>联系电话：</label><input type="text" placeholder="134xxxx6815" name='tel' id='tel' maxlength="11" onkeyup="this.value=this.value.replace(/\D/g,'')" ></p>
+  <p><label>联系邮箱：</label><input type="email" placeholder="15631xxxx14@qq.com" name='lemail' id='lemail'></p>  
+  <p class="textarea"><textarea placeholder="请详细描述您的信息..." name='desc' id='desc'></textarea></p>  </div> 
+  <input type="hidden" name="dede_fields" value="name,text;dwmc,text;gszw,text;jmqy,text;tel,text;lemail,text;desc,multitext" />
+<input type="hidden" name="dede_fieldshash" value="3fb244771c2cbc1d964a4efda632baa4" />
+  <div class="clear"></div>
+  <div class="btn"><input type="submit" id="submit" class="submit2" name="submit" value="确认提交"><input type="reset" id="reset" class="reset" name="reset" value="取消"></div>
+        </form>
+    </div>
+<div class="clear"></div>
+ <div class="infoot_process zs_process">
+<ul><li><span></span><em>选拔流程Process</em></li>
+<li><span>1</span><em>免费报名</em></li>
+<li><span>2</span><em>第一轮海选</em></li>
+<li><span>3</span><em>第二轮市选</em></li>
+<li><span>4</span><em>第三轮省选</em></li>
+<li><span>5</span><em>第四轮国选</em></li>
+<li><span>6</span><em>第五轮丝路巡</em></li></ul>
+ </div>
+</section>
+</section> 
+{dede:include filename="foot.htm"/}
+<script src="{dede:global.cfg_templets_skin/}/js/menu.js"></script>
+<script src="{dede:global.cfg_templets_skin/}/js/st.js"></script>
+</body>
+</html>
