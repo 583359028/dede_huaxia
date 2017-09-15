@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -10,10 +9,10 @@ class Sale_EweiShopV2Page extends WebPage
 	{
 		global $_W;
 		global $_GPC;
-		$operation = (!empty($_GPC['op']) ? $_GPC['op'] : 'display');
+		$operation = ((!(empty($_GPC['op'])) ? $_GPC['op'] : 'display'));
 		$years = array();
 		$current_year = date('Y');
-		$year = (empty($_GPC['year']) ? $current_year : $_GPC['year']);
+		$year = ((empty($_GPC['year']) ? $current_year : $_GPC['year']));
 		$i = $current_year - 10;
 
 		while ($i <= $current_year) {
@@ -38,10 +37,10 @@ class Sale_EweiShopV2Page extends WebPage
 		$maxcount = 0;
 		$maxcount_date = '';
 		$maxdate = '';
-		$countfield = (empty($type) ? 'sum(price)' : 'count(*)');
-		$typename = (empty($type) ? '交易额' : '交易量');
-		$dataname = (!empty($year) && !empty($month) ? '月份' : '日期');
-		if (!empty($year) && !empty($month) && !empty($day)) {
+		$countfield = ((empty($type) ? 'sum(price)' : 'count(*)'));
+		$typename = ((empty($type) ? '交易额' : '交易量'));
+		$dataname = ((!(empty($year)) && !(empty($month)) ? '月份' : '日期'));
+		if (!(empty($year)) && !(empty($month)) && !(empty($day))) {
 			$hour = 0;
 
 			while ($hour < 24) {
@@ -54,12 +53,13 @@ class Sale_EweiShopV2Page extends WebPage
 					$maxcount_date = $year . '年' . $month . '月' . $day . '日 ' . $hour . '点 - ' . $nexthour . '点';
 				}
 
+
 				$list[] = $dr;
 				++$hour;
 			}
 		}
-		else {
-			if (!empty($year) && !empty($month)) {
+		 else {
+			if (!(empty($year)) && !(empty($month))) {
 				$lastday = get_last_day($year, $month);
 				$d = 1;
 
@@ -72,30 +72,32 @@ class Sale_EweiShopV2Page extends WebPage
 						$maxcount_date = $year . '年' . $month . '月' . $d . '日';
 					}
 
+
 					$list[] = $dr;
 					++$d;
 				}
 			}
-			else {
-				if (!empty($year)) {
-					foreach ($months as $m) {
-						$lastday = get_last_day($year, $m);
-						$dr = array('data' => $m['data'], 'count' => pdo_fetchcolumn('SELECT ifnull(' . $countfield . ',0) as cnt FROM ' . tablename('ewei_shop_order') . ' WHERE uniacid=:uniacid and status>=1 and createtime >=:starttime and createtime <=:endtime', array(':uniacid' => $_W['uniacid'], ':starttime' => strtotime($year . '-' . $m['data'] . '-01 00:00:00'), ':endtime' => strtotime($year . '-' . $m['data'] . '-' . $lastday . ' 23:59:59'))));
-						$totalcount += $dr['count'];
+			 else if (!(empty($year))) {
+				foreach ($months as $m ) {
+					$lastday = get_last_day($year, $m);
+					$dr = array('data' => $m['data'], 'count' => pdo_fetchcolumn('SELECT ifnull(' . $countfield . ',0) as cnt FROM ' . tablename('ewei_shop_order') . ' WHERE uniacid=:uniacid and status>=1 and createtime >=:starttime and createtime <=:endtime', array(':uniacid' => $_W['uniacid'], ':starttime' => strtotime($year . '-' . $m['data'] . '-01 00:00:00'), ':endtime' => strtotime($year . '-' . $m['data'] . '-' . $lastday . ' 23:59:59'))));
+					$totalcount += $dr['count'];
 
-						if ($maxcount < $dr['count']) {
-							$maxcount = $dr['count'];
-							$maxcount_date = $year . '年' . $m['data'] . '月';
-						}
-
-						$list[] = $dr;
+					if ($maxcount < $dr['count']) {
+						$maxcount = $dr['count'];
+						$maxcount_date = $year . '年' . $m['data'] . '月';
 					}
+
+
+					$list[] = $dr;
 				}
 			}
+
 		}
 
-		foreach ($list as $key => &$row) {
-			$list[$key]['percent'] = number_format(($row['count'] / (empty($totalcount) ? 1 : $totalcount)) * 100, 2);
+
+		foreach ($list as $key => &$row ) {
+			$list[$key]['percent'] = number_format(($row['count'] / ((empty($totalcount) ? 1 : $totalcount))) * 100, 2);
 		}
 
 		unset($row);
@@ -106,7 +108,7 @@ class Sale_EweiShopV2Page extends WebPage
 			$list[] = array('data' => '最高' . $typename, 'count' => $maxcount);
 			$list[] = array('data' => '发生在', 'count' => $maxcount_date);
 			m('excel')->export($list, array(
-	'title'   => '交易报告-' . (!empty($year) && !empty($month) ? $year . '年' . $month . '月' : $year . '年'),
+	'title'   => '交易报告-' . ((!(empty($year)) && !(empty($month)) ? $year . '年' . $month . '月' : $year . '年')),
 	'columns' => array(
 		array('title' => $dataname, 'field' => 'data', 'width' => 12),
 		array('title' => $typename, 'field' => 'count', 'width' => 12),
@@ -116,8 +118,10 @@ class Sale_EweiShopV2Page extends WebPage
 			plog('statistics.sale.export', '导出销售统计');
 		}
 
+
 		include $this->template('statistics/sale');
 	}
 }
+
 
 ?>

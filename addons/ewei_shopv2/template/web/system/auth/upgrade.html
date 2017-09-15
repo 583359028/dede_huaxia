@@ -16,19 +16,19 @@
                 <div class="input-group-addon" style="background:#f2f2f2">{$version}</div>
                 <input type='text' class='form-control'  value="RELEASE {$release}" readonly style="background:#fff;"/>
                 <div class="input-group-btn">
-                    <!--<a class='btn btn-default' href="{php echo webUrl('system/auth/upgrade/checkversion')}" >降级版本更新</a>-->
+                    <a class='btn btn-default' href="{php echo webUrl('system/auth/upgrade/checkversion')}" >降级版本更新</a>
                 </div>
             </div>
         </div>
     </div>
 
 
-    <!--<div class="form-group" >
+    <div class="form-group" >
         <label class="col-sm-2 control-label">最新版本</label>
         <div class="col-sm-9 col-xs-12">
             <div class="form-control-static"  id="check">等待检测...</div>
         </div>
-    </div>-->
+    </div>
     <div class="form-group" id="upgrade" style="display:none">
         <label class="col-sm-2 control-label"></label>
         <div class="col-sm-9 col-xs-12">
@@ -110,7 +110,7 @@
 
                     if (result.filecount <= 0 && !result.database && !result.upgrades) {
 
-                        html += "恭喜您，您现在是最新版本！"
+                        html += "<span style='color: blue;'>您当前版本为最新版本，无需更新。</span>"
 
                     } else {
 
@@ -129,7 +129,7 @@
 
                         if (result.log != '') {
                             html += "<br/><b>更新日志:</b><br/>";
-                            html += "<div style='height:150px;width:700px;overflow:auto;border:1px solid #f2f2f2;padding:5px;margin-top:10px;'>" + result.log + "</div><br/>";
+                            html += '<div class="ibox-content no-padding" style="width:700px;overflow:auto;"> <div class="panel-body" style="padding: 15px 0px;"> <div class="panel-group" id="version">'+result.log+'</div></div></div>';
                         }
 
 

@@ -1,5 +1,4 @@
 <?php
-//米云网络科技www.symiyun.com
 class SnsMobilePage extends PluginMobilePage
 {
 	public $islogin = 0;
@@ -9,9 +8,10 @@ class SnsMobilePage extends PluginMobilePage
 		parent::__construct();
 		global $_W;
 		global $_GPC;
-		$this->islogin = empty($_W['openid']) ? 0 : 1;
+		$this->islogin = ((empty($_W['openid']) ? 0 : 1));
 		$this->model->checkMember();
 	}
 }
+
 
 ?>

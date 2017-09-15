@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -19,35 +18,37 @@ class Verify_EweiShopV2Page extends PluginWebPage
 		if ($verify == 'normal') {
 			$condition .= ' and o.status = 1 ';
 		}
-		else if ($verify == 'over') {
+		 else if ($verify == 'over') {
 			$condition .= ' and o.status = 3 ';
 		}
-		else {
-			if ($verify == 'cancel') {
-				$condition .= ' and o.status <= 0 ';
-			}
+		 else if ($verify == 'cancel') {
+			$condition .= ' and o.status <= 0 ';
 		}
+
 
 		if (empty($starttime) || empty($endtime)) {
 			$starttime = strtotime('-1 month');
 			$endtime = time();
 		}
 
+
 		$searchtime = trim($_GPC['searchtime']);
 
-		if (!empty($searchtime)) {
+		if (!(empty($searchtime))) {
 			$condition .= ' and o.' . $searchtime . 'time > ' . strtotime($_GPC['time']['start']) . ' and o.' . $searchtime . 'time < ' . strtotime($_GPC['time']['end']) . ' ';
 			$starttime = strtotime($_GPC['time']['start']);
 			$endtime = strtotime($_GPC['time']['end']);
 		}
 
-		if (!empty($_GPC['paytype'])) {
+
+		if (!(empty($_GPC['paytype']))) {
 			$_GPC['paytype'] = trim($_GPC['paytype']);
 			$condition .= ' and o.pay_type = :paytype';
 			$params[':paytype'] = $_GPC['paytype'];
 		}
 
-		if (!empty($_GPC['searchfield']) && !empty($_GPC['keyword'])) {
+
+		if (!(empty($_GPC['searchfield'])) && !(empty($_GPC['keyword']))) {
 			$searchfield = trim(strtolower($_GPC['searchfield']));
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$params[':keyword'] = $_GPC['keyword'];
@@ -57,39 +58,40 @@ class Verify_EweiShopV2Page extends PluginWebPage
 			if ($searchfield == 'orderno') {
 				$condition .= ' AND locate(:keyword,o.orderno)>0 ';
 			}
-			else if ($searchfield == 'member') {
+			 else if ($searchfield == 'member') {
 				$condition .= ' AND (locate(:keyword,m.realname)>0 or locate(:keyword,m.mobile)>0 or locate(:keyword,m.nickname)>0)';
 			}
-			else if ($searchfield == 'goodstitle') {
+			 else if ($searchfield == 'goodstitle') {
 				$condition .= ' and locate(:keyword,g.title)>0 ';
 			}
-			else if ($searchfield == 'goodssn') {
+			 else if ($searchfield == 'goodssn') {
 				$condition .= ' and locate(:keyword,g.goodssn)>0 ';
 			}
-			else if ($searchfield == 'saler') {
+			 else if ($searchfield == 'saler') {
 				$keycondition = ' ,sm.id as salerid,sm.nickname as salernickname,s.salername ';
 				$condition .= ' AND (locate(:keyword,sm.realname)>0 or locate(:keyword,sm.mobile)>0 or locate(:keyword,sm.nickname)>0 or locate(:keyword,s.salername)>0 )';
-				$sqlcondition = ' left join ' . tablename('ewei_shop_saler') . " as s on s.openid = v.verifier and s.uniacid=v.uniacid\n\t\t\t\tleft join " . tablename('ewei_shop_member') . ' sm on sm.openid = s.openid and sm.uniacid=s.uniacid ';
+				$sqlcondition = ' left join ' . tablename('ewei_shop_saler') . ' as s on s.openid = v.verifier and s.uniacid=v.uniacid' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_member') . ' sm on sm.openid = s.openid and sm.uniacid=s.uniacid ';
 			}
-			else {
-				if ($searchfield == 'store') {
-					$condition .= ' AND (locate(:keyword,store.storename)>0)';
-					$sqlcondition = ' left join ' . tablename('ewei_shop_store') . ' store on store.id = v.storeid and store.uniacid=o.uniacid ';
-				}
+			 else if ($searchfield == 'store') {
+				$condition .= ' AND (locate(:keyword,store.storename)>0)';
+				$sqlcondition = ' left join ' . tablename('ewei_shop_store') . ' store on store.id = v.storeid and store.uniacid=o.uniacid ';
 			}
+
 		}
+
 
 		if (empty($_GPC['export'])) {
 			$page = 'LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 		}
 
-		$list = pdo_fetchall("SELECT o.id,o.orderno,o.status,o.expresssn,o.addressid,o.express,o.remark,o.is_team,o.pay_type,o.isverify,o.refundtime,o.price,o.creditmoney,\n\t\t\t\to.freight,o.discount,o.creditmoney,o.createtime,o.success,o.deleted,o.paytime,o.finishtime,\n\t\t\t\tv.verifier,v.storeid as vstoreid,g.title,g.category,g.thumb,g.groupsprice,g.singleprice,g.price as gprice,g.goodssn,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile\n\t\t\t\t" . $keycondition . "\n\t\t\t\tFROM " . tablename('ewei_shop_groups_order') . " as o\n\t\t\t\tleft join " . tablename('ewei_shop_groups_verify') . " as v on v.orderid = o.id and v.uniacid=o.uniacid\n\t\t\t\tleft join " . tablename('ewei_shop_groups_goods') . " as g on g.id = o.goodid\n\t\t\t\tleft join " . tablename('ewei_shop_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid\t\t\t\t\n\t\t\t\t" . $sqlcondition . "\n\t\t\t\tWHERE 1 " . $condition . ' group by o.id  ORDER BY o.createtime DESC ' . $page, $params);
 
-		foreach ($list as $key => $value) {
+		$list = pdo_fetchall('SELECT o.id,o.orderno,o.status,o.expresssn,o.addressid,o.express,o.remark,o.is_team,o.pay_type,o.isverify,o.refundtime,o.price,o.creditmoney,' . "\n\t\t\t\t" . 'o.freight,o.discount,o.creditmoney,o.createtime,o.success,o.deleted,o.paytime,o.finishtime,' . "\n\t\t\t\t" . 'v.verifier,v.storeid as vstoreid,g.title,g.category,g.thumb,g.groupsprice,g.singleprice,g.price as gprice,g.goodssn,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile' . "\n\t\t\t\t" . $keycondition . "\n\t\t\t\t" . 'FROM ' . tablename('ewei_shop_groups_order') . ' as o' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_groups_verify') . ' as v on v.orderid = o.id and v.uniacid=o.uniacid' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_groups_goods') . ' as g on g.id = o.goodid' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_member') . ' m on m.openid=o.openid and m.uniacid =  o.uniacid' . "\t\t\t\t\n\t\t\t\t" . $sqlcondition . "\n\t\t\t\t" . 'WHERE 1 ' . $condition . ' group by o.id  ORDER BY o.createtime DESC ' . $page, $params);
+
+		foreach ($list as $key => $value ) {
 			$list[$key]['addressdata'] = array('realname' => $value['realname'], 'mobile' => $value['mobile']);
 		}
 
-		$num = pdo_fetchall('SELECT count(1) FROM ' . tablename('ewei_shop_groups_order') . " as o\n\t\t\t\tleft join " . tablename('ewei_shop_groups_verify') . " as v on v.orderid = o.id and v.uniacid=o.uniacid\n\t\t\t\tleft join " . tablename('ewei_shop_groups_goods') . " as g on g.id = o.goodid\n\t\t\t\tleft join " . tablename('ewei_shop_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid\n\t\t\t\t" . $sqlcondition . "\n\t\t\t\tWHERE 1 " . $condition . ' group by o.id  ', $params);
+		$num = pdo_fetchall('SELECT count(1) FROM ' . tablename('ewei_shop_groups_order') . ' as o' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_groups_verify') . ' as v on v.orderid = o.id and v.uniacid=o.uniacid' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_groups_goods') . ' as g on g.id = o.goodid' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_member') . ' m on m.openid=o.openid and m.uniacid =  o.uniacid' . "\n\t\t\t\t" . $sqlcondition . "\n\t\t\t\t" . 'WHERE 1 ' . $condition . ' group by o.id  ', $params);
 		$total = count($num);
 		unset($num);
 		$pager = pagination($total, $pindex, $psize);
@@ -128,13 +130,13 @@ class Verify_EweiShopV2Page extends PluginWebPage
 				);
 			$exportlist = array();
 
-			foreach ($list as $key => $value) {
+			foreach ($list as $key => $value ) {
 				$r['salerinfo'] = '';
 				$r['storeinfo'] = '';
-				$verify = pdo_fetchall('select sm.id as salerid,sm.nickname as salernickname,s.salername,store.storename from ' . tablename('ewei_shop_groups_verify') . " as v\n\t\t\t\t\tleft join " . tablename('ewei_shop_saler') . " s on s.openid = v.verifier and s.uniacid=v.uniacid\n\t\t\t\t\tleft join " . tablename('ewei_shop_member') . " sm on sm.openid = s.openid and sm.uniacid=s.uniacid\n\t\t\t\t\tleft join " . tablename('ewei_shop_store') . " store on store.id = v.storeid and store.uniacid=v.uniacid\n\t\t\t\t\twhere v.orderid = :orderid and v.uniacid = :uniacid ", array(':orderid' => $value['id'], ':uniacid' => $_W['uniacid']));
+				$verify = pdo_fetchall('select sm.id as salerid,sm.nickname as salernickname,s.salername,store.storename from ' . tablename('ewei_shop_groups_verify') . ' as v' . "\n\t\t\t\t\t" . 'left join ' . tablename('ewei_shop_saler') . ' s on s.openid = v.verifier and s.uniacid=v.uniacid' . "\n\t\t\t\t\t" . 'left join ' . tablename('ewei_shop_member') . ' sm on sm.openid = s.openid and sm.uniacid=s.uniacid' . "\n\t\t\t\t\t" . 'left join ' . tablename('ewei_shop_store') . ' store on store.id = v.storeid and store.uniacid=v.uniacid' . "\n\t\t\t\t\t" . 'where v.orderid = :orderid and v.uniacid = :uniacid ', array(':orderid' => $value['id'], ':uniacid' => $_W['uniacid']));
 				$vcount = count($verify) - 1;
 
-				foreach ($verify as $k => $val) {
+				foreach ($verify as $k => $val ) {
 					$r['salerinfo'] .= '[' . $val['salerid'] . ']' . $val['salername'] . '(' . $val['salernickname'] . ')';
 					$r['storeinfo'] .= $val['storename'];
 
@@ -142,7 +144,7 @@ class Verify_EweiShopV2Page extends PluginWebPage
 						$r['salerinfo'] .= "\r\n";
 						$r['storeinfo'] .= "\r\n";
 					}
-					else {
+					 else {
 						$r['salerinfo'] .= '';
 						$r['storeinfo'] .= '';
 					}
@@ -160,13 +162,19 @@ class Verify_EweiShopV2Page extends PluginWebPage
 				$r['groupsprice'] = $value['groupsprice'];
 				$r['singleprice'] = $value['singleprice'];
 				$r['price'] = $value['price'];
-				$r['credit'] = !empty($value['credit']) ? '-' . $value['credit'] : 0;
-				$r['creditmoney'] = !empty($value['creditmoney']) ? '-' . $value['creditmoney'] : 0;
+				$r['credit'] = ((!(empty($value['credit'])) ? '-' . $value['credit'] : 0));
+				$r['creditmoney'] = ((!(empty($value['creditmoney'])) ? '-' . $value['creditmoney'] : 0));
 				$r['goodsprice'] = $value['groupsprice'] * 1;
-				$r['status'] = ($value['status'] == 1) && ($value['status'] == 1) ? $paystatus[4] : $paystatus['' . $value['status'] . ''];
+
+				if (($value['status'] == 1) && ($value['status'] == 1)) {
+				}
+				 else {
+				}
+
+				$r['status'] = $paystatus['' . $value['status'] . ''];
 				$r['createtime'] = date('Y-m-d H:i:s', $value['createtime']);
-				$r['paytime'] = !empty($value['paytime']) ? date('Y-m-d H:i:s', $value['paytime']) : '';
-				$r['finishtime'] = !empty($value['finishtime']) ? date('Y-m-d H:i:s', $value['finishtime']) : '';
+				$r['paytime'] = ((!(empty($value['paytime'])) ? date('Y-m-d H:i:s', $value['paytime']) : ''));
+				$r['finishtime'] = ((!(empty($value['finishtime'])) ? date('Y-m-d H:i:s', $value['finishtime']) : ''));
 				$r['expresscom'] = $value['expresscom'];
 				$r['expresssn'] = $value['expresssn'];
 				$r['amount'] = (($value['groupsprice'] * 1) - $value['creditmoney']) + $value['freight'];
@@ -180,6 +188,7 @@ class Verify_EweiShopV2Page extends PluginWebPage
 			unset($r);
 			m('excel')->export($exportlist, array('title' => '核销订单-' . date('Y-m-d-H-i', time()), 'columns' => $columns));
 		}
+
 
 		include $this->template();
 	}
@@ -195,6 +204,7 @@ class Verify_EweiShopV2Page extends PluginWebPage
 			message('订单未付款，无法确认取货！');
 		}
 
+
 		$time = time();
 		$d = array('status' => 3, 'sendtime' => $time, 'finishtime' => $time);
 
@@ -204,16 +214,19 @@ class Verify_EweiShopV2Page extends PluginWebPage
 			$d['verifyopenid'] = '';
 		}
 
+
 		pdo_update('ewei_shop_order', $d, array('id' => $item['id'], 'uniacid' => $_W['uniacid']));
 
-		if (!empty($item['refundid'])) {
+		if (!(empty($item['refundid']))) {
 			$refund = pdo_fetch('select * from ' . tablename('ewei_shop_order_refund') . ' where id=:id limit 1', array(':id' => $item['refundid']));
 
-			if (!empty($refund)) {
+			if (!(empty($refund))) {
 				pdo_update('ewei_shop_order_refund', array('status' => -1), array('id' => $item['refundid']));
 				pdo_update('ewei_shop_order', array('refundstate' => 0), array('id' => $item['id']));
 			}
+
 		}
+
 
 		plog('groups.verify.fetch', '订单确认取货 ID: ' . $item['id'] . ' 订单号: ' . $item['orderno']);
 		show_json(1);
@@ -226,23 +239,26 @@ class Verify_EweiShopV2Page extends PluginWebPage
 		$status = $_GPC['status'];
 		$orderid = intval($_GPC['orderid']);
 		$params = array(':orderid' => $orderid);
-		$order = pdo_fetch('SELECT o.*,g.title,g.category,g.groupsprice,g.singleprice,g.thumb,g.id as gid FROM ' . tablename('ewei_shop_groups_order') . " as o\n\t\t\t\tleft join " . tablename('ewei_shop_groups_goods') . " as g on g.id = o.goodid\n\t\t\t\tWHERE o.id = :orderid ", $params);
+		$order = pdo_fetch('SELECT o.*,g.title,g.category,g.groupsprice,g.singleprice,g.thumb,g.id as gid FROM ' . tablename('ewei_shop_groups_order') . ' as o' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_groups_goods') . ' as g on g.id = o.goodid' . "\n\t\t\t\t" . 'WHERE o.id = :orderid ', $params);
 		$order = set_medias($order, 'thumb');
 		$member = m('member')->getMember($order['openid'], true);
-		$verifyinfo = pdo_fetchall('select v.*,sm.id as salerid,sm.nickname as salernickname,s.salername,store.storename from ' . tablename('ewei_shop_groups_verify') . " as v\n\t\t\t\t\tleft join " . tablename('ewei_shop_saler') . " s on s.openid = v.verifier and s.uniacid = v.uniacid\n\t\t\t\t\tleft join " . tablename('ewei_shop_member') . " sm on sm.openid = s.openid and sm.uniacid = s.uniacid\n\t\t\t\t\tleft join " . tablename('ewei_shop_store') . " store on store.id = v.storeid and store.uniacid = v.uniacid\n\t\t\t\t\twhere v.uniacid = :uniacid and v.orderid = :orderid ", array(':orderid' => $orderid, ':uniacid' => $order['uniacid']));
+		$verifyinfo = pdo_fetchall('select v.*,sm.id as salerid,sm.nickname as salernickname,s.salername,store.storename from ' . tablename('ewei_shop_groups_verify') . ' as v' . "\n\t\t\t\t\t" . 'left join ' . tablename('ewei_shop_saler') . ' s on s.openid = v.verifier and s.uniacid = v.uniacid' . "\n\t\t\t\t\t" . 'left join ' . tablename('ewei_shop_member') . ' sm on sm.openid = s.openid and sm.uniacid = s.uniacid' . "\n\t\t\t\t\t" . 'left join ' . tablename('ewei_shop_store') . ' store on store.id = v.storeid and store.uniacid = v.uniacid' . "\n\t\t\t\t\t" . 'where v.uniacid = :uniacid and v.orderid = :orderid ', array(':orderid' => $orderid, ':uniacid' => $order['uniacid']));
 
 		if ($order['verifytype'] == 0) {
 			$verify = pdo_fetch('select * from ' . tablename('ewei_shop_groups_verify') . ' where orderid = ' . $order['id'] . ' ');
 
-			if (!empty($verify['verifier'])) {
+			if (!(empty($verify['verifier']))) {
 				$saler = m('member')->getMember($verify['verifier']);
 				$saler['salername'] = pdo_fetchcolumn('select salername from ' . tablename('ewei_shop_saler') . ' where openid=:openid and uniacid=:uniacid limit 1 ', array(':uniacid' => $_W['uniacid'], ':openid' => $verify['verifier']));
 			}
 
-			if (!empty($verify['storeid'])) {
+
+			if (!(empty($verify['storeid']))) {
 				$store = pdo_fetch('select * from ' . tablename('ewei_shop_store') . ' where id=:storeid limit 1 ', array(':storeid' => $verify['storeid']));
 			}
+
 		}
+
 
 		include $this->template();
 	}
@@ -259,11 +275,14 @@ class Verify_EweiShopV2Page extends PluginWebPage
 				show_json(0, '未找到订单!');
 			}
 
+
 			$this->message('未找到订单!', '', 'error');
 		}
+
 
 		return array('id' => $id, 'item' => $item);
 	}
 }
+
 
 ?>

@@ -37,6 +37,11 @@ class Pay_EweiShopV2Page extends CashierMobilePage
 				$id = false;
 			}
 		}
+		$userset = $this->model->getUserSet('', $_W['cashierid']);
+		if (is_weixin() && !(empty($_W['openid'])) && $userset['use_credit2']) 
+		{
+			$member = m('member')->getMember($_W['openid']);
+		}
 		$paytype = $this->model->paytype(-1);
 		include $this->template();
 	}
@@ -48,31 +53,40 @@ class Pay_EweiShopV2Page extends CashierMobilePage
 		$money = (double) $_GPC['money'];
 		$title = $_GPC['goodstitle'];
 		$jie = intval($_GPC['jie']);
+		$userset = $this->model->getUserSet('', $_W['cashierid']);
 		if ($money <= 0) 
 		{
 			show_json(0, '金额填写错误!');
 		}
-		$couponid = 0;
+		$usecoupon = 0;
 		if (!(empty($_GPC['couponid'])) || !(empty($_GPC['couponmerchid']))) 
 		{
 			$usecoupon = ((empty($_GPC['couponid']) ? intval($_GPC['couponmerchid']) : intval($_GPC['couponid'])));
 		}
-		$this->log = $this->model->createOrder(array('openid' => ($_W['openid'] != 'alipay' ? $_W['openid'] : ''), 'paytype' => $paytype, 'title' => $title, 'money' => $money, 'operatorid' => intval($_GPC['operatorid']), 'usecoupon' => $usecoupon), 1);
+		$deduction = 0;
+		if (is_weixin() && !(empty($_W['openid'])) && $userset['use_credit2']) 
+		{
+			$member = m('member')->getMember($_W['openid']);
+			$deduction = (($money <= $member['credit2'] ? $money : 0));
+		}
+		$this->log = $this->model->createOrder(array('openid' => ($_W['openid'] != 'alipay' ? $_W['openid'] : ''), 'paytype' => $paytype, 'title' => $title, 'money' => $money, 'operatorid' => intval($_GPC['operatorid']), 'usecoupon' => $usecoupon, 'deduction' => $deduction, 'mobile' => (int) $member['mobile']), (empty($deduction) ? 1 : NULL));
 		if (is_error($this->log)) 
 		{
 			show_json(0, '数据插入错误,请重试!');
 		}
+		if (!(empty($deduction)) && $this->log['res']) 
+		{
+			show_json(1, array('success' => true, 'logid' => $this->log['id'], 'log' => $this->log));
+		}
 		if ($paytype == '0') 
 		{
 			$this->paytype0($jie);
-			return;
 		}
-		if ($paytype == '1') 
+		else if ($paytype == '1') 
 		{
 			$this->paytype1();
-			return;
 		}
-		if ($paytype == '101') 
+		else if ($paytype == '101') 
 		{
 			$this->paytype101($jie);
 		}
@@ -226,7 +240,7 @@ class Pay_EweiShopV2Page extends CashierMobilePage
 		$log = $this->model->payResult($orderid, true);
 		if ($log && ($log['status'] == 1)) 
 		{
-			$item = array('title' => $log['title'], 'goodstitle' => $log['title'] . '消费', 'money' => $log['money'], 'paytype' => $log['paytype'], 'time' => date('Y-m-d H:i:s', $log['paytime']), 'out_trade_no' => $log['logno'], 'randommoney' => (double) $log['randommoney'], 'enough' => (double) $log['enough'], 'deduction' => (double) $log['deduction'], 'discountmoney' => (double) $log['discountmoney'], 'orderprice' => (double) $log['orderprice'], 'goodsprice' => (double) $log['goodsprice'], 'couponpay' => (double) $log['couponpay']);
+			$item = array('title' => $log['title'], 'goodstitle' => $log['title'] . '消费', 'money' => $log['money'], 'paytype' => $log['paytype'], 'time' => date('Y-m-d H:i:s', $log['paytime']), 'out_trade_no' => $log['logno'], 'randommoney' => (double) $log['randommoney'], 'enough' => (double) $log['enough'], 'deduction' => (double) $log['deduction'], 'discountmoney' => (double) $log['discountmoney'], 'orderprice' => (double) $log['orderprice'], 'goodsprice' => (double) $log['goodsprice'], 'couponpay' => (double) $log['couponpay'], 'present_credit1' => (int) $log['present_credit1']);
 			if (empty($log['paytype']) || ($log['paytype'] == '101')) 
 			{
 				$item['paytype'] = '微信支付';

@@ -39,10 +39,10 @@
         {/if}
     {/if}
 
-    {else if $value['data_type'] == 7}
+    {else if ($value['data_type'] == 7 || $value['data_type'] == 11)}
     {php echo $datas[$key]}
 
-    {else if $value['data_type'] == 8}
+    {else if ($value['data_type'] == 8 || $value['data_type'] == 12)}
     {if !empty($datas[$key])}
     {loop $datas[$key] $k1 $v1}
     {php echo $v1}

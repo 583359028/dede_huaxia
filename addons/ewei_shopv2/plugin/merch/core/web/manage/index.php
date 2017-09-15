@@ -1,15 +1,13 @@
 <?php
-//米云网络科技www.symiyun.com
 require EWEI_SHOPV2_PLUGIN . 'merch/core/inc/page_merch.php';
-class Index_EweiShopV2Page extends MerchWebPage
+class Index_EweiShopV2Page extends MerchWebPage 
 {
-	public function main()
+	public function main() 
 	{
 		header('location: ' . merchUrl('shop'));
 		exit();
 	}
-
-	public function quit()
+	public function quit() 
 	{
 		global $_W;
 		global $_GPC;
@@ -19,14 +17,13 @@ class Index_EweiShopV2Page extends MerchWebPage
 		header('location: ' . merchUrl('login') . '&i=' . $_W['uniacid']);
 		exit();
 	}
-
-	public function updatepassword()
+	public function updatepassword() 
 	{
 		global $_W;
 		global $_GPC;
 		$no_left = true;
-
-		if ($_W['ispost']) {
+		if ($_W['ispost']) 
+		{
 			$password = trim($_GPC['password']);
 			$newpassword = trim($_GPC['newpassword']);
 			$surenewpassword = trim($_GPC['surenewpassword']);
@@ -40,9 +37,7 @@ class Index_EweiShopV2Page extends MerchWebPage
 			pdo_update('ewei_shop_merch_account', $date, array('id' => $_W['uniaccount']['id'], 'uniacid' => $_W['uniacid'], 'merchid' => $_W['merchid']));
 			show_json(1);
 		}
-
 		include $this->template();
 	}
 }
-
 ?>

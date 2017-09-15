@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -23,14 +22,16 @@ class Report_EweiShopV2Page extends PluginMobileLoginPage
 		$content = trim($_GPC['content']);
 		$mid = m('member')->getMid();
 		$openid = $_W['openid'];
-		if (!empty($aid) && !empty($cate) && !empty($content) && !empty($aid) && !empty($openid)) {
+		if (!(empty($aid)) && !(empty($cate)) && !(empty($content)) && !(empty($aid)) && !(empty($openid))) {
 			$insert = array('mid' => $mid, 'openid' => $openid, 'aid' => $aid, 'cate' => $cate, 'cons' => $content, 'uniacid' => $_W['uniacid']);
 			pdo_insert('ewei_shop_article_report', $insert);
 			show_json(1);
 		}
 
+
 		show_json(0);
 	}
 }
+
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -12,7 +11,7 @@ class Qiniu_EweiShopV2Page extends SystemPage
 		global $_GPC;
 		$path = IA_ROOT . '/addons/ewei_shopv2/data/global';
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path);
 		}
@@ -23,9 +22,8 @@ class Qiniu_EweiShopV2Page extends SystemPage
 
 			if ($data['upload']) {
 				$check = com('qiniu')->save('addons/ewei_shopv2/static/images/nopic100.jpg', $data);
-
-				if (empty($check)) {
-					show_json(0, '设置错误，请检查!');
+				if (is_array($check) && is_error($check)) {
+					show_json(0, '保存失败: ' . $check['message']);
 				}
 
 			}

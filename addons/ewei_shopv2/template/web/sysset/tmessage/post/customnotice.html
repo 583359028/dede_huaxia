@@ -53,6 +53,9 @@
                     {if cv('cashier')}
                     <option value="cashier">收银台类</option>
                     {/if}
+                    {if cv('lottery')}
+                    <option value="lottery">游戏中心类</option>
+                    {/if}
                 </select>
             </div>
             <div class="panel-body tm tm-upgrade" style="display:none">
@@ -310,6 +313,11 @@
 
             </div>
 
+            <div class="panel-heading tm tm-lottery" style="display:none">获得抽奖通知</div>
+            <div class="panel-body tm tm-lottery" style="display:none">
+                <a href='JavaScript:' class="btn btn-default btn-sm">活动名称</a>
+            </div>
+
             <div class="panel-body">
                 点击变量后会自动插入选择的文本框的焦点位置，在发送给粉丝时系统会自动替换对应变量值
                 <div class="text text-danger">
@@ -327,22 +335,22 @@
             $('#btn').click(function(){
                 util.emojiBrowser(function(emoji){
                     var text = '[U+'+emoji[0].text+']';
-                    var content = $('#content').val()+text;
-                    $('#content').val(content);
+                    var content = $('#send_desc').val()+text;
+                    $('#send_desc').val(content);
 
                 });
             });
         });
 
         $(function(){
-            util.emotion($('#emotion'), $('#content'));
+            util.emotion($('#emotion'), $('#send_desc'));
         });
 
         $(function () {
             $('#link').click(function () {
-                var link='<a href="您要插入的链接">链接文字</a>';
-                var content = $('#content').val()+link;
-                $('#content').val(content);
+                var link='<a href=\\"您要插入的链接\\">链接文字</a>';
+                var content = $('#send_desc').val()+link;
+                $('#send_desc').val(content);
             });
         });
     });

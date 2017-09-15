@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -28,13 +27,16 @@ class Set_EweiShopV2Page extends ComWebPage
 				show_json(0, '请填写关键词!');
 			}
 
+
 			$keyword1 = m('common')->keyExist($keyword);
 
-			if (!empty($keyword1)) {
+			if (!(empty($keyword1))) {
 				if ($keyword1['name'] != 'ewei_shopv2:com:verify') {
 					show_json(0, '关键字已存在!');
 				}
+
 			}
+
 
 			m('common')->updateSysset(array(
 	'verify' => array('keyword' => $keyword, 'type' => $type)
@@ -51,7 +53,7 @@ class Set_EweiShopV2Page extends ComWebPage
 				$keyword_data = array('uniacid' => $_W['uniacid'], 'rid' => $rid, 'module' => 'ewei_shopv2', 'content' => trim($keyword), 'type' => 1, 'displayorder' => 0, 'status' => 1);
 				pdo_insert('rule_keyword', $keyword_data);
 			}
-			else {
+			 else {
 				pdo_update('rule_keyword', array('content' => trim($keyword)), array('rid' => $rule['id']));
 			}
 
@@ -59,10 +61,12 @@ class Set_EweiShopV2Page extends ComWebPage
 			show_json(1);
 		}
 
+
 		$url = mobileUrl('verify/page', NULL, true);
 		$qrcode = m('qrcode')->createQrcode($url);
 		include $this->template();
 	}
 }
+
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -11,7 +10,7 @@ class Category_EweiShopV2Page extends SystemPage
 		global $_W;
 		global $_GPC;
 
-		if (!empty($_GPC['catid'])) {
+		if (!(empty($_GPC['catid']))) {
 			foreach ($_GPC['catid'] as $k => $v ) {
 				$data = array('name' => trim($_GPC['catname'][$k]), 'displayorder' => $k, 'status' => intval($_GPC['status'][$k]));
 
@@ -42,7 +41,7 @@ class Category_EweiShopV2Page extends SystemPage
 		$id = intval($_GPC['id']);
 		$item = pdo_fetch('SELECT id,name FROM ' . tablename('ewei_shop_system_category') . ' WHERE id = :id', array(':id' => $id));
 
-		if (!empty($item)) {
+		if (!(empty($item))) {
 			pdo_delete('ewei_shop_system_category', array('id' => $id));
 			plog('system.category.delete', '删除分类 ID: ' . $id . ' 标题: ' . $item['name'] . ' ');
 		}

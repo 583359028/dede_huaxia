@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -21,11 +20,12 @@ class ExhelperModel extends PluginModel
 		$condition = ' uniacid = :uniacid and type=:type and merchid=0';
 		$params = array(':uniacid' => $_W['uniacid'], ':type' => $type);
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' AND expressname LIKE :expressname';
 			$params[':expressname'] = '%' . trim($_GPC['keyword']) . '%';
 		}
+
 
 		$sql = 'SELECT id,expressname,expresscom,isdefault FROM ' . tablename('ewei_shop_exhelper_express') . ' where  1 and ' . $condition . ' ORDER BY isdefault desc, id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 		$list = pdo_fetchall($sql, $params);
@@ -39,19 +39,22 @@ class ExhelperModel extends PluginModel
 		global $_W;
 		$item = pdo_fetch('SELECT id,expressname,type FROM ' . tablename('ewei_shop_exhelper_express') . ' WHERE id=:id and type=:type AND uniacid=:uniacid and merchid=0', array(':id' => $id, ':type' => $type, ':uniacid' => $_W['uniacid']));
 
-		if (!empty($item)) {
+		if (!(empty($item))) {
 			pdo_update('ewei_shop_exhelper_express', array('isdefault' => 0), array('type' => $type, 'uniacid' => $_W['uniacid']));
 			pdo_update('ewei_shop_exhelper_express', array('isdefault' => 1), array('id' => $id));
 
 			if ($type == 1) {
 				plog('exhelper.temp.express.setdefault', '设置默认快递单 ID: ' . $item['id'] . '， 模板名称: ' . $item['expressname'] . ' ');
-				return NULL;
+				return;
 			}
+
 
 			if ($type == 2) {
 				plog('exhelper.temp.invoice.setdefault', '设置默认发货单 ID: ' . $item['id'] . '， 模板名称: ' . $item['expressname'] . ' ');
 			}
+
 		}
+
 	}
 
 	public function tempDelete($id, $type)
@@ -59,17 +62,16 @@ class ExhelperModel extends PluginModel
 		global $_W;
 		$items = pdo_fetchall('SELECT id,expressname FROM ' . tablename('ewei_shop_exhelper_express') . ' WHERE id in( ' . $id . ' ) and type=:type and uniacid=:uniacid and merchid=0', array(':type' => $type, ':uniacid' => $_W['uniacid']));
 
-		foreach ($items as $item) {
+		foreach ($items as $item ) {
 			pdo_delete('ewei_shop_exhelper_express', array('id' => $item['id'], 'uniacid' => $_W['uniacid']));
 
 			if ($type == 1) {
 				plog('exhelper.temp.express.delete', '删除 快递助手 快递单模板 ID: ' . $item['id'] . '， 模板名称: ' . $item['expressname'] . ' ');
 			}
-			else {
-				if ($type == 2) {
-					plog('exhelper.temp.invoice.delete', '删除 快递助手 发货单模板 ID: ' . $item['id'] . '， 模板名称: ' . $item['expressname'] . ' ');
-				}
+			 else if ($type == 2) {
+				plog('exhelper.temp.invoice.delete', '删除 快递助手 发货单模板 ID: ' . $item['id'] . '， 模板名称: ' . $item['expressname'] . ' ');
 			}
+
 		}
 	}
 
@@ -83,5 +85,6 @@ class ExhelperModel extends PluginModel
 		return array('temp_sender' => $temp_sender, 'temp_express' => $temp_express, 'temp_invoice' => $temp_invoice);
 	}
 }
+
 
 ?>

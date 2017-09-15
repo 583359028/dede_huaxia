@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require_once IA_ROOT . '/addons/ewei_shopv2/defines.php';
 require_once EWEI_SHOPV2_INC . 'plugin_processor.php';
@@ -25,15 +25,19 @@ class PosterProcessor extends PluginProcessor
 			return $this->responseText($obj);
 		}
 
+
 		if ($msgtype == 'event') {
 			if ($event == 'scan') {
 				return $this->responseScan($obj);
 			}
 
+
 			if ($event == 'subscribe') {
 				return $this->responseSubscribe($obj);
 			}
+
 		}
+
 	}
 
 	private function responseText($obj)
@@ -73,17 +77,20 @@ class PosterProcessor extends PluginProcessor
 			return $this->responseDefault($obj);
 		}
 
+
 		$qr = $this->model->getQRByTicket($ticket);
 
 		if (empty($qr)) {
 			return $this->responseDefault($obj);
 		}
 
+
 		$poster = pdo_fetch('select * from ' . tablename('ewei_shop_poster') . ' where type=4 and isdefault=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 
 		if (empty($poster)) {
 			return $this->responseDefault($obj);
 		}
+
 
 		$this->model->scanTime($openid, $qr['openid'], $poster);
 		$qrmember = m('member')->getMember($qr['openid']);
@@ -94,25 +101,30 @@ class PosterProcessor extends PluginProcessor
 			if (($qrmember['isagent'] == 1) && ($qrmember['status'] == 1)) {
 				$url = mobileUrl('commission/myshop', array('mid' => $qrmember['id']));
 			}
-			else {
+			 else {
 				$url = mobileUrl('', array('mid' => $qrmember['id']));
 			}
 		}
 
+
 		if ($poster['resptype'] == '0') {
-			if (!empty($poster['resptitle'])) {
+			if (!(empty($poster['resptitle']))) {
 				$news = array(
 					array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url)
 					);
 				return $obj->respNews($news);
 			}
+
 		}
 
+
 		if ($poster['resptype'] == '1') {
-			if (!empty($poster['resptext'])) {
+			if (!(empty($poster['resptext']))) {
 				return $obj->respText($poster['resptext']);
 			}
+
 		}
+
 
 		return $this->responseEmpty();
 	}
@@ -122,7 +134,7 @@ class PosterProcessor extends PluginProcessor
 		global $_W;
 		$openid = $obj->message['from'];
 		$keys = explode('_', $obj->message['eventkey']);
-		$sceneid = (isset($keys[1]) ? $keys[1] : '');
+		$sceneid = ((isset($keys[1]) ? $keys[1] : ''));
 		$ticket = $obj->message['ticket'];
 		$member = $obj->member;
 		$receiver = new Receiver();
@@ -132,11 +144,13 @@ class PosterProcessor extends PluginProcessor
 			return $this->responseDefault($obj);
 		}
 
+
 		$qr = $this->model->getQRByTicket($ticket);
 
 		if (empty($qr)) {
 			return $this->responseDefault($obj);
 		}
+
 
 		$poster = pdo_fetch('select * from ' . tablename('ewei_shop_poster') . ' where `type`=4 and isdefault=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 
@@ -144,12 +158,15 @@ class PosterProcessor extends PluginProcessor
 			return $this->responseDefault($obj);
 		}
 
+
 		if ($member['isnew']) {
 			pdo_update('ewei_shop_poster', array('follows' => $poster['follows'] + 1), array('id' => $poster['id']));
 		}
 
+
 		$qrmember = m('member')->getMember($qr['openid']);
 		$log = pdo_fetch('select * from ' . tablename('ewei_shop_poster_log') . ' where openid=:openid and posterid=:posterid and uniacid=:uniacid limit 1', array(':openid' => $openid, ':posterid' => $poster['id'], ':uniacid' => $_W['uniacid']));
+
 		if (empty($log) && ($openid != $qr['openid'])) {
 			$log = array('uniacid' => $_W['uniacid'], 'posterid' => $poster['id'], 'openid' => $openid, 'from_openid' => $qr['openid'], 'subcredit' => $poster['subcredit'], 'submoney' => $poster['submoney'], 'reccredit' => $poster['reccredit'], 'recmoney' => $poster['recmoney'], 'createtime' => time());
 			pdo_insert('ewei_shop_poster_log', $log);
@@ -160,6 +177,7 @@ class PosterProcessor extends PluginProcessor
 				$subpaycontent = '您通过 [nickname] 的推广二维码扫码关注的奖励';
 			}
 
+
 			$subpaycontent = str_replace('[nickname]', $qrmember['nickname'], $subpaycontent);
 			$recpaycontent = $poster['recpaycontent'];
 
@@ -167,11 +185,13 @@ class PosterProcessor extends PluginProcessor
 				$recpaycontent = '推荐 [nickname] 扫码关注的奖励';
 			}
 
+
 			$recpaycontent = str_replace('[nickname]', $member['nickname'], $subpaycontent);
 
 			if (0 < $poster['subcredit']) {
 				m('member')->setCredit($openid, 'credit1', $poster['subcredit'], array(0, '扫码关注积分+' . $poster['subcredit']));
 			}
+
 
 			if (0 < $poster['submoney']) {
 				$pay = $poster['submoney'];
@@ -180,18 +200,21 @@ class PosterProcessor extends PluginProcessor
 					$pay *= 100;
 					$res = m('finance')->payRedPack($openid, $pay, date('YmdHis') . random(6, true), array(), $subpaycontent, array());
 				}
-				else {
+				 else {
 					$res = m('finance')->pay($openid, $poster['paytype'], $pay, '', $subpaycontent, false);
 				}
 			}
 
-			$reward_totle = (!empty($poster['reward_totle']) ? json_decode($poster['reward_totle'], true) : array());
+
+			$reward_totle = ((!(empty($poster['reward_totle'])) ? json_decode($poster['reward_totle'], true) : array()));
 			$reward_real = pdo_fetch('select sum(reccredit) as reccredit_totle,sum(recmoney) as recmoney_totle,sum(reccouponnum) as reccouponnum_totle  from ' . tablename('ewei_shop_poster_log') . ' where from_openid=:fromopenid and posterid=:posterid and uniacid=:uniacid and createtime between :time1 and :time2 limit 1', array(':fromopenid' => $qr['openid'], ':posterid' => $poster['id'], ':uniacid' => $log['uniacid'], ':time1' => strtotime(date('Y-m', time()) . '-1'), ':time2' => time()));
 			if (empty($reward_totle['reccredit_totle']) || (intval($reward_real['reccredit_totle']) <= intval($reward_totle['reccredit_totle']))) {
 				if (0 < $poster['reccredit']) {
 					m('member')->setCredit($qr['openid'], 'credit1', $poster['reccredit'], array(0, '推荐扫码关注积分+' . $poster['reccredit']));
 				}
+
 			}
+
 
 			if (empty($reward_totle['recmoney_totle']) || (floatval($reward_real['recmoney_totle']) <= floatval($reward_totle['recmoney_totle']))) {
 				if (0 < $poster['recmoney']) {
@@ -201,11 +224,13 @@ class PosterProcessor extends PluginProcessor
 						$pay *= 100;
 						$res = m('finance')->payRedPack($qr['openid'], $pay, date('YmdHis') . random(6, true), array(), $recpaycontent, array());
 					}
-					else {
+					 else {
 						$res = m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent, false);
 					}
 				}
+
 			}
+
 
 			$cansendreccoupon = false;
 			$cansendsubcoupon = false;
@@ -213,25 +238,31 @@ class PosterProcessor extends PluginProcessor
 
 			if ($plugin_coupon) {
 				if (empty($reward_totle['reccouponnum_totle']) || (intval($reward_real['reccouponnum_totle']) <= intval($reward_totle['reccouponnum_totle']))) {
-					if (!empty($poster['reccouponid']) && (0 < $poster['reccouponnum'])) {
+					if (!(empty($poster['reccouponid'])) && (0 < $poster['reccouponnum'])) {
 						$reccoupon = $plugin_coupon->getCoupon($poster['reccouponid']);
 
-						if (!empty($reccoupon)) {
+						if (!(empty($reccoupon))) {
 							$cansendreccoupon = true;
 						}
+
 					}
+
 				}
 
-				if (!empty($poster['subcouponid']) && (0 < $poster['subcouponnum'])) {
+
+				if (!(empty($poster['subcouponid'])) && (0 < $poster['subcouponnum'])) {
 					$subcoupon = $plugin_coupon->getCoupon($poster['subcouponid']);
 
-					if (!empty($subcoupon)) {
+					if (!(empty($subcoupon))) {
 						$cansendsubcoupon = true;
 					}
+
 				}
+
 			}
 
-			if (!empty($poster['subtext'])) {
+
+			if (!(empty($poster['subtext']))) {
 				$subtext = $poster['subtext'];
 				$subtext = str_replace('[nickname]', $member['nickname'], $subtext);
 				$subtext = str_replace('[credit]', $poster['reccredit'], $subtext);
@@ -242,20 +273,22 @@ class PosterProcessor extends PluginProcessor
 					$subtext = str_replace('[couponnum]', $poster['reccouponnum'], $subtext);
 				}
 
-				if (!empty($poster['templateid'])) {
+
+				if (!(empty($poster['templateid']))) {
 					m('message')->sendTplNotice($qr['openid'], $poster['templateid'], array(
 	'first'    => array('value' => '推荐关注奖励到账通知', 'color' => '#4a5077'),
 	'keyword1' => array('value' => '推荐奖励', 'color' => '#4a5077'),
 	'keyword2' => array('value' => $subtext, 'color' => '#4a5077'),
-	'remark'   => array('value' => "\r\n谢谢您对我们的支持！", 'color' => '#4a5077')
+	'remark'   => array('value' => "\r\n" . '谢谢您对我们的支持！', 'color' => '#4a5077')
 	), '');
 				}
-				else {
+				 else {
 					m('message')->sendCustomNotice($qr['openid'], $subtext);
 				}
 			}
 
-			if (!empty($poster['entrytext'])) {
+
+			if (!(empty($poster['entrytext']))) {
 				$entrytext = $poster['entrytext'];
 				$entrytext = str_replace('[nickname]', $qrmember['nickname'], $entrytext);
 				$entrytext = str_replace('[credit]', $poster['subcredit'], $entrytext);
@@ -266,18 +299,20 @@ class PosterProcessor extends PluginProcessor
 					$entrytext = str_replace('[couponnum]', $poster['subcouponnum'], $entrytext);
 				}
 
-				if (!empty($poster['templateid'])) {
+
+				if (!(empty($poster['templateid']))) {
 					m('message')->sendTplNotice($openid, $poster['templateid'], array(
 	'first'    => array('value' => '关注奖励到账通知', 'color' => '#4a5077'),
 	'keyword1' => array('value' => '关注奖励', 'color' => '#4a5077'),
 	'keyword2' => array('value' => $entrytext, 'color' => '#4a5077'),
-	'remark'   => array('value' => "\r\n谢谢您对我们的支持！", 'color' => '#4a5077')
+	'remark'   => array('value' => "\r\n" . '谢谢您对我们的支持！', 'color' => '#4a5077')
 	), '');
 				}
-				else {
+				 else {
 					m('message')->sendCustomNotice($openid, $entrytext);
 				}
 			}
+
 
 			$upgrade = array();
 
@@ -286,17 +321,19 @@ class PosterProcessor extends PluginProcessor
 				$upgrade['reccouponnum'] = $poster['reccouponnum'];
 				$plugin_coupon->poster($qrmember, $poster['reccouponid'], $poster['reccouponnum']);
 			}
-
 			if ($cansendsubcoupon) {
 				$upgrade['subcouponid'] = $poster['subcouponid'];
 				$upgrade['subcouponnum'] = $poster['subcouponnum'];
 				$plugin_coupon->poster($member, $poster['subcouponid'], $poster['subcouponnum']);
 			}
 
-			if (!empty($upgrade)) {
+
+			if (!(empty($upgrade))) {
 				pdo_update('ewei_shop_poster_log', $upgrade, array('id' => $log['id']));
 			}
+
 		}
+
 
 		$this->commission($poster, $member, $qrmember);
 		$url = trim($poster['respurl']);
@@ -305,25 +342,30 @@ class PosterProcessor extends PluginProcessor
 			if (($qrmember['isagent'] == 1) && ($qrmember['status'] == 1)) {
 				$url = mobileUrl('commission/myshop', array('mid' => $qrmember['id']));
 			}
-			else {
+			 else {
 				$url = mobileUrl('', array('mid' => $qrmember['id']));
 			}
 		}
 
+
 		if ($poster['resptype'] == '0') {
-			if (!empty($poster['resptitle'])) {
+			if (!(empty($poster['resptitle']))) {
 				$news = array(
 					array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url)
 					);
 				return $obj->respNews($news);
 			}
+
 		}
 
+
 		if ($poster['resptype'] == '1') {
-			if (!empty($poster['resptext'])) {
+			if (!(empty($poster['resptext']))) {
 				return $obj->respText($poster['resptext']);
 			}
+
 		}
+
 
 		return $this->responseEmpty();
 	}
@@ -336,27 +378,28 @@ class PosterProcessor extends PluginProcessor
 		if ($p) {
 			$cset = $p->getSet();
 
-			if (!empty($cset)) {
+			if (!(empty($cset))) {
 				if ($member['isagent'] != 1) {
 					if (($qrmember['isagent'] == 1) && ($qrmember['status'] == 1)) {
-						if (!empty($poster['bedown'])) {
+						if (!(empty($poster['bedown']))) {
 							if (empty($member['agentid'])) {
 								if (empty($member['fixagentid'])) {
 									$member['agentid'] = $qrmember['id'];
-									$authorid = (empty($qrmember['isauthor']) ? $qrmember['authorid'] : $qrmember['id']);
+									$authorid = ((empty($qrmember['isauthor']) ? $qrmember['authorid'] : $qrmember['id']));
 									$author = p('author');
 
 									if ($author) {
 										$p->upgradeLevelByAgent($qrmember['id']);
 										pdo_update('ewei_shop_member', array('agentid' => $qrmember['id'], 'childtime' => $time, 'authorid' => $authorid), array('id' => $member['id']));
 									}
-									else {
+									 else {
 										pdo_update('ewei_shop_member', array('agentid' => $qrmember['id'], 'childtime' => $time), array('id' => $member['id']));
 									}
 
 									if ($author) {
 										$author_set = $author->getSet();
-										if (!empty($author_set['become']) && (($author_set['become'] == '2') || ($author_set['become'] == '5'))) {
+
+										if (!(empty($author_set['become'])) && (($author_set['become'] == '2') || ($author_set['become'] == '5'))) {
 											$can_author = false;
 											$getAgentsDownNum = $p->getAgentsDownNum($qrmember['openid']);
 
@@ -364,23 +407,19 @@ class PosterProcessor extends PluginProcessor
 												if ($author_set['become_down1'] <= $getAgentsDownNum['level1']) {
 													$can_author = true;
 												}
-												else if ($author_set['become_down2'] <= $getAgentsDownNum['level2']) {
+												 else if ($author_set['become_down2'] <= $getAgentsDownNum['level2']) {
 													$can_author = true;
 												}
-												else {
-													if ($author_set['become_down3'] <= $getAgentsDownNum['level3']) {
-														$can_author = true;
-													}
+												 else if ($author_set['become_down3'] <= $getAgentsDownNum['level3']) {
+													$can_author = true;
 												}
-											}
-											else {
-												if ($author_set['become'] == '5') {
-													if ($author_set['become_downcount'] <= $getAgentsDownNum['total']) {
-														$can_author = true;
-													}
-												}
-											}
 
+											}
+											 else if ($author_set['become'] == '5') {
+												if ($author_set['become_downcount'] <= $getAgentsDownNum['total']) {
+													$can_author = true;
+												}
+											}
 											if ($can_author) {
 												$become_check = intval($author_set['become_check']);
 
@@ -390,10 +429,15 @@ class PosterProcessor extends PluginProcessor
 													if ($become_check == 1) {
 														$p->sendMessage($qrmember['openid'], array('nickname' => $qrmember['nickname'], 'authortime' => $time), TM_AUTHOR_BECOME);
 													}
+
 												}
+
 											}
+
 										}
+
 									}
+
 
 									$p->sendMessage($qrmember['openid'], array('nickname' => $member['nickname'], 'childtime' => $time), TM_COMMISSION_AGENT_NEW);
 									$p->upgradeLevelByAgent($qrmember['id']);
@@ -402,17 +446,22 @@ class PosterProcessor extends PluginProcessor
 										p('globonus')->upgradeLevelByAgent($qrmember['id']);
 									}
 
+
 									if (p('abonus')) {
 										p('abonus')->upgradeLevelByAgent($qrmember['id']);
 									}
 
+
 									if (p('author')) {
 										p('author')->upgradeLevelByAgent($qrmember['id']);
 									}
+
 								}
+
 							}
 
-							if (!empty($poster['beagent'])) {
+
+							if (!(empty($poster['beagent']))) {
 								$become_check = intval($cset['become_check']);
 								pdo_update('ewei_shop_member', array('isagent' => 1, 'status' => $become_check, 'agenttime' => $time), array('id' => $member['id']));
 
@@ -424,21 +473,32 @@ class PosterProcessor extends PluginProcessor
 										p('globonus')->upgradeLevelByAgent($qrmember['id']);
 									}
 
+
 									if (p('abonus')) {
 										p('abonus')->upgradeLevelByAgent($qrmember['id']);
 									}
 
+
 									if (p('author')) {
 										p('author')->upgradeLevelByAgent($qrmember['id']);
 									}
+
 								}
+
 							}
+
 						}
+
 					}
+
 				}
+
 			}
+
 		}
+
 	}
 }
+
 
 ?>

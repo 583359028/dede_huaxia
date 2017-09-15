@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -12,10 +11,11 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 		global $_GPC;
 		$url = urldecode($_GPC['url']);
 
-		if (!is_weixin()) {
+		if (!(is_weixin())) {
 			header('location: ' . $url);
 			exit();
 		}
+
 
 		include $this->template('order/alipay');
 	}
@@ -36,6 +36,7 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 				$this->message('支付出现错误，请重试(1)!', mobileUrl('order'));
 			}
 
+
 			$alidata = base64_decode($_GET['alidata']);
 			$alidata = json_decode($alidata, true);
 			$alisign = m('finance')->RSAVerify($alidata, $public_key, false);
@@ -44,40 +45,54 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 			if ($alisign == 0) {
 				$this->message('支付出现错误，请重试(2)!', mobileUrl('order'));
 			}
+
+
+			if (strexists($tid, 'GJ')) {
+				$tids = explode('GJ', $tid);
+				$tid = $tids[0];
+			}
+
 		}
-		else {
+		 else {
 			if (empty($set['pay']['alipay'])) {
 				$this->message('未开启支付宝支付!', mobileUrl('order'));
 			}
 
-			if (!m('finance')->isAlipayNotify($_GET)) {
+
+			if (!(m('finance')->isAlipayNotify($_GET))) {
 				$log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'ewei_shopv2', ':tid' => $tid));
 				if (($log['status'] == 1) && ($log['fee'] == $_GPC['total_fee'])) {
 					if ($fromwechat) {
 						$this->message(array('message' => '请返回微信查看支付状态', 'title' => '支付成功!', 'buttondisplay' => false), NULL, 'success');
 					}
-					else {
+					 else {
 						$this->message(array('message' => '请返回商城查看支付状态', 'title' => '支付成功!'), mobileUrl('order'), 'success');
 					}
 				}
 
-				$this->message(array('message' => '支付出现错误，请重试(支付验证失败)!', 'buttondisplay' => $fromwechat ? false : true), $fromwechat ? NULL : mobileUrl('order'));
+
+				$this->message(array('message' => '支付出现错误，请重试(支付验证失败)!', 'buttondisplay' => ($fromwechat ? false : true)), ($fromwechat ? NULL : mobileUrl('order')));
 			}
+
+
 		}
 
 		$log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'ewei_shopv2', ':tid' => $tid));
 
 		if (empty($log)) {
-			$this->message(array('message' => '支付出现错误，请重试(支付验证失败2)!', 'buttondisplay' => $fromwechat ? false : true), $fromwechat ? NULL : mobileUrl('order'));
+			$this->message(array('message' => '支付出现错误，请重试(支付验证失败2)!', 'buttondisplay' => ($fromwechat ? false : true)), ($fromwechat ? NULL : mobileUrl('order')));
 		}
+
 
 		if (is_h5app()) {
 			$alidatafee = $this->str($alidata['total_fee']);
 			$alidatastatus = $this->str($alidata['success']);
-			if (($log['fee'] != $alidatafee) || !$alidatastatus) {
+			if (($log['fee'] != $alidatafee) || !($alidatastatus)) {
 				$this->message('支付出现错误，请重试(4)!', mobileUrl('order'));
 			}
+
 		}
+
 
 		if ($log['status'] != 1) {
 			$record = array();
@@ -86,7 +101,7 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 			pdo_update('core_paylog', $record, array('plid' => $log['plid']));
 			$orderid = pdo_fetchcolumn('select id from ' . tablename('ewei_shop_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(':ordersn' => $log['tid'], ':uniacid' => $_W['uniacid']));
 
-			if (!empty($orderid)) {
+			if (!(empty($orderid))) {
 				m('order')->setOrderPayType($orderid, 22);
 				$data_alipay = array('transid' => $_GET['trade_no']);
 
@@ -95,8 +110,10 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 					$data_alipay['apppay'] = 1;
 				}
 
+
 				pdo_update('ewei_shop_order', $data_alipay, array('id' => $orderid));
 			}
+
 
 			$ret = array();
 			$ret['result'] = 'success';
@@ -110,14 +127,15 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 			m('order')->payResult($ret);
 		}
 
+
 		if (is_h5app()) {
 			$url = mobileUrl('order/detail', array('id' => $orderid), true);
 			exit('<script>top.window.location.href=\'' . $url . '\'</script>');
 		}
-		else if ($fromwechat) {
+		 else if ($fromwechat) {
 			$this->message(array('message' => '请返回微信查看支付状态', 'title' => '支付成功!', 'buttondisplay' => false), NULL, 'success');
 		}
-		else {
+		 else {
 			$this->message(array('message' => '请返回商城查看支付状态', 'title' => '支付成功!'), mobileUrl('order'), 'success');
 		}
 	}
@@ -141,9 +159,11 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 				$this->message('支付出现错误，请重试(1)!', mobileUrl('member'));
 			}
 
+
 			if (empty($set['pay']['app_alipay']) || empty($public_key)) {
 				$this->message('支付出现错误，请重试(2)!', mobileUrl('order'));
 			}
+
 
 			$alidata = base64_decode($_GET['alidata']);
 			$alidata = json_decode($alidata, true);
@@ -154,37 +174,42 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 				$this->message('支付出现错误，请重试(3)!', mobileUrl('member'));
 			}
 
+
 			$transid = $alidata['trade_no'];
 		}
-		else {
+		 else {
 			if (empty($logno)) {
-				$this->message(array('message' => '支付出现错误，请重试(支付验证失败1)!', 'buttondisplay' => $fromwechat ? false : true), $fromwechat ? NULL : mobileUrl('member'));
+				$this->message(array('message' => '支付出现错误，请重试(支付验证失败1)!', 'buttondisplay' => ($fromwechat ? false : true)), ($fromwechat ? NULL : mobileUrl('member')));
 			}
+
 
 			if (empty($set['pay']['alipay'])) {
-				$this->message(array('message' => '支付出现错误，请重试(未开启支付宝支付)!', 'buttondisplay' => $fromwechat ? false : true), $fromwechat ? NULL : mobileUrl('member'));
+				$this->message(array('message' => '支付出现错误，请重试(未开启支付宝支付)!', 'buttondisplay' => ($fromwechat ? false : true)), ($fromwechat ? NULL : mobileUrl('member')));
 			}
 
-			if (!m('finance')->isAlipayNotify($_GET)) {
+
+			if (!(m('finance')->isAlipayNotify($_GET))) {
 				$log = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
-				if (!empty($log) && !empty($log['status'])) {
+				if (!(empty($log)) && !(empty($log['status']))) {
 					if ($fromwechat) {
 						$this->message(array('message' => '请返回微信查看支付状态', 'title' => '支付成功!', 'buttondisplay' => false), NULL, 'success');
 					}
-					else {
+					 else {
 						$this->message(array('message' => '请返回商城查看支付状态', 'title' => '支付成功!'), mobileUrl('member'), 'success');
 					}
 				}
 
-				$this->message(array('message' => '支付出现错误，请重试(支付验证失败2)!', 'buttondisplay' => $fromwechat ? false : true), $fromwechat ? NULL : mobileUrl('member'));
+
+				$this->message(array('message' => '支付出现错误，请重试(支付验证失败2)!', 'buttondisplay' => ($fromwechat ? false : true)), ($fromwechat ? NULL : mobileUrl('member')));
 			}
+
 
 			$transid = $_GET['trade_no'];
 		}
 
 		$log = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
-		if (!empty($log) && empty($log['status'])) {
-			pdo_update('ewei_shop_member_log', array('status' => 1, 'rechargetype' => 'alipay', 'apppay' => is_h5app() ? 1 : 0, 'transid' => $transid), array('id' => $log['id']));
+		if (!(empty($log)) && empty($log['status'])) {
+			pdo_update('ewei_shop_member_log', array('status' => 1, 'rechargetype' => 'alipay', 'apppay' => (is_h5app() ? 1 : 0), 'transid' => $transid), array('id' => $log['id']));
 			m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(0, $_W['shopset']['shop']['name'] . '会员充值:alipayreturn:credit2:' . $log['money']));
 			m('member')->setRechargeCredit($log['openid'], $log['money']);
 			com_run('sale::setRechargeActivity', $log);
@@ -192,14 +217,15 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 			m('notice')->sendMemberLogMessage($log['id']);
 		}
 
+
 		if (is_h5app()) {
 			$url = mobileUrl('member', NULL, true);
 			exit('<script>top.window.location.href=\'' . $url . '\'</script>');
 		}
-		else if ($fromwechat) {
+		 else if ($fromwechat) {
 			$this->message(array('message' => '请返回微信查看支付状态', 'title' => '支付成功!', 'buttondisplay' => false), NULL, 'success');
 		}
-		else {
+		 else {
 			$this->message(array('message' => '请返回商城查看支付状态', 'title' => '支付成功!'), mobileUrl('member'), 'success');
 		}
 	}
@@ -211,5 +237,6 @@ class Pay_Alipay_EweiShopV2Page extends MobilePage
 		return $str;
 	}
 }
+
 
 ?>

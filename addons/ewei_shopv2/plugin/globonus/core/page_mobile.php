@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -18,11 +17,14 @@ class GlobonusMobilePage extends PluginMobilePage
 				exit();
 			}
 
+
 			if (empty($member['ispartner']) || empty($member['partnerstatus'])) {
 				header('location: ' . mobileUrl('globonus/register'));
 				exit();
 			}
+
 		}
+
 	}
 
 	public function footerMenus($diymenuid = NULL)
@@ -32,5 +34,6 @@ class GlobonusMobilePage extends PluginMobilePage
 		include $this->template('globonus/_menu');
 	}
 }
+
 
 ?>

@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Qrcode_EweiShopV2Model
 {
 	/**
@@ -14,24 +17,27 @@ class Qrcode_EweiShopV2Model
 		global $_GPC;
 		$path = IA_ROOT . '/addons/ewei_shopv2/data/qrcode/' . $_W['uniacid'] . '/';
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path);
 		}
 
+
 		$url = mobileUrl('', array('mid' => $mid), true);
 
-		if (!empty($posterid)) {
+		if (!(empty($posterid))) {
 			$url .= '&posterid=' . $posterid;
 		}
+
 
 		$file = 'shop_qrcode_' . $posterid . '_' . $mid . '.png';
 		$qrcode_file = $path . $file;
 
-		if (!is_file($qrcode_file)) {
+		if (!(is_file($qrcode_file))) {
 			require_once IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
 			QRcode::png($url, $qrcode_file, QR_ECLEVEL_L, 4);
 		}
+
 
 		return $_W['siteroot'] . 'addons/ewei_shopv2/data/qrcode/' . $_W['uniacid'] . '/' . $file;
 	}
@@ -48,24 +54,27 @@ class Qrcode_EweiShopV2Model
 		global $_GPC;
 		$path = IA_ROOT . '/addons/ewei_shopv2/data/qrcode/' . $_W['uniacid'];
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path);
 		}
 
+
 		$url = mobileUrl('goods/detail', array('id' => $goodsid, 'mid' => $mid), true);
 
-		if (!empty($posterid)) {
+		if (!(empty($posterid))) {
 			$url .= '&posterid=' . $posterid;
 		}
+
 
 		$file = 'goods_qrcode_' . $posterid . '_' . $mid . '_' . $goodsid . '.png';
 		$qrcode_file = $path . '/' . $file;
 
-		if (!is_file($qrcode_file)) {
+		if (!(is_file($qrcode_file))) {
 			require_once IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
 			QRcode::png($url, $qrcode_file, QR_ECLEVEL_L, 4);
 		}
+
 
 		return $_W['siteroot'] . 'addons/ewei_shopv2/data/qrcode/' . $_W['uniacid'] . '/' . $file;
 	}
@@ -76,25 +85,24 @@ class Qrcode_EweiShopV2Model
 		global $_GPC;
 		$path = IA_ROOT . '/addons/ewei_shopv2/data/qrcode/' . $_W['uniacid'] . '/';
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path);
 		}
 
+
 		$file = md5(base64_encode($url)) . '.jpg';
 		$qrcode_file = $path . $file;
 
-		if (!is_file($qrcode_file)) {
+		if (!(is_file($qrcode_file))) {
 			require_once IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
 			QRcode::png($url, $qrcode_file, QR_ECLEVEL_L, 4);
 		}
+
 
 		return $_W['siteroot'] . 'addons/ewei_shopv2/data/qrcode/' . $_W['uniacid'] . '/' . $file;
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

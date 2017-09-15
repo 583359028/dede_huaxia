@@ -342,7 +342,7 @@ class Index_EweiShopV2Page extends PluginMobileLoginPage
 			{
 				$red = rand($groupResult['red_left'] * 100, $groupResult['red_right'] * 100) / 100;
 			}
-			$params = array('openid' => $_W['openid'], 'tid' => time(), 'send_name' => '人人店:兑换中心', 'money' => $red, 'wishing' => '红包兑换', 'act_name' => '红包兑换活动', 'remark' => '兑换中心:红包兑换');
+			$params = array('openid' => $_W['openid'], 'tid' => time(), 'send_name' => '人人商城:兑换中心', 'money' => $red, 'wishing' => '红包兑换', 'act_name' => '红包兑换活动', 'remark' => '兑换中心:红包兑换');
 			$wechat = array('appid' => $account['key'], 'mchid' => $wechat['mchid'], 'apikey' => $wechat['apikey'], 'certs' => $sec);
 			$result = m('common')->sendredpack($params, $wechat);
 			if (!(is_error($result))) 
@@ -670,7 +670,7 @@ class Index_EweiShopV2Page extends PluginMobileLoginPage
 			{
 				$red = rand($groupResult['red_left'] * 100, $groupResult['red_right'] * 100) / 100;
 			}
-			$params = array('openid' => $_W['openid'], 'tid' => time(), 'send_name' => '人人店:兑换中心', 'money' => $red, 'wishing' => '红包兑换', 'act_name' => '红包兑换活动', 'remark' => '兑换中心:红包兑换');
+			$params = array('openid' => $_W['openid'], 'tid' => time(), 'send_name' => '人人商城:兑换中心', 'money' => $red, 'wishing' => '红包兑换', 'act_name' => '红包兑换活动', 'remark' => '兑换中心:红包兑换');
 			if (empty($wechat['mchid']) || empty($wechat['apikey'])) 
 			{
 				show_json(0, '红包暂停兑换，请稍后再试');

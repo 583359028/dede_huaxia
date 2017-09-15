@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -22,6 +21,7 @@ class Category_EweiShopV2Page extends PluginMobilePage
 				mc_oauth_userinfo($openid);
 			}
 
+
 			$category = pdo_fetchall('select id,name from ' . tablename('ewei_shop_groups_category') . ' where uniacid = :uniacid and enabled > 0 ', array(':uniacid' => $uniacid));
 			$category_name = pdo_fetch('select id,name,thumb from ' . tablename('ewei_shop_groups_category') . ' where uniacid = :uniacid and id = :id ', array(':uniacid' => $uniacid, ':id' => $cateid));
 
@@ -29,14 +29,18 @@ class Category_EweiShopV2Page extends PluginMobilePage
 				$category_name['name'] = '全部活动';
 			}
 
+
 			$this->model->groupsShare();
 			include $this->template();
-			return NULL;
+			return;
 		}
 		catch (Exception $e) {
 			$content = $e->getMessage();
 			include $this->template('groups/error');
 		}
+
+		$content = $e->getMessage();
+		include $this->template('groups/error');
 	}
 
 	public function get_list()
@@ -53,33 +57,40 @@ class Category_EweiShopV2Page extends PluginMobilePage
 			$condition = ' and uniacid = :uniacid and status=1 and deleted=0';
 			$params = array(':uniacid' => $_W['uniacid']);
 
-			if (!empty($cateid)) {
+			if (!(empty($cateid))) {
 				$condition .= ' and category = ' . $cateid;
 			}
 
+
 			$keyword = trim($_GPC['keyword']);
 
-			if (!empty($keyword)) {
+			if (!(empty($keyword))) {
 				$condition .= ' AND title like \'%' . $keyword . '%\' ';
 			}
+
 
 			$sql = 'SELECT COUNT(1) FROM ' . tablename('ewei_shop_groups_goods') . ' where 1 ' . $condition;
 			$total = pdo_fetchcolumn($sql, $params);
 
-			if (!empty($total)) {
-				$sql = 'SELECT id,title,thumb,price,groupnum,groupsprice,category,isindex,goodsnum,units,sales,description FROM ' . tablename('ewei_shop_groups_goods') . "\r\n\t\t\t\t\t\twhere 1 " . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
+			if (!(empty($total))) {
+				$sql = 'SELECT id,title,thumb,price,groupnum,groupsprice,category,isindex,goodsnum,units,sales,description FROM ' . tablename('ewei_shop_groups_goods') . "\r\n\t\t\t\t\t\t" . 'where 1 ' . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 				$list = pdo_fetchall($sql, $params);
 				$list = set_medias($list, 'thumb');
 			}
 
+
 			show_json(1, array('list' => $list, 'pagesize' => $psize, 'total' => $total));
-			return NULL;
+			return;
 		}
 		catch (Exception $e) {
 			$content = $e->getMessage();
 			include $this->template('groups/error');
 		}
+
+		$content = $e->getMessage();
+		include $this->template('groups/error');
 	}
 }
+
 
 ?>

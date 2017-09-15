@@ -1,7 +1,4 @@
 <?php
-//微 橙 微 信商 城系统
-?>
-<?php
 if (!(defined('IN_IA'))) 
 {
 	exit('Access Denied');
@@ -13,10 +10,37 @@ class Index_EweiShopV2Page extends MerchWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$merchid = $_W['merchid'];
-		$plugins_data = $this->model->getPluginList($merchid);
-		$plugins_list = $plugins_data['plugins_list'];
-		$plugins_all = $plugins_data['plugins_all'];
+		$category = m('plugin')->getList(1);
+		$has_plugins = array();
+		if (p('exhelper')) 
+		{
+			$has_plugins[] = 'exhelper';
+		}
+		if (p('taobao')) 
+		{
+			$has_plugins[] = 'taobao';
+		}
+		if (p('diypage')) 
+		{
+			$has_plugins[] = 'diypage';
+		}
+		if (p('creditshop')) 
+		{
+			$has_plugins[] = 'creditshop';
+		}
+		$plugins_list = array();
+		$plugins_all = array();
+		foreach ($category as $key => $value ) 
+		{
+			foreach ($value['plugins'] as $k => $v ) 
+			{
+				$plugins_all[$v['identity']] = $v;
+				if (in_array($v['identity'], $has_plugins)) 
+				{
+					$plugins_list[] = $v;
+				}
+			}
+		}
 		$cashier = false;
 		if (p('cashier')) 
 		{

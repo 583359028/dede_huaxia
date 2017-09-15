@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -27,13 +26,14 @@ class Sort_EweiShopV2Page extends WebPage
 		if ($_W['ispost']) {
 			$datas = json_decode(html_entity_decode($_GPC['datas']), true);
 
-			if (!is_array($datas)) {
+			if (!(is_array($datas))) {
 				show_json(0, '数据出错');
 			}
 
+
 			$indexsort = array();
 
-			foreach ($datas as $v) {
+			foreach ($datas as $v ) {
 				$indexsort[$v['id']] = array('text' => $defaults[$v['id']]['text'], 'visible' => intval($_GPC['visible'][$v['id']]));
 			}
 
@@ -44,18 +44,21 @@ class Sort_EweiShopV2Page extends WebPage
 			show_json(1);
 		}
 
-		$oldsorts = (!empty($_W['shopset']['shop']['indexsort']) ? $_W['shopset']['shop']['indexsort'] : $defaults);
+
+		$oldsorts = ((!(empty($_W['shopset']['shop']['indexsort'])) ? $_W['shopset']['shop']['indexsort'] : $defaults));
 		$sorts = array();
 
-		foreach ($oldsorts as $key => $old) {
+		foreach ($oldsorts as $key => $old ) {
 			$sorts[$key] = $old;
-			if (($key == 'notice') && !isset($oldsorts['seckill'])) {
+			if (($key == 'notice') && !(isset($oldsorts['seckill']))) {
 				$sorts['seckill'] = array('text' => '秒杀栏', 'visible' => 0);
 			}
+
 		}
 
 		include $this->template();
 	}
 }
+
 
 ?>

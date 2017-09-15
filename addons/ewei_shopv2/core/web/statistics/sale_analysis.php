@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -8,13 +7,13 @@ class Sale_analysis_EweiShopV2Page extends WebPage
 {
 	public function main()
 	{
+function sale_analysis_count($sql)
+{
+	$c = pdo_fetchcolumn($sql);
+	return intval($c);
+}
 		global $_W;
 		global $_GPC;
-		function sale_analysis_count($sql)
-		{
-			$c = pdo_fetchcolumn($sql);
-			return intval($c);
-		}
 		$member_count = sale_analysis_count('SELECT count(*) FROM ' . tablename('ewei_shop_member') . '   WHERE uniacid = \'' . $_W['uniacid'] . '\' ');
 		$orderprice = sale_analysis_count('SELECT sum(price) FROM ' . tablename('ewei_shop_order') . ' WHERE status>=1 and uniacid = \'' . $_W['uniacid'] . '\' ');
 		$ordercount = sale_analysis_count('SELECT count(*) FROM ' . tablename('ewei_shop_order') . ' WHERE status>=1 and uniacid = \'' . $_W['uniacid'] . '\' ');
@@ -23,5 +22,6 @@ class Sale_analysis_EweiShopV2Page extends WebPage
 		include $this->template('statistics/sale_analysis');
 	}
 }
+
 
 ?>

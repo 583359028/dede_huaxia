@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -18,8 +17,9 @@ class Notice_EweiShopV2Page extends MobileLoginPage
 
 		if (p('commission')) {
 			$cset = p('commission')->getSet();
-			$hascommission = !empty($cset['level']);
+			$hascommission = !(empty($cset['level']));
 		}
+
 
 		if ($_W['ispost']) {
 			$type = trim($_GPC['type']);
@@ -28,12 +28,13 @@ class Notice_EweiShopV2Page extends MobileLoginPage
 				show_json(0, '参数错误');
 			}
 
+
 			$checked = intval($_GPC['checked']);
 
 			if (empty($checked)) {
 				$notice[$type] = 1;
 			}
-			else {
+			 else {
 				unset($notice[$type]);
 			}
 
@@ -41,8 +42,10 @@ class Notice_EweiShopV2Page extends MobileLoginPage
 			show_json(1);
 		}
 
+
 		include $this->template();
 	}
 }
+
 
 ?>

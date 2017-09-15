@@ -19,7 +19,7 @@
             <div class="fui-cell">
                 <div class="fui-cell-label">订单金额</div>
                 <div class="fui-cell-info"></div>
-                <div class="fui-cell-remark noremark"><span class='text-danger'>￥{php echo number_format($order['price'],2)}</span>
+                <div class="fui-cell-remark noremark"><span class='text-danger'>￥{if empty($ispeerpay)}{php echo number_format($order['price'],2)}{else}<span id="peerpay">{php echo number_format($peerprice,2)}</span>{/if}</span>
                 </div>
             </div>
         </div>
@@ -94,8 +94,19 @@
                 <div class='fui-list-angle'><span class="angle"></span></div>
             </div>
             {/if}
+            {if empty($ispeerpay) && !empty($peerPaySwi)}
+            <div class='fui-list pay-btn' data-type='peerpay'>
+                <div class='fui-list-media'>
+                    <i class='icon icon-natice peerpay' style="background: #ff9326;color: #fff"></i>
+                </div>
+                <div class='fui-list-inner'>
+                    <div class="title">微信找人代付</div>
+                    <div class="subtitle">帮你付款的才是真爱</div>
+                </div>
+                <div class='fui-list-angle'><span class="angle"></span></div>
+            </div>
             {/if}
-
+            {/if}
         </div>
     </div>
     {template 'order/pay/wechat_jie'}
@@ -103,7 +114,7 @@
         modal.init({php echo json_encode($payinfo)});
     });</script>
 </div>
-
+<input type="hidden" value="{$peerpayMessage}" id="peerpaymessage">
 {if is_ios()}
     {php $initWX=true}
 {/if}

@@ -1,5 +1,4 @@
 <?php
-//米云网络科技www.symiyun.com
 class soapval extends nusoap_base
 {
 	/**
@@ -90,5 +89,6 @@ class soapval extends nusoap_base
 		return $this->value;
 	}
 }
+
 
 ?>

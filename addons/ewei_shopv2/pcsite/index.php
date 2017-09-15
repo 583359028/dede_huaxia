@@ -1,5 +1,4 @@
 <?php
-//米云网络科技www.symiyun.com
 require '../framework/bootstrap.inc.php';
 load()->web('common');
 load()->web('template');

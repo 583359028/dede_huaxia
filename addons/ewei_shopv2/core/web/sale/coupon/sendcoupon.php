@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -25,36 +24,36 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 
 		if ($plugin_com) {
 			$plugin_com_set = $plugin_com->getSet();
-			$hascommission = !empty($plugin_com_set['level']);
+			$hascommission = !(empty($plugin_com_set['level']));
 		}
+
 
 		$hasglobonus = false;
 		$plugin_globonus = p('globonus');
 
 		if ($plugin_globonus) {
 			$plugin_globonus_set = $plugin_globonus->getSet();
-			$hasglobonus = !empty($plugin_globonus_set['open']);
+			$hasglobonus = !(empty($plugin_globonus_set['open']));
 		}
+
 
 		$hasabonus = false;
 		$plugin_abonus = p('abonus');
 
 		if ($plugin_abonus) {
 			$plugin_abonus_set = $plugin_abonus->getSet();
-			$hasabonus = !empty($plugin_abonus_set['open']);
+			$hasabonus = !(empty($plugin_abonus_set['open']));
 		}
-
 		if ($hascommission) {
 			$list3 = $plugin_com->getLevels();
 		}
-
 		if ($hasglobonus) {
 			$list4 = $plugin_globonus->getLevels();
 		}
-
 		if ($hasabonus) {
 			$list5 = $plugin_abonus->getLevels();
 		}
+
 
 		$data = m('common')->getPluginset('coupon');
 		m('common')->updatePluginset(array('coupon' => $data));
@@ -74,121 +73,127 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 			show_json(0, '未找到优惠券!');
 		}
 
+
 		$send_total = intval($_GPC['send_total']);
 
 		if (empty($send_total)) {
 			show_json(0, '发送数量最小为1!');
 		}
 
+
 		if ($class1 == 1) {
 			$send_openid = $_GPC['send_openid'];
 			$openids = explode(',', $send_openid);
 			$plog = '发放优惠券 ID: ' . $couponid . ' 方式: 指定 OPENID 人数: ' . count($openids);
 		}
-		else if ($class1 == 2) {
+		 else if ($class1 == 2) {
 			$where = '';
 
-			if (!empty($_GPC['send_level'])) {
+			if (!(empty($_GPC['send_level']))) {
 				$where .= ' and level =' . intval($_GPC['send_level']);
 			}
 
+
 			$members = pdo_fetchall('SELECT openid FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\'' . $where, array(), 'openid');
 
-			if (!empty($_GPC['send_level'])) {
+			if (!(empty($_GPC['send_level']))) {
 				$levelname = pdo_fetchcolumn('select levelname from ' . tablename('ewei_shop_member_level') . ' where id=:id limit 1', array(':id' => $_GPC['send_level']));
 			}
-			else {
+			 else {
 				$levelname = '全部';
 			}
 
 			$openids = array_keys($members);
 			$plog = '发放优惠券 ID: ' . $couponid . ' 方式: 等级-' . $levelname . ' 人数: ' . count($members);
 		}
-		else if ($class1 == 3) {
+		 else if ($class1 == 3) {
 			$where = '';
 
-			if (!empty($_GPC['send_group'])) {
+			if (!(empty($_GPC['send_group']))) {
 				$where .= ' and groupid =' . intval($_GPC['send_group']);
 			}
 
+
 			$members = pdo_fetchall('SELECT openid FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\'' . $where, array(), 'openid');
 
-			if (!empty($_GPC['send_group'])) {
+			if (!(empty($_GPC['send_group']))) {
 				$groupname = pdo_fetchcolumn('select groupname from ' . tablename('ewei_shop_member_group') . ' where id=:id limit 1', array(':id' => $_GPC['send_group']));
 			}
-			else {
+			 else {
 				$groupname = '全部分组';
 			}
 
 			$openids = array_keys($members);
 			$plog = '发放优惠券 ID: ' . $couponid . '  方式: 分组-' . $groupname . ' 人数: ' . count($members);
 		}
-		else if ($class1 == 4) {
+		 else if ($class1 == 4) {
 			$where = '';
 			$members = pdo_fetchall('SELECT openid FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\'' . $where, array(), 'openid');
 			$openids = array_keys($members);
 			$plog = '发放优惠券 ID: ' . $couponid . '  方式: 全部会员 人数: ' . count($members);
 		}
-		else if ($class1 == 5) {
+		 else if ($class1 == 5) {
 			$where = '';
-			if (!empty($_GPC['send_agentlevel']) || ($_GPC['send_partnerlevels'] === '0')) {
+			if (!(empty($_GPC['send_agentlevel'])) || ($_GPC['send_partnerlevels'] === '0')) {
 				$where .= ' and agentlevel =' . intval($_GPC['send_agentlevel']);
 			}
+
 
 			$members = pdo_fetchall('SELECT openid FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\' and isagent=1 and status=1 ' . $where, array(), 'openid');
 
 			if ($_GPC['send_agentlevel'] != '') {
 				$levelname = pdo_fetchcolumn('select levelname from ' . tablename('ewei_shop_commission_level') . ' where id=:id limit 1', array(':id' => $_GPC['send_agentlevel']));
 			}
-			else {
+			 else {
 				$levelname = '全部';
 			}
 
 			$openids = array_keys($members);
 			$plog = '发放优惠券 ID: ' . $couponid . '  方式: 分销商-' . $levelname . ' 人数: ' . count($members);
 		}
-		else if ($class1 == 6) {
+		 else if ($class1 == 6) {
 			$where = '';
-			if (!empty($_GPC['send_partnerlevels']) || ($_GPC['send_partnerlevels'] === '0')) {
+			if (!(empty($_GPC['send_partnerlevels'])) || ($_GPC['send_partnerlevels'] === '0')) {
 				$where .= ' and partnerlevel =' . intval($_GPC['send_partnerlevels']);
 			}
+
 
 			$members = pdo_fetchall('SELECT openid FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\' and ispartner=1 and partnerstatus=1 ' . $where, array(), 'openid');
 
 			if ($_GPC['send_partnerlevels'] != '') {
 				$levelname = pdo_fetchcolumn('select levelname from ' . tablename('ewei_shop_globonus_level') . ' where id=:id limit 1', array(':id' => $_GPC['send_partnerlevels']));
 			}
-			else {
+			 else {
 				$levelname = '全部';
 			}
 
 			$openids = array_keys($members);
 			$plog = '发放优惠券 ID: ' . $couponid . '  方式: 股东-' . $levelname . ' 人数: ' . count($members);
 		}
-		else {
-			if ($class1 == 7) {
-				$where = '';
-				if (!empty($_GPC['send_aagentlevels']) || ($_GPC['send_aagentlevels'] === '0')) {
-					$where .= ' and aagentlevel =' . intval($_GPC['send_aagentlevels']);
-				}
-
-				$members = pdo_fetchall('SELECT openid FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\' and isaagent=1 and aagentstatus=1 ' . $where, array(), 'openid');
-
-				if ($_GPC['send_aagentlevels'] != '') {
-					$levelname = pdo_fetchcolumn('select levelname from ' . tablename('ewei_shop_abonus_level') . ' where id=:id limit 1', array(':id' => $_GPC['send_aagentlevels']));
-				}
-				else {
-					$levelname = '全部';
-				}
-
-				$openids = array_keys($members);
-				$plog = '发放优惠券 ID: ' . $couponid . '  方式: 区域代理-' . $levelname . ' 人数: ' . count($members);
+		 else if ($class1 == 7) {
+			$where = '';
+			if (!(empty($_GPC['send_aagentlevels'])) || ($_GPC['send_aagentlevels'] === '0')) {
+				$where .= ' and aagentlevel =' . intval($_GPC['send_aagentlevels']);
 			}
+
+
+			$members = pdo_fetchall('SELECT openid FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\' and isaagent=1 and aagentstatus=1 ' . $where, array(), 'openid');
+
+			if ($_GPC['send_aagentlevels'] != '') {
+				$levelname = pdo_fetchcolumn('select levelname from ' . tablename('ewei_shop_abonus_level') . ' where id=:id limit 1', array(':id' => $_GPC['send_aagentlevels']));
+			}
+			 else {
+				$levelname = '全部';
+			}
+
+			$openids = array_keys($members);
+			$plog = '发放优惠券 ID: ' . $couponid . '  方式: 区域代理-' . $levelname . ' 人数: ' . count($members);
 		}
+
 
 		$mopenids = array();
 
-		foreach ($openids as $openid) {
+		foreach ($openids as $openid ) {
 			$mopenids[] = '\'' . str_replace('\'', '\'\'', $openid) . '\'';
 		}
 
@@ -196,11 +201,13 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 			show_json(0, '未找到发送的会员!');
 		}
 
+
 		$members = pdo_fetchall('select id,openid,nickname from ' . tablename('ewei_shop_member') . ' where openid in (' . implode(',', $mopenids) . ') and uniacid=' . $_W['uniacid']);
 
 		if (empty($members)) {
 			show_json(0, '未找到发送的会员!');
 		}
+
 
 		if ($coupon['total'] != -1) {
 			$last = com('coupon')->get_last_count($couponid);
@@ -209,30 +216,26 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 				show_json(0, '优惠券数量不足,无法发放!');
 			}
 
+
 			$need = count($members) - $last;
 
 			if (0 < $need) {
 				show_json(0, '优惠券数量不足,请补充 ' . $need . ' 张优惠券才能发放!');
 			}
+
 		}
+
 
 		$data = array('sendtemplateid' => $_GPC['sendtemplateid'], 'frist' => $_GPC['frist'], 'fristcolor' => $_GPC['fristcolor'], 'keyword1' => $_GPC['keyword1'], 'keyword1color' => $_GPC['keyword1color'], 'keyword2' => $_GPC['keyword2'], 'keyword2color' => $_GPC['keyword2color'], 'remark' => $_GPC['remark'], 'remarkcolor' => $_GPC['remarkcolor'], 'templateurl' => $_GPC['templateurl'], 'custitle' => $_GPC['custitle'], 'custhumb' => $_GPC['custhumb'], 'cusdesc' => $_GPC['cusdesc'], 'cusurl' => $_GPC['cusurl']);
 		m('common')->updatePluginset(array('coupon' => $data));
 		$time = time();
-
-		foreach ($members as $m) {
-			$i = 1;
-
-			while ($i <= $send_total) {
-				$log = array('uniacid' => $_W['uniacid'], 'merchid' => $coupon['merchid'], 'openid' => $m['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $couponid, 'status' => 1, 'paystatus' => -1, 'creditstatus' => -1, 'createtime' => $time, 'getfrom' => 0);
-				pdo_insert('ewei_shop_coupon_log', $log);
-				$logid = pdo_insertid();
-				$data = array('uniacid' => $_W['uniacid'], 'merchid' => $coupon['merchid'], 'openid' => $m['openid'], 'couponid' => $couponid, 'gettype' => 0, 'gettime' => $time, 'senduid' => $_W['uid']);
-				pdo_insert('ewei_shop_coupon_data', $data);
-				++$i;
-			}
-		}
-
+		$i = 1;
+		$log = array('uniacid' => $_W['uniacid'], 'merchid' => $coupon['merchid'], 'openid' => $m['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $couponid, 'status' => 1, 'paystatus' => -1, 'creditstatus' => -1, 'createtime' => $time, 'getfrom' => 0);
+		pdo_insert('ewei_shop_coupon_log', $log);
+		$logid = pdo_insertid();
+		$data = array('uniacid' => $_W['uniacid'], 'merchid' => $coupon['merchid'], 'openid' => $m['openid'], 'couponid' => $couponid, 'gettype' => 0, 'gettime' => $time, 'senduid' => $_W['uid']);
+		pdo_insert('ewei_shop_coupon_data', $data);
+		++$i;
 		show_json(1, array('openids' => $openids));
 	}
 
@@ -248,14 +251,16 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 		if (empty($messagetype)) {
 			exit(json_encode(array('result' => 0)));
 		}
-		else if ($messagetype == 1) {
+		 else if ($messagetype == 1) {
 			if (empty($data['sendtemplateid'])) {
 				exit(json_encode(array('result' => 0, 'mesage' => '未指设定发送模板!', 'openid' => $openid)));
 			}
 
+
 			if (empty($openid)) {
 				exit(json_encode(array('result' => 0, 'mesage' => '未指定openid!', 'openid' => $openid)));
 			}
+
 
 			$msg = array(
 				'first'  => array('value' => $data['frist'], 'color' => $data['fristcolor']),
@@ -268,22 +273,26 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 				$data['templateurl'] = mobileUrl('sale/coupon/my', NULL, true);
 			}
 
+
 			$result = m('message')->sendTplNotice($openid, $data['sendtemplateid'], $msg, $data['templateurl']);
 
 			if (is_error($result)) {
 				exit(json_encode(array('result' => 0, 'message' => $result['message'], 'openid' => $openid)));
 			}
 
+
 			exit(json_encode(array('result' => 1)));
 		}
-		else if ($messagetype == 2) {
+		 else if ($messagetype == 2) {
 			if (empty($openid)) {
 				exit(json_encode(array('result' => 0, 'mesage' => '未指定openid!', 'openid' => $openid)));
 			}
 
+
 			if (empty($data['cusurl'])) {
 				$data['cusurl'] = mobileUrl('sale/coupon/my', NULL, true);
 			}
+
 
 			$resp = $this->sendNews($openid, $data['custitle'], $data['cusdesc'], $data['cusurl'], $data['custhumb']);
 
@@ -291,9 +300,10 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 				exit(json_encode(array('result' => 0, 'message' => $resp['message'], 'openid' => $openid)));
 			}
 
+
 			exit(json_encode(array('result' => 1)));
 		}
-		else {
+		 else {
 			exit(json_encode(array('result' => 0)));
 		}
 	}
@@ -307,5 +317,6 @@ class Sendcoupon_EweiShopV2Page extends ComWebPage
 		return $result;
 	}
 }
+
 
 ?>

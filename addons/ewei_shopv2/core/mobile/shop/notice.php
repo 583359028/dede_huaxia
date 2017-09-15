@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -25,7 +24,7 @@ class Notice_EweiShopV2Page extends MobilePage
 		$sql = 'SELECT * FROM ' . tablename('ewei_shop_notice') . ' where 1 ' . $condition . ' ORDER BY displayorder desc,id desc LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 		$list = pdo_fetchall($sql, $params);
 
-		foreach ($list as $key => &$row) {
+		foreach ($list as $key => &$row ) {
 			$row['createtime'] = date('Y-m-d H:i', $row['createtime']);
 		}
 
@@ -41,10 +40,10 @@ class Notice_EweiShopV2Page extends MobilePage
 		$id = intval($_GPC['id']);
 		$merchid = intval($_GPC['merchid']);
 		$merch_plugin = p('merch');
-		if ($merch_plugin && !empty($merchid)) {
+		if ($merch_plugin && !(empty($merchid))) {
 			$notice = pdo_fetch('select * from ' . tablename('ewei_shop_merch_notice') . ' where id=:id and uniacid=:uniacid and merchid=:merchid and status=1', array(':id' => $id, ':uniacid' => $_W['uniacid'], ':merchid' => $merchid));
 		}
-		else {
+		 else {
 			$notice = pdo_fetch('select * from ' . tablename('ewei_shop_notice') . ' where id=:id and uniacid=:uniacid and status=1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
 		}
 
@@ -52,5 +51,6 @@ class Notice_EweiShopV2Page extends MobilePage
 		include $this->template();
 	}
 }
+
 
 ?>

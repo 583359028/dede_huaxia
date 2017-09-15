@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -13,26 +12,30 @@ class PosterModel extends PluginModel
 		$posterid = intval($_GPC['posterid']);
 
 		if (empty($posterid)) {
-			return NULL;
+			return;
 		}
+
 
 		$poster = pdo_fetch('select id,times from ' . tablename('ewei_shop_poster') . ' where id=:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $posterid));
 
 		if (empty($poster)) {
-			return NULL;
+			return;
 		}
+
 
 		$mid = intval($_GPC['mid']);
 
 		if (empty($mid)) {
-			return NULL;
+			return;
 		}
+
 
 		$parent = m('member')->getMember($mid);
 
 		if (empty($parent)) {
-			return NULL;
+			return;
 		}
+
 
 		$this->scanTime($openid, $parent['openid'], $poster);
 	}
@@ -40,8 +43,9 @@ class PosterModel extends PluginModel
 	public function scanTime($openid, $from_openid, $poster)
 	{
 		if ($openid == $from_openid) {
-			return NULL;
+			return;
 		}
+
 
 		global $_W;
 		global $_GPC;
@@ -52,19 +56,22 @@ class PosterModel extends PluginModel
 			pdo_insert('ewei_shop_poster_scan', $scan);
 			pdo_update('ewei_shop_poster', array('times' => $poster['times'] + 1), array('id' => $poster['id']));
 		}
+
 	}
 
 	public function createCommissionPoster($openid, $goodsid = 0, $type = 0)
 	{
 		global $_W;
 
-		if (!$type) {
+		if (!($type)) {
 			$type = 2;
 
-			if (!empty($goodsid)) {
+			if (!(empty($goodsid))) {
 				$type = 3;
 			}
+
 		}
+
 
 		$poster = pdo_fetch('select * from ' . tablename('ewei_shop_poster') . ' where uniacid=:uniacid and `type`=:type and isdefault=1 limit 1', array(':uniacid' => $_W['uniacid'], ':type' => $type));
 
@@ -72,17 +79,20 @@ class PosterModel extends PluginModel
 			return '';
 		}
 
+
 		$member = m('member')->getMember($openid);
 
 		if (empty($poster)) {
 			return '';
 		}
 
+
 		$qr = $this->getQR($poster, $member, $goodsid);
 
 		if (empty($qr)) {
 			return '';
 		}
+
 
 		return $this->createPoster($poster, $member, $qr, false);
 	}
@@ -105,13 +115,15 @@ class PosterModel extends PluginModel
 		$c = curl_exec($ch1);
 		$result = @json_decode($c, true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			return false;
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			return error(-1, $result['errmsg']);
 		}
+
 
 		$ticket = $result['ticket'];
 		return array('barcode' => json_decode($bb, true), 'ticket' => $ticket);
@@ -133,9 +145,11 @@ class PosterModel extends PluginModel
 				$qr['id'] = pdo_insertid();
 			}
 
+
 			$qr['current_qrimg'] = $qrimg;
 			return $qr;
 		}
+
 
 		if ($poster['type'] == 2) {
 			$p = p('commission');
@@ -150,63 +164,67 @@ class PosterModel extends PluginModel
 					$qr['id'] = pdo_insertid();
 				}
 
-				$qr['current_qrimg'] = $qrimg;
-				return $qr;
-			}
-		}
-		else {
-			if ($poster['type'] == 3) {
-				$qrimg = m('qrcode')->createGoodsQrcode($member['id'], $goodsid, $poster['id']);
-				$qr = pdo_fetch('select * from ' . tablename('ewei_shop_poster_qr') . ' where openid=:openid and acid=:acid and type=:type and goodsid=:goodsid limit 1', array(':openid' => $member['openid'], ':acid' => $_W['acid'], ':type' => 3, ':goodsid' => $goodsid));
-
-				if (empty($qr)) {
-					$qr = array('acid' => $acid, 'openid' => $member['openid'], 'type' => 3, 'goodsid' => $goodsid, 'qrimg' => $qrimg);
-					pdo_insert('ewei_shop_poster_qr', $qr);
-					$qr['id'] = pdo_insertid();
-				}
 
 				$qr['current_qrimg'] = $qrimg;
 				return $qr;
 			}
 
-			if ($poster['type'] == 4) {
-				$uniaccount = WeAccount::create($acid);
-				$qr = pdo_fetch('select * from ' . tablename('ewei_shop_poster_qr') . ' where openid=:openid and acid=:acid and type=4 limit 1', array(':openid' => $member['openid'], ':acid' => $acid));
-				if (empty($qr) || empty($qr['scenestr'])) {
-					$result = $this->getFixedTicket($poster, $member, $uniaccount);
-
-					if (is_error($result)) {
-						return $result;
-					}
-
-					if (empty($result)) {
-						return error(-1, '生成二维码失败');
-					}
-
-					$barcode = $result['barcode'];
-					$ticket = $result['ticket'];
-					$qrimg = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $ticket;
-					$ims_qrcode = array('uniacid' => $_W['uniacid'], 'acid' => $_W['acid'], 'scene_str' => $barcode['action_info']['scene']['scene_str'], 'model' => 2, 'name' => 'EWEI_SHOPV2_POSTER_QRCODE', 'keyword' => 'EWEI_SHOPV2_POSTER', 'expire' => 0, 'createtime' => time(), 'status' => 1, 'url' => $result['url'], 'ticket' => $result['ticket']);
-					pdo_insert('qrcode', $ims_qrcode);
-				}
-
-				if (empty($qr)) {
-					$qr = array('acid' => $acid, 'openid' => $member['openid'], 'type' => 4, 'scenestr' => $barcode['action_info']['scene']['scene_str'], 'ticket' => $result['ticket'], 'qrimg' => $qrimg, 'url' => $result['url']);
-					pdo_insert('ewei_shop_poster_qr', $qr);
-					$qr['id'] = pdo_insertid();
-					$qr['current_qrimg'] = $qrimg;
-				}
-				else if (empty($qr['scenestr'])) {
-					pdo_update('ewei_shop_poster_qr', array('scenestr' => $barcode['action_info']['scene']['scene_str'], 'ticket' => $result['ticket'], 'qrimg' => $qrimg), array('id' => $qr['id']));
-					$qr['current_qrimg'] = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $result['ticket'];
-				}
-				else {
-					$qr['current_qrimg'] = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $qr['ticket'];
-				}
-
-				return $qr;
-			}
 		}
+		 else if ($poster['type'] == 3) {
+			$qrimg = m('qrcode')->createGoodsQrcode($member['id'], $goodsid, $poster['id']);
+			$qr = pdo_fetch('select * from ' . tablename('ewei_shop_poster_qr') . ' where openid=:openid and acid=:acid and type=:type and goodsid=:goodsid limit 1', array(':openid' => $member['openid'], ':acid' => $_W['acid'], ':type' => 3, ':goodsid' => $goodsid));
+
+			if (empty($qr)) {
+				$qr = array('acid' => $acid, 'openid' => $member['openid'], 'type' => 3, 'goodsid' => $goodsid, 'qrimg' => $qrimg);
+				pdo_insert('ewei_shop_poster_qr', $qr);
+				$qr['id'] = pdo_insertid();
+			}
+
+
+			$qr['current_qrimg'] = $qrimg;
+			return $qr;
+		}
+		 else if ($poster['type'] == 4) {
+			$uniaccount = WeAccount::create($acid);
+			$qr = pdo_fetch('select * from ' . tablename('ewei_shop_poster_qr') . ' where openid=:openid and acid=:acid and type=4 limit 1', array(':openid' => $member['openid'], ':acid' => $acid));
+			if (empty($qr) || empty($qr['scenestr'])) {
+				$result = $this->getFixedTicket($poster, $member, $uniaccount);
+
+				if (is_error($result)) {
+					return $result;
+				}
+
+
+				if (empty($result)) {
+					return error(-1, '生成二维码失败');
+				}
+
+
+				$barcode = $result['barcode'];
+				$ticket = $result['ticket'];
+				$qrimg = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $ticket;
+				$ims_qrcode = array('uniacid' => $_W['uniacid'], 'acid' => $_W['acid'], 'scene_str' => $barcode['action_info']['scene']['scene_str'], 'model' => 2, 'name' => 'EWEI_SHOPV2_POSTER_QRCODE', 'keyword' => 'EWEI_SHOPV2_POSTER', 'expire' => 0, 'createtime' => time(), 'status' => 1, 'url' => $result['url'], 'ticket' => $result['ticket']);
+				pdo_insert('qrcode', $ims_qrcode);
+			}
+
+
+			if (empty($qr)) {
+				$qr = array('acid' => $acid, 'openid' => $member['openid'], 'type' => 4, 'scenestr' => $barcode['action_info']['scene']['scene_str'], 'ticket' => $result['ticket'], 'qrimg' => $qrimg, 'url' => $result['url']);
+				pdo_insert('ewei_shop_poster_qr', $qr);
+				$qr['id'] = pdo_insertid();
+				$qr['current_qrimg'] = $qrimg;
+			}
+			 else if (empty($qr['scenestr'])) {
+				pdo_update('ewei_shop_poster_qr', array('scenestr' => $barcode['action_info']['scene']['scene_str'], 'ticket' => $result['ticket'], 'qrimg' => $qrimg), array('id' => $qr['id']));
+				$qr['current_qrimg'] = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $result['ticket'];
+			}
+			 else {
+				$qr['current_qrimg'] = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' . $qr['ticket'];
+			}
+
+			return $qr;
+		}
+
 	}
 
 	public function getRealData($data)
@@ -224,17 +242,21 @@ class PosterModel extends PluginModel
 	{
 		load()->func('communication');
 		$resp = ihttp_request($imgurl);
-		if (($resp['code'] == 200) && !empty($resp['content'])) {
+
+		if (($resp['code'] == 200) && !(empty($resp['content']))) {
 			return imagecreatefromstring($resp['content']);
 		}
+
 
 		$i = 0;
 
 		while ($i < 3) {
 			$resp = ihttp_request($imgurl);
-			if (($resp['code'] == 200) && !empty($resp['content'])) {
+
+			if (($resp['code'] == 200) && !(empty($resp['content']))) {
 				return imagecreatefromstring($resp['content']);
 			}
+
 
 			++$i;
 		}
@@ -267,13 +289,14 @@ class PosterModel extends PluginModel
 			$colour = substr($colour, 1);
 		}
 
+
 		if (strlen($colour) == 6) {
 			list($r, $g, $b) = array($colour[0] . $colour[1], $colour[2] . $colour[3], $colour[4] . $colour[5]);
 		}
-		else if (strlen($colour) == 3) {
+		 else if (strlen($colour) == 3) {
 			list($r, $g, $b) = array($colour[0] . $colour[0], $colour[1] . $colour[1], $colour[2] . $colour[2]);
 		}
-		else {
+		 else {
 			return false;
 		}
 
@@ -288,23 +311,26 @@ class PosterModel extends PluginModel
 		global $_W;
 		$path = IA_ROOT . '/addons/ewei_shopv2/data/poster/' . $_W['uniacid'] . '/';
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path);
 		}
 
-		if (!empty($qr['goodsid'])) {
+
+		if (!(empty($qr['goodsid']))) {
 			$goods = pdo_fetch('select id,title,thumb,commission_thumb,marketprice,productprice from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $qr['goodsid'], ':uniacid' => $_W['uniacid']));
 
 			if (empty($goods)) {
 				m('message')->sendCustomNotice($member['openid'], '未找到商品，无法生成海报');
 				exit();
 			}
+
 		}
+
 
 		$md5 = md5(json_encode(array('openid' => $member['openid'], 'goodsid' => $qr['goodsid'], 'bg' => $poster['bg'], 'data' => $poster['data'], 'version' => 1)));
 		$file = $md5 . '.png';
-		if (!is_file($path . $file) || ($qr['qrimg'] != $qr['current_qrimg'])) {
+		if (!(is_file($path . $file)) || ($qr['qrimg'] != $qr['current_qrimg'])) {
 			set_time_limit(0);
 			@ini_set('memory_limit', '256M');
 			$target = imagecreatetruecolor(640, 1008);
@@ -313,41 +339,39 @@ class PosterModel extends PluginModel
 			imagedestroy($bg);
 			$data = json_decode(str_replace('&quot;', '\'', $poster['data']), true);
 
-			foreach ($data as $d) {
+			foreach ($data as $d ) {
 				$d = $this->getRealData($d);
 
 				if ($d['type'] == 'head') {
 					$avatar = preg_replace('/\\/0$/i', '/96', $member['avatar']);
 					$target = $this->mergeImage($target, $d, $avatar);
 				}
-				else if ($d['type'] == 'img') {
+				 else if ($d['type'] == 'img') {
 					$target = $this->mergeImage($target, $d, $d['src']);
 				}
-				else if ($d['type'] == 'qr') {
+				 else if ($d['type'] == 'qr') {
 					$target = $this->mergeImage($target, $d, tomedia($qr['current_qrimg']));
 				}
-				else if ($d['type'] == 'nickname') {
+				 else if ($d['type'] == 'nickname') {
 					$target = $this->mergeText($target, $d, $member['nickname']);
 				}
-				else {
-					if (!empty($goods)) {
-						if ($d['type'] == 'title') {
-							$target = $this->mergeText($target, $d, $goods['title']);
-						}
-						else if ($d['type'] == 'thumb') {
-							$thumb = (!empty($goods['commission_thumb']) ? tomedia($goods['commission_thumb']) : tomedia($goods['thumb']));
-							$target = $this->mergeImage($target, $d, $thumb);
-						}
-						else if ($d['type'] == 'marketprice') {
-							$target = $this->mergeText($target, $d, $goods['marketprice']);
-						}
-						else {
-							if ($d['type'] == 'productprice') {
-								$target = $this->mergeText($target, $d, $goods['productprice']);
-							}
-						}
+				 else if (!(empty($goods))) {
+					if ($d['type'] == 'title') {
+						$target = $this->mergeText($target, $d, $goods['title']);
 					}
+					 else if ($d['type'] == 'thumb') {
+						$thumb = ((!(empty($goods['commission_thumb'])) ? tomedia($goods['commission_thumb']) : tomedia($goods['thumb'])));
+						$target = $this->mergeImage($target, $d, $thumb);
+					}
+					 else if ($d['type'] == 'marketprice') {
+						$target = $this->mergeText($target, $d, $goods['marketprice']);
+					}
+					 else if ($d['type'] == 'productprice') {
+						$target = $this->mergeText($target, $d, $goods['productprice']);
+					}
+
 				}
+
 			}
 
 			imagepng($target, $path . $file);
@@ -356,19 +380,23 @@ class PosterModel extends PluginModel
 			if ($qr['qrimg'] != $qr['current_qrimg']) {
 				pdo_update('ewei_shop_poster_qr', array('qrimg' => $qr['current_qrimg']), array('id' => $qr['id']));
 			}
+
 		}
+
 
 		$img = $_W['siteroot'] . 'addons/ewei_shopv2/data/poster/' . $_W['uniacid'] . '/' . $file;
 
-		if (!$upload) {
+		if (!($upload)) {
 			return $img;
 		}
+
 
 		if (($qr['qrimg'] != $qr['current_qrimg']) || empty($qr['mediaid']) || empty($qr['createtime']) || ((($qr['createtime'] + (3600 * 24 * 3)) - 7200) < time())) {
 			$mediaid = $this->uploadImage($path . $file);
 			$qr['mediaid'] = $mediaid;
 			pdo_update('ewei_shop_poster_qr', array('mediaid' => $mediaid, 'createtime' => time()), array('id' => $qr['id']));
 		}
+
 
 		return array('img' => $img, 'mediaid' => $qr['mediaid']);
 	}
@@ -386,6 +414,7 @@ class PosterModel extends PluginModel
 			$data = array('media' => curl_file_create($img));
 		}
 
+
 		curl_setopt($ch1, CURLOPT_URL, $url);
 		curl_setopt($ch1, CURLOPT_POST, 1);
 		curl_setopt($ch1, CURLOPT_RETURNTRANSFER, 1);
@@ -394,9 +423,10 @@ class PosterModel extends PluginModel
 		curl_setopt($ch1, CURLOPT_POSTFIELDS, $data);
 		$content = @json_decode(curl_exec($ch1), true);
 
-		if (!is_array($content)) {
+		if (!(is_array($content))) {
 			$content = array('media_id' => '');
 		}
+
 
 		curl_close($ch1);
 		return $content['media_id'];
@@ -410,6 +440,7 @@ class PosterModel extends PluginModel
 			return false;
 		}
 
+
 		$qrs = pdo_fetchall('select * from ' . tablename('ewei_shop_poster_qr') . ' where ticket=:ticket and acid=:acid and type=4 limit 1', array(':ticket' => $ticket, ':acid' => $_W['acid']));
 		$count = count($qrs);
 
@@ -417,9 +448,11 @@ class PosterModel extends PluginModel
 			return false;
 		}
 
+
 		if ($count == 1) {
 			return $qrs[0];
 		}
+
 
 		return false;
 	}
@@ -433,9 +466,10 @@ class PosterModel extends PluginModel
 		load()->model('mc');
 		$uid = mc_openid2uid($openid);
 
-		if (!empty($uid)) {
+		if (!(empty($uid))) {
 			pdo_update('mc_members', array('nickname' => $userinfo['nickname'], 'gender' => $userinfo['sex'], 'nationality' => $userinfo['country'], 'resideprovince' => $userinfo['province'], 'residecity' => $userinfo['city'], 'avatar' => $userinfo['headimgurl']), array('uid' => $uid));
 		}
+
 
 		pdo_update('mc_mapping_fans', array('nickname' => $userinfo['nickname']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 		$model = m('member');
@@ -443,12 +477,12 @@ class PosterModel extends PluginModel
 
 		if (empty($member)) {
 			$mc = mc_fetch($uid, array('realname', 'nickname', 'mobile', 'avatar', 'resideprovince', 'residecity', 'residedist'));
-			$member = array('uniacid' => $_W['uniacid'], 'uid' => $uid, 'openid' => $openid, 'realname' => $mc['realname'], 'mobile' => $mc['mobile'], 'nickname' => !empty($mc['nickname']) ? $mc['nickname'] : $userinfo['nickname'], 'avatar' => !empty($mc['avatar']) ? $mc['avatar'] : $userinfo['avatar'], 'gender' => !empty($mc['gender']) ? $mc['gender'] : $userinfo['sex'], 'province' => !empty($mc['resideprovince']) ? $mc['resideprovince'] : $userinfo['province'], 'city' => !empty($mc['residecity']) ? $mc['residecity'] : $userinfo['city'], 'area' => $mc['residedist'], 'createtime' => time(), 'status' => 0);
+			$member = array('uniacid' => $_W['uniacid'], 'uid' => $uid, 'openid' => $openid, 'realname' => $mc['realname'], 'mobile' => $mc['mobile'], 'nickname' => (!(empty($mc['nickname'])) ? $mc['nickname'] : $userinfo['nickname']), 'avatar' => (!(empty($mc['avatar'])) ? $mc['avatar'] : $userinfo['avatar']), 'gender' => (!(empty($mc['gender'])) ? $mc['gender'] : $userinfo['sex']), 'province' => (!(empty($mc['resideprovince'])) ? $mc['resideprovince'] : $userinfo['province']), 'city' => (!(empty($mc['residecity'])) ? $mc['residecity'] : $userinfo['city']), 'area' => $mc['residedist'], 'createtime' => time(), 'status' => 0);
 			pdo_insert('ewei_shop_member', $member);
 			$member['id'] = pdo_insertid();
 			$member['isnew'] = true;
 		}
-		else {
+		 else {
 			$member['nickname'] = $userinfo['nickname'];
 			$member['avatar'] = $userinfo['headimgurl'];
 			$member['province'] = $userinfo['province'];
@@ -460,5 +494,6 @@ class PosterModel extends PluginModel
 		return $member;
 	}
 }
+
 
 ?>

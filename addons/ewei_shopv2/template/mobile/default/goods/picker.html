@@ -5,12 +5,23 @@
 	    <div class="closebtn"><i class="icon icon-roundclose"></i></div>
 	    <div class="img"><img class='thumb' src="<%goods.thumb%>" /></div>
 	    <div class="info info-price text-danger">
+			{if $threen &&(!empty($threenprice['price'])||!empty($threenprice['discount']))}
+			<span>￥<span class=''>
+			{if !empty($threenprice['price'])}
+			{php echo $threenprice['price'];}
+			{elseif !empty($threenprice['discount'])}
+			{php echo $threenprice['discount']*$goods['minprice'];}
+			{/if}
+			{else}
 			<span>￥<span class='price'>
+
 				<%if goods.ispresell>0 && (goods.preselltimeend == 0 || goods.preselltimeend > goods.thistime)%><%goods.presellprice%>
 				<%else%>
 				<%if goods.maxprice == goods.minprice%><%goods.minprice%><%else%><%goods.minprice%>~<%goods.maxprice%><%/if%>
 				<%/if%>
+
 			</span></span>
+			{/if}
 		</div>
 	    <div class="info info-total">
 			<%if seckillinfo==false || ( seckillinfo && seckillinfo.status==1) %>
@@ -25,7 +36,7 @@
 		<div class="title"><%spec.title%></div>
 		<div class="select">
 		 <%each spec.items as item%>
-		      <a href="javascript:;" class="btn btn-default btn-sm nav spec-item"  data-id="<%item.id%>" data-thumb="<%item.thumb%>"> <%item.title%> </a>
+		      <a href="javascript:;" class="btn btn-default btn-sm nav spec-item spec-item<%item.id%>" data-id="<%item.id%>" data-thumb="<%item.thumb%>"> <%item.title%> </a>
 		  <%/each%>
 		</div>
 	    </div>

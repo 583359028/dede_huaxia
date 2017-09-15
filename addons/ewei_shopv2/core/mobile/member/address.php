@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -35,9 +34,10 @@ class Address_EweiShopV2Page extends MobileLoginPage
 		$new_area = intval($area_set['new_area']);
 		$address_street = intval($area_set['address_street']);
 		$show_data = 1;
-		if ((!empty($new_area) && empty($address['datavalue'])) || (empty($new_area) && !empty($address['datavalue']))) {
+		if ((!(empty($new_area)) && empty($address['datavalue'])) || (empty($new_area) && !(empty($address['datavalue'])))) {
 			$show_data = 0;
 		}
+
 
 		include $this->template();
 	}
@@ -52,6 +52,7 @@ class Address_EweiShopV2Page extends MobileLoginPage
 		if (empty($data)) {
 			show_json(0, '地址未找到');
 		}
+
 
 		pdo_update('ewei_shop_member_address', array('isdefault' => 0), array('uniacid' => $_W['uniacid'], 'openid' => $_W['openid']));
 		pdo_update('ewei_shop_member_address', array('isdefault' => 1), array('id' => $id, 'uniacid' => $_W['uniacid'], 'openid' => $_W['openid']));
@@ -83,10 +84,11 @@ class Address_EweiShopV2Page extends MobileLoginPage
 				$data['isdefault'] = 1;
 			}
 
+
 			pdo_insert('ewei_shop_member_address', $data);
 			$id = pdo_insertid();
 		}
-		else {
+		 else {
 			pdo_update('ewei_shop_member_address', $data, array('id' => $id, 'uniacid' => $_W['uniacid'], 'openid' => $_W['openid']));
 		}
 
@@ -104,17 +106,20 @@ class Address_EweiShopV2Page extends MobileLoginPage
 			show_json(0, '地址未找到');
 		}
 
+
 		pdo_update('ewei_shop_member_address', array('deleted' => 1), array('id' => $id));
 
 		if ($data['isdefault'] == 1) {
 			pdo_update('ewei_shop_member_address', array('isdefault' => 0), array('uniacid' => $_W['uniacid'], 'openid' => $_W['openid'], 'id' => $id));
 			$data2 = pdo_fetch('select id from ' . tablename('ewei_shop_member_address') . ' where openid=:openid and deleted=0 and uniacid=:uniacid order by id desc limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
 
-			if (!empty($data2)) {
+			if (!(empty($data2))) {
 				pdo_update('ewei_shop_member_address', array('isdefault' => 1), array('uniacid' => $_W['uniacid'], 'openid' => $_W['openid'], 'id' => $data2['id']));
 				show_json(1, array('defaultid' => $data2['id']));
 			}
+
 		}
+
 
 		show_json(1);
 	}
@@ -134,5 +139,6 @@ class Address_EweiShopV2Page extends MobileLoginPage
 		exit();
 	}
 }
+
 
 ?>

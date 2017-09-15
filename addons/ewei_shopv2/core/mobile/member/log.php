@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -27,7 +26,7 @@ class Log_EweiShopV2Page extends MobileLoginPage
 		$list = pdo_fetchall('select * from ' . tablename('ewei_shop_member_log') . ' where 1 ' . $condition . ' order by createtime desc LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member_log') . ' where 1 ' . $condition, $params);
 
-		foreach ($list as &$row) {
+		foreach ($list as &$row ) {
 			$row['createtime'] = date('Y-m-d H:i', $row['createtime']);
 			$row['typestr'] = $apply_type[$row['applytype']];
 		}
@@ -36,5 +35,6 @@ class Log_EweiShopV2Page extends MobileLoginPage
 		show_json(1, array('list' => $list, 'total' => $total, 'pagesize' => $psize));
 	}
 }
+
 
 ?>

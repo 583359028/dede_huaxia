@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -270,7 +269,7 @@ class Index_EweiShopV2Page extends SystemPage
 						foreach ($articles as $article ) {
 							$keyword = pdo_fetch('SELECT * FROM ' . tablename('rule_keyword') . ' WHERE content=:content and module=:module and uniacid=:uniacid limit 1 ', array(':content' => $article['article_keyword'], ':module' => 'ewei_shop', ':uniacid' => $wechatid));
 
-							if (!empty($keyword)) {
+							if (!(empty($keyword))) {
 								pdo_delete('rule_keyword', array('id' => $keyword['id']));
 								pdo_delete('rule', array('id' => $keyword['rid']));
 							}

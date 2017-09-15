@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -14,16 +13,17 @@ class One688_EweiShopV2Page extends PluginWebPage
 		$category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
 		$parent = $children = array();
 
-		if (!empty($category)) {
-			foreach ($category as $cid => $cate) {
-				if (!empty($cate['parentid'])) {
+		if (!(empty($category))) {
+			foreach ($category as $cid => $cate ) {
+				if (!(empty($cate['parentid']))) {
 					$children[$cate['parentid']][] = $cate;
 				}
-				else {
+				 else {
 					$parent[$cate['id']] = $cate;
 				}
 			}
 		}
+
 
 		$shopset = $_W['shopset']['shop'];
 		load()->func('tpl');
@@ -43,22 +43,25 @@ class One688_EweiShopV2Page extends PluginWebPage
 		if (is_numeric($url)) {
 			$itemid = $url;
 		}
-		else {
+		 else {
 			preg_match('/(\\d+).html/i', $url, $matches);
 
 			if (isset($matches[1])) {
 				$itemid = $matches[1];
 			}
+
 		}
 
 		if (empty($itemid)) {
 			exit(json_encode(array('result' => 0, 'error' => '未获取到 itemid!')));
 		}
 
+
 		$ret = $this->model->get_item_one688($itemid, $_GPC['url'], $pcate, $ccate, $tcate);
 		plog('1688.main', '1688抓取宝贝 1688id:' . $itemid);
 		exit(json_encode($ret));
 	}
 }
+
 
 ?>

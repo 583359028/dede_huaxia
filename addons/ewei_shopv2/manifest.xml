@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns="http://www.we7.cc" versionCode="0.6,0.7,0.8">
 	<application setting="false">
-		<name><![CDATA[米云人人店]]></name>
+		<name><![CDATA[人人商城V2]]></name>
 		<identifie><![CDATA[ewei_shopv2]]></identifie>
-		<version><![CDATA[3.3.9]]></version>
+		<version><![CDATA[2.9.6]]></version>
 		<type><![CDATA[business]]></type>
-		<ability><![CDATA[米云人人店]]></ability>
-		<description><![CDATA[米云人人店]]></description>
-		<author><![CDATA[米云网络]]></author>
-		<url><![CDATA[米云网络]]></url>
+		<ability><![CDATA[人人商城(分销),多用户分权，淘宝商品一键转换，多种插件支持。]]></ability>
+		<description><![CDATA[人人商城(分销)，多项信息模板，强大的自定义规格设置]]></description>
+		<author><![CDATA[人人商城]]></author>
+		<url><![CDATA[http://www.we7.cc/]]></url>
 	</application>
 	<platform>
 		<subscribes>
@@ -53,7 +53,7 @@
 	</bindings>
 	<permissions>
 	</permissions>
-	<install><![CDATA[install.php]]></install>
+	<install><![CDATA[]]></install>
 	<uninstall><![CDATA[]]></uninstall>
 	<upgrade><![CDATA[]]></upgrade>
 </manifest>

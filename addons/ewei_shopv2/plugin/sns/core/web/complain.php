@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -20,17 +19,16 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		if ($type == 'processed') {
 			$condition .= ' and checked = 1 and deleted = 0 ';
 		}
-		else if ($type == 'untreated') {
+		 else if ($type == 'untreated') {
 			$condition .= ' and checked = 0 and deleted = 0 ';
 		}
-		else if ($type == 'cancel') {
+		 else if ($type == 'cancel') {
 			$condition .= ' and checked = -1 and deleted = 0 ';
 		}
-		else {
-			if ($type == 'deleted') {
-				$condition .= ' and deleted = 1 ';
-			}
+		 else if ($type == 'deleted') {
+			$condition .= ' and deleted = 1 ';
 		}
+
 
 		$starttime = intval($_GPC['']);
 		if (empty($starttime) || empty($endtime)) {
@@ -38,48 +36,53 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			$endtime = time();
 		}
 
+
 		$searchtime = trim($_GPC['searchtime']);
 
-		if (!empty($searchtime)) {
+		if (!(empty($searchtime))) {
 			$condition .= ' and ' . $searchtime . 'time > ' . strtotime($_GPC['time']['start']) . ' and ' . $searchtime . 'time < ' . strtotime($_GPC['time']['end']) . ' ';
 			$starttime = strtotime($_GPC['time']['start']);
 			$endtime = strtotime($_GPC['time']['end']);
 		}
 
-		if (!empty($_GPC['keyword'])) {
+
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' and complaint_text like :keyword ';
 			$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
 		}
 
-		$complains = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_sns_complain') . "\r\n\t\t\t\t\tWHERE 1=1 " . $condition . ' ORDER BY id DESC limit ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
+
+		$complains = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_sns_complain') . "\r\n\t\t\t\t\t" . 'WHERE 1=1 ' . $condition . ' ORDER BY id DESC limit ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 
 		if (empty($complains)) {
 			$complains = array();
 		}
 
+
 		$total = pdo_fetchcolumn('SELECT count(1) FROM ' . tablename('ewei_shop_sns_complain') . ' WHERE 1 ' . $condition, $params);
 
-		foreach ($complains as $key => $value) {
+		foreach ($complains as $key => $value ) {
 			$complains[$key]['complainant'] = $this->getMember($value['complainant']);
 			$complains[$key]['defendant'] = $this->getMember($value['defendant']);
-			$post = pdo_fetch('select content from ' . tablename('ewei_shop_sns_post') . "\r\n\t\t\t\t\t\t\t\t\t\t\twhere id = " . $value['postsid'] . ' and uniacid = ' . $value['uniacid'] . ' ');
+			$post = pdo_fetch('select content from ' . tablename('ewei_shop_sns_post') . "\r\n\t\t\t\t\t\t\t\t\t\t\t" . 'where id = ' . $value['postsid'] . ' and uniacid = ' . $value['uniacid'] . ' ');
 			$content = $this->model->replaceContent($post['content']);
 			$complains[$key]['content'] = $content;
 
 			if ($value['complaint_type'] <= 0) {
 				$complains[$key]['typename'] = '其他';
 			}
-			else {
-				$complaint_type = pdo_fetch('select name from ' . tablename('ewei_shop_sns_complaincate') . "\r\n\t\t\t\t\t\t\t\t\t\t\twhere id = " . $value['complaint_type'] . ' and uniacid = ' . $value['uniacid'] . ' ');
+			 else {
+				$complaint_type = pdo_fetch('select name from ' . tablename('ewei_shop_sns_complaincate') . "\r\n\t\t\t\t\t\t\t\t\t\t\t" . 'where id = ' . $value['complaint_type'] . ' and uniacid = ' . $value['uniacid'] . ' ');
 				$complains[$key]['typename'] = $complaint_type['name'];
 			}
 
 			$complains[$key]['images'] = iunserializer($value['images']);
 
-			if (!is_array($value['images'])) {
+			if (!(is_array($value['images']))) {
 				$value['images'] = array();
 			}
+
 		}
 
 		$pager = pagination($total, $pindex, $psize);
@@ -93,8 +96,9 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,checked FROM ' . tablename('ewei_shop_sns_complain') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
@@ -102,17 +106,19 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			$items = array();
 		}
 
-		foreach ($items as $item) {
+
+		foreach ($items as $item ) {
 			if ($item['checked'] == 0) {
 				$delete_update = pdo_update('ewei_shop_sns_complain', array('deleted' => 1, 'checked' => -1), array('id' => $item['id'], 'uniacid' => $_W['uniacid']));
 			}
-			else {
+			 else {
 				$delete_update = pdo_update('ewei_shop_sns_complain', array('deleted' => 1), array('id' => $item['id'], 'uniacid' => $_W['uniacid']));
 			}
 
-			if (!$delete_update) {
+			if (!($delete_update)) {
 				show_json(0, '删除投诉失败！');
 			}
+
 
 			plog('sns.posts.complain.delete', '删除投诉 ID: ' . $id . ' ');
 		}
@@ -127,8 +133,9 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id FROM ' . tablename('ewei_shop_sns_complain') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
@@ -136,7 +143,8 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			$items = array();
 		}
 
-		foreach ($items as $item) {
+
+		foreach ($items as $item ) {
 			pdo_delete('ewei_shop_sns_complain', array('id' => $item['id']));
 			plog('sns.posts.complain.delete1', '彻底删除投诉 ID: ' . $id . ' ');
 		}
@@ -155,12 +163,13 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			show_json(0, '该投诉申请不存在！');
 		}
 
+
 		$type = intval($_GPC['type']);
 
 		if ($type <= 0) {
 			$typename['name'] = '其他';
 		}
-		else {
+		 else {
 			$typename = pdo_fetch('select name from ' . tablename('ewei_shop_sns_complaincate') . ' where id = ' . $type . ' and uniacid = ' . $_W['uniacid'] . ' ');
 		}
 
@@ -168,13 +177,15 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		$post['content'] = $this->model->replaceContent($post['content']);
 		$post['images'] = iunserializer($post['images']);
 
-		if (!is_array($post['images'])) {
+		if (!(is_array($post['images']))) {
 			$post['images'] = array();
 		}
+
 
 		if (empty($post)) {
 			show_json(0, '该话题/评论不存在！');
 		}
+
 
 		if ($_W['ispost']) {
 			$status = intval($_GPC['status']);
@@ -182,29 +193,31 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			if ($status == 1) {
 				$delete_update = pdo_update('ewei_shop_sns_post', array('deleted' => 1), array('id' => $complain['postsid'], 'uniacid' => $_W['uniacid']));
 				$delete_update = pdo_update('ewei_shop_sns_post', array('deleted' => 1), array('rpid' => $complain['postsid'], 'uniacid' => $_W['uniacid']));
-				$complainPost = pdo_fetchall('select id from ' . tablename('ewei_shop_sns_complain') . "\r\n\t\t\t\twhere postsid = " . $complain['postsid'] . ' and uniacid = ' . $_W['uniacid'] . ' and checked = 0 ');
+				$complainPost = pdo_fetchall('select id from ' . tablename('ewei_shop_sns_complain') . "\r\n\t\t\t\t" . 'where postsid = ' . $complain['postsid'] . ' and uniacid = ' . $_W['uniacid'] . ' and checked = 0 ');
 
 				if (empty($complainPost)) {
 					$complainPost = array();
 				}
 
-				foreach ($complainPost as $key => $value) {
+
+				foreach ($complainPost as $key => $value ) {
 					$delete_update = pdo_update('ewei_shop_sns_complain', array('checked' => 1), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
 					plog('sns.posts.complain.checked', '投诉 ID: ' . $id . ' 已处理，该话题/评论已删除！');
 					$resule = $this->sendComMessage($value['id']);
 				}
 			}
-			else if ($status == -1) {
+			 else if ($status == -1) {
 				$delete_update = pdo_update('ewei_shop_sns_complain', array('checked' => -1), array('id' => $id, 'uniacid' => $_W['uniacid']));
 				plog('sns.posts.complain.checked', '投诉 ID: ' . $id . ' 未通过审核！');
 				$resule = $this->sendComMessage($id, false);
 			}
-			else {
+			 else {
 				show_json(0, '请选择处理方式！');
 			}
 
 			show_json(1);
 		}
+
 
 		include $this->template();
 	}
@@ -217,38 +230,42 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		$complainid = intval($complainid);
 
 		if (empty($complainid)) {
-			return NULL;
+			return;
 		}
+
 
 		$complain = pdo_fetch('select id,complainant,postsid from ' . tablename('ewei_shop_sns_complain') . ' where id = ' . $complainid . ' and uniacid = ' . $uniacid . ' ');
 
 		if (empty($complain)) {
-			return NULL;
+			return;
 		}
+
 
 		$member = $this->model->getMember($complain['complainant']);
 
 		if (empty($member)) {
-			return NULL;
+			return;
 		}
+
 
 		$post = pdo_fetch('select id,pid from ' . tablename('ewei_shop_sns_post') . ' where id = ' . $complain['postsid'] . ' and uniacid = ' . $uniacid . ' ');
 
 		if (empty($post)) {
-			return NULL;
+			return;
 		}
+
 
 		if ($post['pid'] == 0) {
 			$info = '话题';
 		}
-		else {
+		 else {
 			$info = '评论';
 		}
 
 		if ($type == false) {
 			$remark = '您提交的对于' . $member['nickname'] . '发表' . $info . '的投诉未通过审核！谢谢您的关注！';
 		}
-		else {
+		 else {
 			$remark = '您提交的对于' . $member['nickname'] . '发表' . $info . '的投诉通过审核！相关内容已删除，感谢您的支持！';
 		}
 
@@ -266,8 +283,9 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id FROM ' . tablename('ewei_shop_sns_complain') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
@@ -275,7 +293,8 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			$items = array();
 		}
 
-		foreach ($items as $item) {
+
+		foreach ($items as $item ) {
 			pdo_update('ewei_shop_sns_complain', array('deleted' => 0, 'checked' => 0), array('id' => $item['id']));
 			plog('sns.posts.complain.restore', '恢复投诉 ID: ' . $id . ' ');
 		}
@@ -290,10 +309,11 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 		$item = pdo_fetch('SELECT id,name FROM ' . tablename('ewei_shop_sns_complaincate') . ' WHERE id = ' . $id . ' AND uniacid=' . $_W['uniacid'] . '');
 
-		if (!empty($item)) {
+		if (!(empty($item))) {
 			pdo_delete('ewei_shop_sns_complaincate', array('id' => $id));
 			plog('sns.posts.complaincate.delete', '删除投诉分类 ID: ' . $id . ' 标题: ' . $item['name'] . ' ');
 		}
+
 
 		show_json(1);
 	}
@@ -303,8 +323,8 @@ class Complain_EweiShopV2Page extends PluginWebPage
 		global $_W;
 		global $_GPC;
 
-		if (!empty($_GPC['catid'])) {
-			foreach ($_GPC['catid'] as $key => $value) {
+		if (!(empty($_GPC['catid']))) {
+			foreach ($_GPC['catid'] as $key => $value ) {
 				$data = array('name' => trim($_GPC['catname'][$key]), 'displayorder' => $key, 'status' => intval($_GPC['status'][$key]), 'uniacid' => $_W['uniacid']);
 
 				if (empty($value)) {
@@ -312,7 +332,7 @@ class Complain_EweiShopV2Page extends PluginWebPage
 					$insert_id = pdo_insertid();
 					plog('sns.posts.complaincate.add', '添加投诉分类 ID: ' . $insert_id);
 				}
-				else {
+				 else {
 					pdo_update('ewei_shop_sns_complaincate', $data, array('id' => $value));
 					plog('sns.posts.complaincate.edit', '修改投诉分类 ID: ' . $value);
 				}
@@ -321,6 +341,7 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			plog('sns.posts.complaincate.edit', '批量修改投诉分类');
 			show_json(1);
 		}
+
 
 		$list = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_sns_complaincate') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\' ORDER BY displayorder asc');
 		include $this->template();
@@ -340,12 +361,13 @@ class Complain_EweiShopV2Page extends PluginWebPage
 			if (empty($info)) {
 				$info = pdo_fetch('select id,avatar,nickname from ' . tablename('ewei_shop_member') . ' where  openid_qq=:openid and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => str_replace('qq_', '', $openid)));
 			}
+
 		}
-		else {
+		 else {
 			$info = pdo_fetch('select id,avatar,nickname from ' . tablename('ewei_shop_member') . ' where id=:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $openid));
 		}
 
-		if (!empty($info)) {
+		if (!(empty($info))) {
 			$openid = $info['openid'];
 
 			if (empty($info['uid'])) {
@@ -355,7 +377,7 @@ class Complain_EweiShopV2Page extends PluginWebPage
 					load()->model('mc');
 					$uid = mc_openid2uid($openid);
 
-					if (!empty($uid)) {
+					if (!(empty($uid))) {
 						$info['uid'] = $uid;
 						$upgrade = array('uid' => $uid);
 
@@ -364,25 +386,33 @@ class Complain_EweiShopV2Page extends PluginWebPage
 							$upgrade['credit1'] = 0;
 						}
 
+
 						if (0 < $info['credit2']) {
 							mc_credit_update($uid, 'credit2', $info['credit2']);
 							$upgrade['credit2'] = 0;
 						}
 
-						if (!empty($upgrade)) {
+
+						if (!(empty($upgrade))) {
 							pdo_update('ewei_shop_member', $upgrade, array('id' => $info['id']));
 						}
+
 					}
+
 				}
+
 			}
+
 
 			$credits = m('member')->getCredits($openid);
 			$info['credit1'] = $credits['credit1'];
 			$info['credit2'] = $credits['credit2'];
 		}
 
+
 		return $info;
 	}
 }
+
 
 ?>

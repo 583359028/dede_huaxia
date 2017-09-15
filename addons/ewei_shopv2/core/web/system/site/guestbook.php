@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -11,7 +10,7 @@ class Guestbook_EweiShopV2Page extends SystemPage
 		global $_W;
 		global $_GPC;
 
-		if (!empty($_GPC['catid'])) {
+		if (!(empty($_GPC['catid']))) {
 			foreach ($_GPC['catid'] as $k => $v ) {
 				$data = array('name' => trim($_GPC['catname'][$k]), 'displayorder' => $k, 'status' => intval($_GPC['status'][$k]));
 
@@ -42,7 +41,7 @@ class Guestbook_EweiShopV2Page extends SystemPage
 		$id = intval($_GPC['id']);
 		$item = pdo_fetch('SELECT id,title FROM ' . tablename('ewei_shop_system_guestbook') . ' WHERE id = :id', array(':id' => $id));
 
-		if (!empty($item)) {
+		if (!(empty($item))) {
 			pdo_delete('ewei_shop_system_guestbook', array('id' => $id));
 			plog('system.guestbook.delete', '删除留言 ID: ' . $id . ' 标题: ' . $item['title'] . ' ');
 		}

@@ -1,5 +1,4 @@
 <?php
-//米云网络科技www.symiyun.com
 error_reporting(0);
 require '../../../../../framework/bootstrap.inc.php';
 require '../../../../../addons/ewei_shopv2/defines.php';

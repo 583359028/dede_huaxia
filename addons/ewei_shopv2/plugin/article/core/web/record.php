@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -11,7 +10,7 @@ class Record_EweiShopV2Page extends PluginWebPage
 		global $_W;
 		global $_GPC;
 		$aid = intval($_GPC['aid']);
-		$page = (empty($_GPC['page']) ? '' : $_GPC['page']);
+		$page = ((empty($_GPC['page']) ? '' : $_GPC['page']));
 		$pindex = max(1, intval($page));
 		$psize = 20;
 		$type = trim($_GPC['type']);
@@ -27,13 +26,16 @@ class Record_EweiShopV2Page extends PluginWebPage
 
 		if ($article['article_advance']) {
 			if (0 < $article['article_rule_credittotal']) {
-				$add_credit1 = (($firstreads + ($article['article_virtualadd'] ? $article['article_readnum_v'] : 0)) * $article['article_rule_creditm']) + ($secreads * $article['article_rule_creditm2']);
+				$add_credit1 = (($firstreads + (($article['article_virtualadd'] ? $article['article_readnum_v'] : 0))) * $article['article_rule_creditm']) + ($secreads * $article['article_rule_creditm2']);
 			}
 
+
 			if (0 < $article['article_rule_moneytotal']) {
-				$add_money1 = (($firstreads + ($article['article_virtualadd'] ? $article['article_readnum_v'] : 0)) * $article['article_rule_moneym']) + ($secreads * $article['article_rule_moneym2']);
+				$add_money1 = (($firstreads + (($article['article_virtualadd'] ? $article['article_readnum_v'] : 0))) * $article['article_rule_moneym']) + ($secreads * $article['article_rule_moneym2']);
 			}
+
 		}
+
 
 		$add_credit = pdo_fetchcolumn('SELECT sum(add_credit) FROM ' . tablename('ewei_shop_article_share') . ' WHERE aid=:aid and uniacid=:uniacid ', array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 		$add_money = pdo_fetchcolumn('SELECT sum(add_money) FROM ' . tablename('ewei_shop_article_share') . ' WHERE aid=:aid and uniacid=:uniacid ', array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
@@ -43,7 +45,7 @@ class Record_EweiShopV2Page extends PluginWebPage
 			$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('ewei_shop_article_log') . ' WHERE aid=:aid and uniacid=:uniacid ', array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 			$pager = pagination($total, $pindex, $psize);
 		}
-		else {
+		 else {
 			$list_shares = pdo_fetchall('SELECT s.id,s.click_date,s.add_credit,s.add_money, u.nickname as share_user,c.nickname as click_user, c.id as click_id, u.id as share_id FROM ' . tablename('ewei_shop_article_share') . ' s left join ' . tablename('ewei_shop_member') . ' u on u.id=s.share_user left join ' . tablename('ewei_shop_member') . ' c on c.id=s.click_user  WHERE s.aid=:aid and s.uniacid=:uniacid order by s.id desc limit ' . (($pindex - 1) * $psize) . ',' . $psize, array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 			$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('ewei_shop_article_share') . ' WHERE aid=:aid and uniacid=:uniacid ', array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 			$pager = pagination($total, $pindex, $psize);
@@ -52,5 +54,6 @@ class Record_EweiShopV2Page extends PluginWebPage
 		include $this->template();
 	}
 }
+
 
 ?>

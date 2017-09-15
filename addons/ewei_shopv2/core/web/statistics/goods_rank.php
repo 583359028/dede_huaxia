@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -19,34 +18,40 @@ class Goods_rank_EweiShopV2Page extends WebPage
 			$endtime = time();
 		}
 
-		if (!empty($_GPC['datetime'])) {
+
+		if (!(empty($_GPC['datetime']))) {
 			$starttime = strtotime($_GPC['datetime']['start']);
 			$endtime = strtotime($_GPC['datetime']['end']);
 
-			if (!empty($starttime)) {
+			if (!(empty($starttime))) {
 				$condition .= ' AND o.createtime >= ' . $starttime;
 			}
 
-			if (!empty($endtime)) {
+
+			if (!(empty($endtime))) {
 				$condition .= ' AND o.createtime <= ' . $endtime . ' ';
 			}
+
 		}
+
 
 		$condition1 = ' and g.uniacid=:uniacid';
 		$params1 = array(':uniacid' => $_W['uniacid']);
 
-		if (!empty($_GPC['title'])) {
+		if (!(empty($_GPC['title']))) {
 			$_GPC['title'] = trim($_GPC['title']);
 			$condition1 .= ' and g.title like :title';
 			$params1[':title'] = '%' . $_GPC['title'] . '%';
 		}
 
-		$orderby = (!isset($_GPC['orderby']) ? 'money' : (empty($_GPC['orderby']) ? 'money' : 'count'));
+
+		$orderby = ((!(isset($_GPC['orderby'])) ? 'money' : ((empty($_GPC['orderby']) ? 'money' : 'count'))));
 		$sql = 'SELECT g.id,g.title,g.thumb,' . '(select ifnull(sum(og.price),0) from  ' . tablename('ewei_shop_order_goods') . ' og left join ' . tablename('ewei_shop_order') . ' o on og.orderid=o.id  where o.status>=1 and og.goodsid=g.id ' . $condition . ')  as money,' . '(select ifnull(sum(og.total),0) from  ' . tablename('ewei_shop_order_goods') . ' og left join ' . tablename('ewei_shop_order') . ' o on og.orderid=o.id  where o.status>=1 and og.goodsid=g.id ' . $condition . ') as count  ' . 'from ' . tablename('ewei_shop_goods') . ' g  ' . 'where 1 ' . $condition1 . '  order by ' . $orderby . ' desc ';
 
 		if (empty($_GPC['export'])) {
 			$sql .= 'LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 		}
+
 
 		$list = pdo_fetchall($sql, $params1);
 		$total = pdo_fetchcolumn('select  count(*) from ' . tablename('ewei_shop_goods') . ' g ' . ' where 1 ' . $condition1 . ' ', $params1);
@@ -56,7 +61,7 @@ class Goods_rank_EweiShopV2Page extends WebPage
 			ca('statistics.goods_rank.export');
 			$list[] = array('data' => '商品销售排行', 'count' => $total);
 
-			foreach ($list as &$row) {
+			foreach ($list as &$row ) {
 				$row['createtime'] = date('Y-m-d H:i', $row['createtime']);
 			}
 
@@ -72,9 +77,11 @@ class Goods_rank_EweiShopV2Page extends WebPage
 			plog('statistics.goods_rank.export', '导出商品销售排行');
 		}
 
+
 		load()->func('tpl');
 		include $this->template('statistics/goods_rank');
 	}
 }
+
 
 ?>

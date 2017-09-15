@@ -3,6 +3,7 @@
  * 
 xiaosheshop
  */
+ 
 define('IN_API', true);
 require_once './framework/bootstrap.inc.php';
 load()->model('reply');

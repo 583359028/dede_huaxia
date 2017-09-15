@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -13,7 +12,7 @@ class Perm_EweiShopV2Page extends SystemPage
 		load()->model('user');
 		$path = IA_ROOT . '/addons/ewei_shopv2/data/global';
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path);
 		}
@@ -31,7 +30,7 @@ class Perm_EweiShopV2Page extends SystemPage
 			$condition = '';
 			$params = array();
 
-			if (!empty($_GPC['keyword'])) {
+			if (!(empty($_GPC['keyword']))) {
 				$_GPC['keyword'] = trim($_GPC['keyword']);
 				$condition .= ' and ac.name like :keyword';
 				$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
@@ -53,7 +52,7 @@ class Perm_EweiShopV2Page extends SystemPage
 					$aplugins[] = '\'' . $rp . '\'';
 				}
 
-				if (!empty($aplugins)) {
+				if (!(empty($aplugins))) {
 					$row['plugins'] = pdo_fetchall('select name from ' . tablename('ewei_shop_plugin') . ' where identity in (' . implode(',', $aplugins) . ') and status=1');
 				}
 				 else {
@@ -67,7 +66,7 @@ class Perm_EweiShopV2Page extends SystemPage
 					$acoms[] = '\'' . $rc . '\'';
 				}
 
-				if (!empty($acoms)) {
+				if (!(empty($acoms))) {
 					$row['coms'] = pdo_fetchall('select name from ' . tablename('ewei_shop_plugin') . ' where identity in (' . implode(',', $acoms) . ') and status=1');
 				}
 				 else {
@@ -105,18 +104,18 @@ class Perm_EweiShopV2Page extends SystemPage
 		$item_plugins = array();
 		$item_coms = array();
 
-		if (!empty($item)) {
+		if (!(empty($item))) {
 			$item_plugins = explode(',', $item['plugins']);
 			$item_coms = explode(',', $item['coms']);
 			$user = pdo_fetch('select uid,username from ' . tablename('users') . ' where uid=:uid limit 1', array(':uid' => $item['uid']));
 			$account = pdo_fetch('select acid,name from ' . tablename('account_wechats') . ' where acid=:acid limit 1', array(':acid' => $item['acid']));
-			$datas = ((!empty($item['datas']) ? json_decode($item['datas'], true) : array()));
+			$datas = ((!(empty($item['datas'])) ? json_decode($item['datas'], true) : array()));
 		}
 
 
 		if ($_W['ispost']) {
 			$data = array('type' => 1, 'acid' => intval($_GPC['acid']), 'uid' => intval($_GPC['uid']), 'plugins' => (is_array($_GPC['plugins']) ? implode(',', $_GPC['plugins']) : ''), 'coms' => (is_array($_GPC['coms']) ? implode(',', $_GPC['coms']) : ''));
-			$data['datas'] = (is_array($_GPC['datas']) ? json_encode($_GPC['datas']) : array());
+			$data['datas'] = ((is_array($_GPC['datas']) ? json_encode($_GPC['datas']) : array()));
 
 			if (empty($data['type'])) {
 				$data['acid'] = 0;
@@ -125,7 +124,7 @@ class Perm_EweiShopV2Page extends SystemPage
 				$data['uid'] = 0;
 			}
 
-			if (!empty($id)) {
+			if (!(empty($id))) {
 				pdo_update('ewei_shop_perm_plugin', $data, array('id' => $id));
 			}
 			 else {
@@ -171,7 +170,7 @@ class Perm_EweiShopV2Page extends SystemPage
 		$params = array();
 		$condition = ' ';
 
-		if (!empty($kwd)) {
+		if (!(empty($kwd))) {
 			$condition .= ' AND acc.isdeleted=0 AND ( a.name LIKE :keyword or u.username like :keyword)';
 			$params[':keyword'] = '%' . $kwd . '%';
 		}
@@ -185,7 +184,7 @@ class Perm_EweiShopV2Page extends SystemPage
 	{
 		$path = IA_ROOT . '/addons/ewei_shopv2/data/global';
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path);
 		}

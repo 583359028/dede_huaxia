@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -25,6 +24,7 @@ class Util_EweiShopV2Page extends WebPage
 				$maxlen = $addlen;
 			}
 
+
 			$arr[] = $add;
 			++$i;
 		}
@@ -38,6 +38,7 @@ class Util_EweiShopV2Page extends WebPage
 			if (0 < $zerocount) {
 				$arr[$i] = str_pad($arr[$i], $maxlen, '0', STR_PAD_LEFT);
 			}
+
 
 			++$i;
 		}
@@ -64,5 +65,6 @@ class Util_EweiShopV2Page extends WebPage
 		include $this->template();
 	}
 }
+
 
 ?>

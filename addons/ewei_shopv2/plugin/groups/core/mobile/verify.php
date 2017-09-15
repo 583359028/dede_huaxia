@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -27,23 +26,26 @@ class Verify_EweiShopV2Page extends PluginMobileLoginPage
 			show_json(0);
 		}
 
+
 		$order = pdo_fetch('select id,verifyinfo from ' . tablename('ewei_shop_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
 
 		if (empty($order)) {
 			show_json(0);
 		}
 
+
 		$verifyinfo = iunserializer($order['verifyinfo']);
 
-		foreach ($verifyinfo as &$v) {
+		foreach ($verifyinfo as &$v ) {
 			if ($v['verifycode'] == $verifycode) {
-				if (!empty($v['select'])) {
+				if (!(empty($v['select']))) {
 					$v['select'] = 0;
 				}
-				else {
+				 else {
 					$v['select'] = 1;
 				}
 			}
+
 		}
 
 		unset($v);
@@ -64,13 +66,16 @@ class Verify_EweiShopV2Page extends PluginMobileLoginPage
 			show_json(0);
 		}
 
+
 		if (empty($order['isverify'])) {
 			show_json(0);
 		}
 
+
 		if ($order['verifytype'] == 0) {
 			show_json(0);
 		}
+
 
 		show_json(1);
 	}
@@ -87,6 +92,7 @@ class Verify_EweiShopV2Page extends PluginMobileLoginPage
 		if (is_error($data)) {
 			$this->message($data['message']);
 		}
+
 
 		extract($data);
 		include $this->template();
@@ -113,5 +119,6 @@ class Verify_EweiShopV2Page extends PluginMobileLoginPage
 		$this->message(array('title' => '操作完成', 'message' => '您可以退出浏览器了'), 'javascript:WeixinJSBridge.call("closeWindow");', 'success');
 	}
 }
+
 
 ?>

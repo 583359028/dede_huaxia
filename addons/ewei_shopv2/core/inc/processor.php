@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -14,22 +13,24 @@ class Processor extends WeModuleProcessor
 			return false;
 		}
 
+
 		$names = explode(':', $rule['name']);
-		$plugin = (isset($names[1]) ? $names[1] : '');
+		$plugin = ((isset($names[1]) ? $names[1] : ''));
 		$processname = $plugin;
 
-		if (!empty($plugin)) {
+		if (!(empty($plugin))) {
 			if ($plugin == 'com') {
-				$com = (isset($names[2]) ? $names[2] : '');
+				$com = ((isset($names[2]) ? $names[2] : ''));
 
 				if (empty($com)) {
 					return false;
 				}
 
+
 				$processname = $com;
 				$processor_file = EWEI_SHOPV2_PROCESSOR . $com . '.php';
 			}
-			else {
+			 else {
 				$processor_file = EWEI_SHOPV2_PLUGIN . $plugin . '/core/processor.php';
 			}
 
@@ -41,9 +42,13 @@ class Processor extends WeModuleProcessor
 				if (method_exists($proc, 'respond')) {
 					return $proc->respond($this);
 				}
+
 			}
+
 		}
+
 	}
 }
+
 
 ?>

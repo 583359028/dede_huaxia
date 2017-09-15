@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -12,7 +11,7 @@ class Coms_EweiShopV2Page extends SystemPage
 		global $_GPC;
 
 		if ($_W['ispost']) {
-			if (!empty($_GPC['name'])) {
+			if (!(empty($_GPC['name']))) {
 				foreach ($_GPC['name'] as $id => $name ) {
 					pdo_update('ewei_shop_plugin', array('status' => $_GPC['status'][$id], 'name' => $_GPC['name'][$id]), array('id' => $id));
 				}
@@ -26,7 +25,7 @@ class Coms_EweiShopV2Page extends SystemPage
 
 		$condition = ' and iscom=1 and deprecated=0';
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$condition .= ' and identity like :keyword or name like :keyword';
 			$params[':keyword'] = '%' . $_GPC['keyword'];
 		}

@@ -176,14 +176,14 @@
 </form>
 
 <script language="javascript">
-
-    $("select[name=express]").val("{$item['express']}");
+    $("select[name=express]").val("{if !empty($item['expresssn'])}{$item['express']}{else}{$item['dispatchkey']}{/if}");
 
     $("#express").change(function () {
         var obj = $(this);
         var sel = obj.find("option:selected").attr("data-name");
         $("#expresscom").val(sel);
     });
+
 	$("input[name=sendtype]").off("click").on("click",function(){
 		window.sendtype = $(this).val();
 		if(window.sendtype==1){
@@ -192,6 +192,8 @@
 			$(".sendpress").hide();
 		}
 	});
+
+    $("#express").change();
 
 </script>
 

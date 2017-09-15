@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require EWEI_SHOPV2_PLUGIN . 'commission/core/page_login_mobile.php';
 class Withdraw_EweiShopV2Page extends CommissionMobileLoginPage
@@ -16,17 +16,18 @@ class Withdraw_EweiShopV2Page extends CommissionMobileLoginPage
 		$cansettle = (1 <= $member['commission_ok']) && (floatval($this->set['withdraw']) <= $member['commission_ok']);
 		$agentid = $member['agentid'];
 
-		if (!empty($agentid)) {
+		if (!(empty($agentid))) {
 			$data = pdo_fetch('select sum(charge) as sumcharge from ' . tablename('ewei_shop_commission_log') . ' where mid=:mid and uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':mid' => $agentid));
 			$commission_charge = $data['sumcharge'];
 			$member['commission_charge'] = $commission_charge;
 		}
-		else {
+		 else {
 			$member['commission_charge'] = 0;
 		}
 
 		include $this->template();
 	}
 }
+
 
 ?>

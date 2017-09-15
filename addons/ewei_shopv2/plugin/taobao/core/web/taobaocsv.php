@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 define('IA_ROOT', str_replace('\\', '/', dirname(dirname(__FILE__))));
 require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel/Reader/CSV.php';
@@ -23,34 +23,41 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 			$i = 0;
 			$colsIndex = array();
 
-			foreach ($rows[0] as $cols => $col) {
+			foreach ($rows[0] as $cols => $col ) {
 				if ($col == 'title') {
 					$colsIndex['title'] = $i;
 				}
+
 
 				if ($col == 'price') {
 					$colsIndex['price'] = $i;
 				}
 
+
 				if ($col == 'num') {
 					$colsIndex['num'] = $i;
 				}
+
 
 				if ($col == 'description') {
 					$colsIndex['description'] = $i;
 				}
 
+
 				if ($col == 'skuProps') {
 					$colsIndex['skuProps'] = $i;
 				}
+
 
 				if ($col == 'picture') {
 					$colsIndex['picture'] = $i;
 				}
 
+
 				if ($col == 'propAlias') {
 					$colsIndex['propAlias'] = $i;
 				}
+
 
 				++$i;
 			}
@@ -62,7 +69,7 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 			$this->get_zip_originalsize($_FILES['zipfile']['tmp_name'], '../attachment/images/' . $_W['uniacid'] . '/' . date('Y') . '/' . date('m') . '/');
 			$num = 0;
 
-			foreach ($rows as $rownu => $col) {
+			foreach ($rows as $rownu => $col ) {
 				$item = array();
 				$item['title'] = $col[$colsIndex[title]];
 				$item['marketprice'] = $col[$colsIndex[price]];
@@ -73,10 +80,11 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 				$pics = array();
 				$optionpics = array();
 
-				foreach ($allpics as $imgurl) {
+				foreach ($allpics as $imgurl ) {
 					if (empty($imgurl)) {
 						continue;
 					}
+
 
 					$picDetail = explode('|', $imgurl);
 					$picDetail = explode(':', $picDetail[0]);
@@ -87,10 +95,13 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 							$pics[] = $imgurl;
 						}
 
+
 						if ($picDetail[1] == 2) {
 							$optionpics[$picDetail[0]] = $imgurl;
 						}
+
 					}
+
 				}
 
 				$item['pics'] = $pics;
@@ -103,6 +114,7 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 			$uploadStart = '1';
 			$uploadnum = $num;
 		}
+
 
 		include $this->template();
 	}
@@ -122,14 +134,16 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 			unset($_SESSION['taobaoCSV']);
 		}
 
+
 		exit(json_encode($ret));
 	}
 
 	public function get_zip_originalsize($filename, $path)
 	{
-		if (!file_exists($filename)) {
+		if (!(file_exists($filename))) {
 			exit('文件 ' . $filename . ' 不存在！');
 		}
+
 
 		$filename = iconv('utf-8', 'gb2312', $filename);
 		$path = iconv('utf-8', 'gb2312', $path);
@@ -141,11 +155,12 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 				$file_name = $path . zip_entry_name($dir_resource);
 				$file_path = substr($file_name, 0, strrpos($file_name, '/'));
 
-				if (!is_dir($file_path)) {
+				if (!(is_dir($file_path))) {
 					mkdir($file_path, 511, true);
 				}
 
-				if (!is_dir($file_name)) {
+
+				if (!(is_dir($file_name))) {
 					$file_size = zip_entry_filesize($dir_resource);
 
 					if ($file_size < (1024 * 1024 * 10)) {
@@ -155,21 +170,24 @@ class Taobaocsv_EweiShopV2Page extends PluginWebPage
 						if ($ext == '.png') {
 							file_put_contents($file_name, $file_content);
 						}
-						else {
-							if ($ext == '.tbi') {
-								$file_name = substr($file_name, 0, strlen($file_name) - 4);
-								file_put_contents($file_name . '.png', $file_content);
-							}
+						 else if ($ext == '.tbi') {
+							$file_name = substr($file_name, 0, strlen($file_name) - 4);
+							file_put_contents($file_name . '.png', $file_content);
 						}
+
 					}
+
 				}
+
 
 				zip_entry_close($dir_resource);
 			}
+
 		}
 
 		zip_close($resource);
 	}
 }
+
 
 ?>

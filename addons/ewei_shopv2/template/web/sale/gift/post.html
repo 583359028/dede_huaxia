@@ -46,7 +46,7 @@
                         <label class="col-sm-2 control-label">活动类型</label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="hidden" name="activitytype" value="{$item['activity']}">
-                            {ife 'sale.gif' $item}
+                            {ife 'sale.gift' $item}
                             <label class="radio-inline">
                                 <input type="radio" name="activity" value="1" {if !empty($item['id'])}disabled{/if} {if empty($item['activity']) || $item['activity'] == 1}checked="true"{/if} onclick="$('#order').show();$('#product').hide();" />
                                 订单金额

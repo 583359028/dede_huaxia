@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -17,6 +16,7 @@ class Category_EweiShopV2Page extends MobilePage
 		if ($category_set['level'] == -1) {
 			$this->message('暂时未开启分类', '', 'error');
 		}
+
 
 		$category = $this->getCategory($category_set['level'], $merchid);
 		$set = m('common')->getSysset('category');
@@ -37,65 +37,79 @@ class Category_EweiShopV2Page extends MobilePage
 			if ($merch_plugin && $merch_data['is_openmerch']) {
 				$is_openmerch = 1;
 			}
-			else {
+			 else {
 				$is_openmerch = 0;
 			}
 
 			if ($is_openmerch) {
 				$merch_category = $merch_plugin->getSet('merch_category', $merchid);
 
-				if (!empty($merch_category)) {
-					if (!empty($category['parent'])) {
-						foreach ($category['parent'] as $key => $value) {
+				if (!(empty($merch_category))) {
+					if (!(empty($category['parent']))) {
+						foreach ($category['parent'] as $key => $value ) {
 							if (array_key_exists($value['id'], $merch_category)) {
 								$category['parent'][$key]['enabled'] = $merch_category[$value['id']];
 							}
+
 						}
 					}
 
-					if (!empty($category['children'])) {
-						foreach ($category['children'] as $key => $value) {
-							if (!empty($value)) {
-								foreach ($value as $k => $v) {
+
+					if (!(empty($category['children']))) {
+						foreach ($category['children'] as $key => $value ) {
+							if (!(empty($value))) {
+								foreach ($value as $k => $v ) {
 									if (array_key_exists($v['id'], $merch_category)) {
 										$category['children'][$key][$k]['enabled'] = $merch_category[$v['id']];
 									}
+
 								}
 							}
+
 						}
 					}
+
 				}
+
 			}
+
 		}
 
-		foreach ($category['parent'] as $value) {
+
+		foreach ($category['parent'] as $value ) {
 			if ($value['enabled'] == 1) {
 				$value['thumb'] = tomedia($value['thumb']);
 				$value['advimg'] = tomedia($value['advimg']);
 				$category_parent[$value['parentid']][] = $value;
-				if (!empty($category['children'][$value['id']]) && (2 <= $level)) {
-					foreach ($category['children'][$value['id']] as $val) {
+				if (!(empty($category['children'][$value['id']])) && (2 <= $level)) {
+					foreach ($category['children'][$value['id']] as $val ) {
 						if ($val['enabled'] == 1) {
 							$val['thumb'] = tomedia($val['thumb']);
 							$val['advimg'] = tomedia($val['advimg']);
 							$category_children[$val['parentid']][] = $val;
-							if (!empty($category['children'][$val['id']]) && (3 <= $level)) {
-								foreach ($category['children'][$val['id']] as $v) {
+							if (!(empty($category['children'][$val['id']])) && (3 <= $level)) {
+								foreach ($category['children'][$val['id']] as $v ) {
 									if ($v['enabled'] == 1) {
 										$v['thumb'] = tomedia($v['thumb']);
 										$v['advimg'] = tomedia($v['advimg']);
 										$category_grandchildren[$v['parentid']][] = $v;
 									}
+
 								}
 							}
+
 						}
+
 					}
 				}
+
 			}
+
 		}
 
 		return array('parent' => $category_parent, 'children' => $category_children, 'grandchildren' => $category_grandchildren);
 	}
 }
+
 
 ?>

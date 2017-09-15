@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -20,13 +19,15 @@ class Label_EweiShopV2Page extends WebPage
 			$condition .= ' and status=' . intval($_GPC['enabled']);
 		}
 
-		if (!empty($_GPC['keyword'])) {
+
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' and label like :keyword';
 			$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
 		}
 
-		$label = pdo_fetchall('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . "\r\n                WHERE uniacid=:uniacid " . $condition . ' order by id limit ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
+
+		$label = pdo_fetchall('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . "\r\n" . '                WHERE uniacid=:uniacid ' . $condition . ' order by id limit ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT count(1) FROM ' . tablename('ewei_shop_goods_label') . ' WHERE uniacid=:uniacid ' . $condition, $params);
 		$pager = pagination($total, $pindex, $psize);
 		include $this->template();
@@ -49,23 +50,25 @@ class Label_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 		$uniacid = intval($_W['uniacid']);
 
-		if (!empty($id)) {
-			$item = pdo_fetch('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . "\r\n                    WHERE id=:id and uniacid=:uniacid limit 1 ", array(':id' => $id, ':uniacid' => $uniacid));
+		if (!(empty($id))) {
+			$item = pdo_fetch('SELECT id,uniacid,label,labelname,status,displayorder FROM ' . tablename('ewei_shop_goods_label') . "\r\n" . '                    WHERE id=:id and uniacid=:uniacid limit 1 ', array(':id' => $id, ':uniacid' => $uniacid));
 			$labelname = json_decode($item['labelname'], true);
 		}
+
 
 		if ($_W['ispost']) {
 			if (empty($_GPC['labelname'])) {
 				$_GPC['labelname'] = array();
 			}
 
+
 			$data = array('label' => trim($_GPC['label']), 'labelname' => json_encode(array_filter($_GPC['labelname'])), 'status' => intval($_GPC['status']));
 
-			if (!empty($item)) {
+			if (!(empty($item))) {
 				pdo_update('ewei_shop_goods_label', $data, array('id' => $item['id']));
 				plog('goods.label.edit', '修改标签组 ID: ' . $id);
 			}
-			else {
+			 else {
 				$data['uniacid'] = $uniacid;
 				pdo_insert('ewei_shop_goods_label', $data);
 				$id = pdo_insertid();
@@ -74,6 +77,7 @@ class Label_EweiShopV2Page extends WebPage
 
 			show_json(1, array('url' => webUrl('goods/label/edit', array('id' => $id))));
 		}
+
 
 		include $this->template();
 	}
@@ -85,8 +89,9 @@ class Label_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,label FROM ' . tablename('ewei_shop_goods_label') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
@@ -94,7 +99,8 @@ class Label_EweiShopV2Page extends WebPage
 			$item = array();
 		}
 
-		foreach ($items as $item) {
+
+		foreach ($items as $item ) {
 			pdo_delete('ewei_shop_goods_label', array('id' => $item['id']));
 			plog('goods.edit', '从回收站彻底删除标签组<br/>ID: ' . $item['id'] . '<br/>标签组名称: ' . $item['label']);
 		}
@@ -109,8 +115,9 @@ class Label_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,label FROM ' . tablename('ewei_shop_goods_label') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
@@ -118,9 +125,10 @@ class Label_EweiShopV2Page extends WebPage
 			$item = array();
 		}
 
-		foreach ($items as $item) {
+
+		foreach ($items as $item ) {
 			pdo_update('ewei_shop_goods_label', array('status' => intval($_GPC['status'])), array('id' => $item['id']));
-			plog('goods.label.edit', ('修改标签组状态<br/>ID: ' . $item['id'] . '<br/>标签组名称: ' . $item['label'] . '<br/>状态: ' . $_GPC['status']) == 1 ? '上架' : '下架');
+			plog('goods.label.edit', (('修改标签组状态<br/>ID: ' . $item['id'] . '<br/>标签组名称: ' . $item['label'] . '<br/>状态: ' . $_GPC['status']) == 1 ? '上架' : '下架'));
 		}
 
 		show_json(1, array('url' => referer()));
@@ -135,10 +143,11 @@ class Label_EweiShopV2Page extends WebPage
 		$params[':uniacid'] = $_W['uniacid'];
 		$condition = ' and uniacid=:uniacid and status = 1 ';
 
-		if (!empty($kwd)) {
+		if (!(empty($kwd))) {
 			$condition .= ' AND label LIKE :keywords ';
 			$params[':keywords'] = '%' . $kwd . '%';
 		}
+
 
 		$labels = pdo_fetchall('SELECT id,label,labelname FROM ' . tablename('ewei_shop_goods_label') . ' WHERE 1 ' . $condition . ' order by id desc', $params);
 
@@ -146,7 +155,8 @@ class Label_EweiShopV2Page extends WebPage
 			$labels = array();
 		}
 
-		foreach ($labels as $key => $value) {
+
+		foreach ($labels as $key => $value ) {
 			$labels[$key]['labelname'] = json_decode($value['labelname'], true);
 		}
 
@@ -163,6 +173,7 @@ class Label_EweiShopV2Page extends WebPage
 			show_json(0, '您查找的标签组不存在或已删除！');
 		}
 
+
 		$params = array(':uniacid' => $_W['uniacid'], ':id' => $id, ':status' => 1);
 		$condition = ' and id = :id and uniacid=:uniacid and status = :status ';
 		$labels = pdo_fetch('SELECT id,label,labelname FROM ' . tablename('ewei_shop_goods_label') . ' WHERE 1 ' . $condition . ' order by id desc', $params);
@@ -171,6 +182,7 @@ class Label_EweiShopV2Page extends WebPage
 			$labels = array();
 			show_json(0, '您查找的标签组不存在或已删除！');
 		}
+
 
 		$labels['labelname'] = json_decode($labels['labelname'], true);
 		show_json(1, array('label' => $labels['labelname']));
@@ -186,11 +198,11 @@ class Label_EweiShopV2Page extends WebPage
 		if ($_W['ispost']) {
 			$data['style'] = intval($_GPC['style']);
 
-			if (!empty($style)) {
+			if (!(empty($style))) {
 				pdo_update('ewei_shop_goods_labelstyle', $data, array('uniacid' => $uniacid));
 				plog('goods.labelstyle.edit', '修改标签组样式');
 			}
-			else {
+			 else {
 				$data['uniacid'] = $uniacid;
 				pdo_insert('ewei_shop_goods_labelstyle', $data);
 				$id = pdo_insertid();
@@ -200,8 +212,10 @@ class Label_EweiShopV2Page extends WebPage
 			show_json(1, array('url' => webUrl('goods/label/style')));
 		}
 
+
 		include $this->template();
 	}
 }
+
 
 ?>

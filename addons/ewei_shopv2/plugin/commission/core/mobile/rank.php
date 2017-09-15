@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require EWEI_SHOPV2_PLUGIN . 'commission/core/page_login_mobile.php';
 class Rank_EweiShopV2Page extends CommissionMobileLoginPage
@@ -27,6 +27,7 @@ class Rank_EweiShopV2Page extends CommissionMobileLoginPage
 			exit();
 		}
 
+
 		$commission_rank = $this->commission_rank;
 
 		switch ($this->commission_rank['type']) {
@@ -41,13 +42,14 @@ class Rank_EweiShopV2Page extends CommissionMobileLoginPage
 			$result = pdo_fetchall('SELECT c.id,c.mid,SUM(c.commission_pay)  as commission_pay,m.nickname,m.avatar FROM ' . tablename('ewei_shop_commission_apply') . ' c LEFT JOIN ' . tablename('ewei_shop_member') . ' m ON c.mid=m.id WHERE c.uniacid = :uniacid AND c.status=3  GROUP BY c.mid ORDER BY commission_pay DESC LIMIT ' . intval($commission_rank['num']), array(':uniacid' => $_W['uniacid']));
 			$paiming = 0;
 
-			foreach ($result as $key => $val) {
+			foreach ($result as $key => $val ) {
 				if ($val['mid'] == $user['id']) {
 					$paiming += $key + 1;
 				}
+
 			}
 
-			$user['paiming'] = empty($paiming) ? '未上榜' : $paiming;
+			$user['paiming'] = ((empty($paiming) ? '未上榜' : $paiming));
 			$commission_title = '已提现佣金';
 			break;
 
@@ -67,10 +69,11 @@ class Rank_EweiShopV2Page extends CommissionMobileLoginPage
 		$psize = 20;
 
 		if ($this->commission_rank['num'] <= $pindex * $psize) {
-			$psize = (($this->commission_rank['num'] % $psize) == 0 ? 20 : $this->commission_rank['num'] % $psize);
+			$psize = ((($this->commission_rank['num'] % $psize) == 0 ? 20 : $this->commission_rank['num'] % $psize));
 			$pindex = ceil($this->commission_rank['num'] / $psize);
 			$this->len = 0;
 		}
+
 
 		switch ($this->commission_rank['type']) {
 		case '0':
@@ -98,16 +101,17 @@ class Rank_EweiShopV2Page extends CommissionMobileLoginPage
 		$limit = ' LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 		$result = pdo_fetchall('SELECT id,uid,nickname,avatar,commission_total FROM ' . tablename('ewei_shop_member') . ' WHERE uniacid = :uniacid ORDER BY commission_total DESC ' . $limit, array(':uniacid' => $_W['uniacid']));
 
-		if (!empty($result)) {
+		if (!(empty($result))) {
 			$result_tmp = array();
 
-			foreach ($result as $val) {
+			foreach ($result as $val ) {
 				$val['commission_total'] = number_format($val['commission_total'], 2);
 				$result_tmp[] = $val;
 			}
 
 			$result = $result_tmp;
 		}
+
 
 		show_json(1, array('list' => $result, 'len' => $this->len));
 	}
@@ -123,16 +127,17 @@ class Rank_EweiShopV2Page extends CommissionMobileLoginPage
 		$limit = ' LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 		$result = pdo_fetchall('SELECT c.id,c.mid,SUM(c.commission_pay)  as commission_pay,m.nickname,m.avatar FROM ' . tablename('ewei_shop_commission_apply') . ' c LEFT JOIN ' . tablename('ewei_shop_member') . ' m ON c.mid=m.id WHERE c.uniacid = :uniacid AND c.status=3  GROUP BY c.mid ORDER BY commission_pay DESC' . $limit, array(':uniacid' => $_W['uniacid']));
 
-		if (!empty($result)) {
+		if (!(empty($result))) {
 			$result_tmp = array();
 
-			foreach ($result as $val) {
+			foreach ($result as $val ) {
 				$val['commission_total'] = number_format($val['commission_pay'], 2);
 				$result_tmp[] = $val;
 			}
 
 			$result = $result_tmp;
 		}
+
 
 		show_json(1, array('list' => $result, 'len' => $this->len));
 	}
@@ -141,14 +146,14 @@ class Rank_EweiShopV2Page extends CommissionMobileLoginPage
 	{
 		global $_W;
 
-		if (!is_array($this->commission_rank['content'])) {
+		if (!(is_array($this->commission_rank['content']))) {
 			$list = @json_decode($this->commission_rank['content'], true);
 		}
-		else {
+		 else {
 			$list = $this->commission_rank['content'];
 		}
 
-		if (!empty($list)) {
+		if (!(empty($list))) {
 			usort($list, function($a, $b) {
 				$al = (int) $a['commission_total'];
 				$bl = (int) $b['commission_total'];
@@ -157,20 +162,23 @@ class Rank_EweiShopV2Page extends CommissionMobileLoginPage
 					return 0;
 				}
 
-				return $bl < $al ? -1 : 1;
+
+				return ($bl < $al ? -1 : 1);
 			});
 			$list_tmp = array();
 
-			foreach ($list as $val) {
+			foreach ($list as $val ) {
 				$val['commission_total'] = number_format($val['commission_total'], 2);
-				$list_tmp[] = array('commission_total' => $val['commission_total'], 'nickname' => $val['nickname'], 'avatar' => $val['avatar']);
+				$list_tmp[] = array('commission_total' => $val['commission_total'], 'nickname' => $val['nickname'], 'avatar' => tomedia($val['avatar']));
 			}
 
 			$list = array_slice($list_tmp, ($pindex - 1) * $psize, $psize);
 		}
 
+
 		show_json(1, array('list' => $list, 'len' => $this->len));
 	}
 }
+
 
 ?>

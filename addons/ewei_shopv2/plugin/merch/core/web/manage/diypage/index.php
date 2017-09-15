@@ -1,7 +1,4 @@
 <?php
-//微 橙 微 信商 城系统
-?>
-<?php
 if (!(defined('IN_IA'))) 
 {
 	exit('Access Denied');
@@ -13,7 +10,6 @@ class Index_EweiShopV2Page extends MerchWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$this->model->CheckPlugin('taobao');
 		$time = strtotime(date('Y-m-d'));
 		$sysnumall = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('ewei_shop_diypage') . ' where `type`>1 and `type`<99 and merch=:merch and uniacid=:uniacid ', array(':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid']));
 		$sysnumtoday = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('ewei_shop_diypage') . ' where `type`>1 and `type`<99 and createtime>:time and merch=:merch and uniacid=:uniacid ', array(':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid'], ':time' => $time));

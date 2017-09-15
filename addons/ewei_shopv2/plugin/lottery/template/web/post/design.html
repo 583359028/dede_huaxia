@@ -2,14 +2,14 @@
 <div class="alert alert-warning">抽奖所有等级不能低于5个，概率之和可不等于100%</div>
 <div class="form-group">
     <label class="col-sm-2 control-label">抽奖标题&概率</label>
-    {ifp 'task.edit'}
+    {ifp 'lottery.edit'}
     <div class="col-sm-10 col-xs-12" id="rec_reward_people">
         <div class="row">
             <div class="col-sm-5 col-xs-5">
                 <div class="input-group">
                     <input type="text" name="reward_title" class="form-control" placeholder="标题"  />
-                    <input type="hidden" id="reward_title_icon" name="reward_title_icon" value="../addons/ewei_shopv2/plugin/task/static/images/taskicon.png">
-                    <span class="input-group-addon" style="padding: 0px;"><img src="../addons/ewei_shopv2/plugin/task/static/images/taskicon.png" id="reward_title_icon_show" width="34px" height="34px"></span>
+                    <input type="hidden" id="reward_title_icon" name="reward_title_icon" value="">
+                    <span class="input-group-addon" style="padding: 0px;"><img src="" id="reward_title_icon_show" width="34px" height="34px"></span>
                     <span class="input-group-addon btn" data-toggle="selectImg" data-input="#reward_title_icon" data-img="#reward_title_icon_show" data-full="1">选择图片</span>
                 </div>
             </div>

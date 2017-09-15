@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -14,10 +13,11 @@ class Weixintemplate_EweiShopV2Page extends WebPage
 		$industry = $this->getindustry();
 		$industrytext = '';
 		if ($industry && is_array($industry)) {
-			foreach ($industry as $indu) {
+			foreach ($industry as $indu ) {
 				$industrytext .= $indu['first_class'] . '/' . $indu['second_class'] . '&nbsp;&nbsp;&nbsp;';
 			}
 		}
+
 
 		include $this->template();
 	}
@@ -30,7 +30,7 @@ class Weixintemplate_EweiShopV2Page extends WebPage
 		$list = $this->gettemplatelist();
 		$template = NULL;
 
-		foreach ($list as $temp) {
+		foreach ($list as $temp ) {
 			if ($temp['template_id'] == $id) {
 				$template = $temp;
 				break;
@@ -50,12 +50,13 @@ class Weixintemplate_EweiShopV2Page extends WebPage
 			$ids = $_GPC['ids'];
 
 			if (is_array($ids)) {
-				foreach ($ids as $i) {
+				foreach ($ids as $i ) {
 					$this->deltemplatebyid($i);
 				}
 			}
+
 		}
-		else {
+		 else {
 			$this->deltemplatebyid($id);
 		}
 
@@ -73,13 +74,15 @@ class Weixintemplate_EweiShopV2Page extends WebPage
 		$c = ihttp_request($url);
 		$result = @json_decode($c['content'], true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			return false;
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			return false;
 		}
+
 
 		return $result;
 	}
@@ -96,13 +99,15 @@ class Weixintemplate_EweiShopV2Page extends WebPage
 		$c = ihttp_request($url, $bb);
 		$result = @json_decode($c['content'], true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			show_json(0);
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			show_json(0, $result['errmsg']);
 		}
+
 
 		show_json(1, $result);
 	}
@@ -118,13 +123,15 @@ class Weixintemplate_EweiShopV2Page extends WebPage
 		$c = ihttp_request($url);
 		$result = @json_decode($c['content'], true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			return false;
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			return false;
 		}
+
 
 		return $result['template_list'];
 	}
@@ -141,14 +148,17 @@ class Weixintemplate_EweiShopV2Page extends WebPage
 		$c = ihttp_request($url, $bb);
 		$result = @json_decode($c['content'], true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			show_json(0);
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			show_json(0, $result['errmsg']);
 		}
+
 	}
 }
+
 
 ?>

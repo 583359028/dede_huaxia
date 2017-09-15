@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -114,14 +113,14 @@ function copy_plugin_set($identity, $wechatid, $wechatid1, $transtype)
 								$newoptionid = pdo_insertid();
 								$newspecitemids = array();
 
-								if (!empty($o['specs'])) {
+								if (!(empty($o['specs']))) {
 									$spec_itemids = explode('_', $o['specs']);
 									$spec_items = pdo_fetchall('select * from ' . tablename('ewei_shop_goods_spec_item') . ' where id in (' . implode(',', $spec_itemids) . ')');
 
 									foreach ($spec_items as $spec_item ) {
 										$spec_itemid = $spec_item['id'];
 
-										if (!isset($allspecitemids[$spec_itemid])) {
+										if (!(isset($allspecitemids[$spec_itemid]))) {
 											unset($spec_item['id']);
 											$spec_item['uniacid'] = $wechatid1;
 											$spec_item['specid'] = $newspecs[$spec_item['specid']];
@@ -315,7 +314,7 @@ function copy_plugin_set($identity, $wechatid, $wechatid1, $transtype)
 							}
 						}
 
-						if (!empty($categoodsids)) {
+						if (!(empty($categoodsids))) {
 							$goods = pdo_fetchall('select * from ' . tablename('ewei_shop_creditshop_goods') . ' where uniacid=:uniacid and id not in (' . implode(',', $categoodsids) . ')', array(':uniacid' => $wechatid));
 
 							foreach ($goods as $g ) {
@@ -385,7 +384,7 @@ function copy_plugin_set($identity, $wechatid, $wechatid1, $transtype)
 						}
 					}
 
-					if (!empty($catevirtuals)) {
+					if (!(empty($catevirtuals))) {
 						$virtuals = pdo_fetchall('select * from ' . tablename('ewei_shop_virtual_type') . ' where uniacid=:uniacid and id not in (' . implode(',', $catevirtuals) . ')', array(':uniacid' => $wechatid));
 
 						foreach ($virtuals as $g ) {
@@ -447,7 +446,7 @@ function copy_plugin_set($identity, $wechatid, $wechatid1, $transtype)
 							}
 						}
 
-						if (!empty($catearticles)) {
+						if (!(empty($catearticles))) {
 							$articles = pdo_fetchall('select * from ' . tablename('ewei_shop_article') . ' where uniacid=:uniacid and id not in (' . implode(',', $catearticles) . ')', array(':uniacid' => $wechatid));
 
 							foreach ($articles as $g ) {
@@ -467,7 +466,7 @@ function copy_plugin_set($identity, $wechatid, $wechatid1, $transtype)
 							foreach ($articles as $article ) {
 								$keyword = pdo_fetch('SELECT * FROM ' . tablename('rule_keyword') . ' WHERE content=:content and module=:module and uniacid=:uniacid limit 1 ', array(':content' => $article['article_keyword'], ':module' => 'ewei_shop', ':uniacid' => $_W['uniacid']));
 
-								if (!empty($keyword)) {
+								if (!(empty($keyword))) {
 									pdo_delete('rule_keyword', array('id' => $keyword['id']));
 									pdo_delete('rule', array('id' => $keyword['rid']));
 								}
@@ -513,7 +512,7 @@ function copy_plugin_set($identity, $wechatid, $wechatid1, $transtype)
 							}
 						}
 
-						if (!empty($catecoupons)) {
+						if (!(empty($catecoupons))) {
 							$coupons = pdo_fetchall('select * from ' . tablename('ewei_shop_coupon') . ' where uniacid=:uniacid and id not in (' . implode(',', $catecoupons) . ')', array(':uniacid' => $wechatid));
 
 							foreach ($coupons as $g ) {

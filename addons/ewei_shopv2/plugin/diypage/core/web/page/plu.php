@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -13,27 +12,30 @@ class Plu_EweiShopV2Page extends PluginWebPage
 		$pagetype = 'plu';
 		$condition = '';
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$keyword = '%' . trim($_GPC['keyword']) . '%';
 			$condition .= ' and name like \'' . $keyword . '\' ';
 		}
 
+
 		$limittype = $pagetype;
 
-		if (!empty($_GPC['type'])) {
+		if (!(empty($_GPC['type']))) {
 			$condition .= ' and type=' . intval($_GPC['type']) . ' ';
 			$limittype = NULL;
 		}
 
+
 		$result = $this->model->getPageList($limittype, $condition, intval($_GPC['page']));
 		extract($result);
 
-		if (!empty($list)) {
-			foreach ($list as $key => &$value) {
+		if (!(empty($list))) {
+			foreach ($list as $key => &$value ) {
 				$url = mobileUrl('diypage', array('id' => $value['id']), true);
 				$value['qrcode'] = m('qrcode')->createQrcode($url);
 			}
 		}
+
 
 		$diypagedata = m('common')->getPluginset('diypage');
 		$diypagedata = $diypagedata['page'];
@@ -62,9 +64,11 @@ class Plu_EweiShopV2Page extends PluginWebPage
 			$page = $template;
 		}
 
+
 		$allpagetype = $this->model->getPageType();
 		$typename = $allpagetype[$type]['name'];
-		$diymenu = pdo_fetchall('select id, name from ' . tablename('ewei_shop_diypage_menu') . ' where merch=:merch and uniacid=:uniacid  order by id desc', array(':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid']));
+		$diymenu = pdo_fetchall('select id, `name` from ' . tablename('ewei_shop_diypage_menu') . ' where merch=:merch and uniacid=:uniacid  order by id desc', array(':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid']));
+		$diyadvs = pdo_fetchall('select id, `name` from ' . tablename('ewei_shop_diypage_plu') . ' where merch=:merch and `type`=1 and status=1 and uniacid=:uniacid  order by id desc', array(':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid']));
 		$category = pdo_fetchall('SELECT id, name FROM ' . tablename('ewei_shop_diypage_template_category') . ' WHERE merch=:merch and uniacid=:uniacid order by id desc ', array(':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid']));
 
 		if ($_W['ispost']) {
@@ -72,7 +76,8 @@ class Plu_EweiShopV2Page extends PluginWebPage
 			$this->model->savePage($id, $data);
 		}
 
-		$hasplugins = json_encode(array('creditshop' => p('creditshop') ? 1 : 0, 'merch' => p('merch') ? 1 : 0, 'seckill' => p('seckill') ? 1 : 0, 'exchange' => p('exchange') ? 1 : 0));
+
+		$hasplugins = json_encode(array('creditshop' => (p('creditshop') ? 1 : 0), 'merch' => (p('merch') ? 1 : 0), 'seckill' => (p('seckill') ? 1 : 0), 'exchange' => (p('exchange') ? 1 : 0)));
 		include $this->template('diypage/page/post');
 	}
 
@@ -83,8 +88,9 @@ class Plu_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$this->model->delPage($id);
 	}
@@ -97,5 +103,6 @@ class Plu_EweiShopV2Page extends PluginWebPage
 		$this->model->saveTemp($temp);
 	}
 }
+
 
 ?>

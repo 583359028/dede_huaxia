@@ -1,7 +1,4 @@
 <?php
-//微 橙 微 信商 城系统
-?>
-<?php
 if (!(defined('IN_IA'))) 
 {
 	exit('Access Denied');
@@ -15,7 +12,6 @@ class Taobaocsv_EweiShopV2Page extends MerchWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$this->model->CheckPlugin('taobao');
 		$merchid = $_W['merchid'];
 		$uploadStart = '0';
 		$uploadnum = '0';

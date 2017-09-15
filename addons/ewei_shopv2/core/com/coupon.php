@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -14,9 +13,11 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$url = str_replace('/addons/ewei_shopv2/', '/', $url);
 		}
 
+
 		if (strexists($url, '/core/mobile/order/')) {
 			$url = str_replace('/core/mobile/order/', '/', $url);
 		}
+
 
 		return $url;
 	}
@@ -30,9 +31,11 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			return 0;
 		}
 
+
 		if ($coupon['total'] == -1) {
 			return -1;
 		}
+
 
 		$gettotal = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_coupon_data') . ' where couponid=:couponid and uniacid=:uniacid ', array(':couponid' => $couponid, ':uniacid' => $_W['uniacid']));
 		return $coupon['total'] - $gettotal;
@@ -44,16 +47,17 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_GPC;
 		$pcreditshop = p('creditshop');
 
-		if (!$pcreditshop) {
-			return NULL;
+		if (!($pcreditshop)) {
+			return;
 		}
+
 
 		$log = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_creditshop_log') . ' WHERE `id`=:id and `uniacid`=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $logid));
 
-		if (!empty($log)) {
+		if (!(empty($log))) {
 			$member = m('member')->getMember($log['openid']);
 			$goods = $pcreditshop->getGoods($log['couponid'], $member);
-			$couponlog = array('uniacid' => $_W['uniacid'], 'openid' => $log['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $log['couponid'], 'status' => 1, 'paystatus' => 0 < $goods['money'] ? 0 : -1, 'creditstatus' => 0 < $goods['credit'] ? 0 : -1, 'createtime' => time(), 'getfrom' => 2);
+			$couponlog = array('uniacid' => $_W['uniacid'], 'openid' => $log['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $log['couponid'], 'status' => 1, 'paystatus' => (0 < $goods['money'] ? 0 : -1), 'creditstatus' => (0 < $goods['credit'] ? 0 : -1), 'createtime' => time(), 'getfrom' => 2);
 			pdo_insert('ewei_shop_coupon_log', $couponlog);
 			$data = array('uniacid' => $_W['uniacid'], 'openid' => $log['openid'], 'couponid' => $log['couponid'], 'gettype' => 2, 'gettime' => time());
 			pdo_insert('ewei_shop_coupon_data', $data);
@@ -62,6 +66,7 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$this->sendMessage($coupon, 1, $member);
 			pdo_update('ewei_shop_creditshop_log', array('status' => 3), array('id' => $logid));
 		}
+
 	}
 
 	public function taskposter($member, $couponid, $couponnum)
@@ -70,15 +75,17 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_GPC;
 		$pposter = p('poster');
 
-		if (!$pposter) {
-			return NULL;
+		if (!($pposter)) {
+			return;
 		}
+
 
 		$coupon = $this->getCoupon($couponid);
 
 		if (empty($coupon)) {
-			return NULL;
+			return;
 		}
+
 
 		$i = 1;
 
@@ -107,11 +114,12 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$sql .= 'and ' . $money . '>=c.enough ';
 		}
 
+
 		$sql .= ' and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<=' . $time . ' && c.timeend>=' . $time . ')) order by d.gettime desc';
 		$list = pdo_fetchall($sql, $param);
 
-		if (!empty($merch_array)) {
-			foreach ($merch_array as $key => $value) {
+		if (!(empty($merch_array))) {
+			foreach ($merch_array as $key => $value ) {
 				$merchid = $key;
 
 				if (0 < $merchid) {
@@ -122,17 +130,20 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					$sql .= ' and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<=' . $time . ' && c.timeend>=' . $time . ')) order by d.gettime desc';
 					$merch_list = pdo_fetchall($sql, $param);
 
-					if (!empty($merch_list)) {
+					if (!(empty($merch_list))) {
 						$list = array_merge($list, $merch_list);
 					}
+
 				}
+
 			}
 		}
 
+
 		$goodlist = array();
 
-		if (!empty($goods_array)) {
-			foreach ($goods_array as $key => $value) {
+		if (!(empty($goods_array))) {
+			foreach ($goods_array as $key => $value ) {
 				$goodparam[':uniacid'] = $_W['uniacid'];
 				$goodparam[':id'] = $value['goodsid'];
 				$sql = 'select id,cates,marketprice,merchid   from ' . tablename('ewei_shop_goods');
@@ -141,88 +152,91 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				$good['saletotal'] = $value['total'];
 				$good['optionid'] = $value['optionid'];
 
-				if (!empty($good)) {
+				if (!(empty($good))) {
 					$goodlist[] = $good;
 				}
+
 			}
 		}
+
 
 		if ($type == 0) {
 			$list = $this->checkcouponlimit($list, $goodlist);
 		}
 
+
 		$list = set_medias($list, 'thumb');
 
-		if (!empty($list)) {
-			foreach ($list as &$row) {
+		if (!(empty($list))) {
+			foreach ($list as &$row ) {
 				$row['thumb'] = tomedia($row['thumb']);
 				$row['timestr'] = '永久有效';
 
 				if (empty($row['timelimit'])) {
-					if (!empty($row['timedays'])) {
+					if (!(empty($row['timedays']))) {
 						$row['timestr'] = date('Y-m-d H:i', $row['gettime'] + ($row['timedays'] * 86400));
 					}
+
 				}
-				else if ($time <= $row['timestart']) {
+				 else if ($time <= $row['timestart']) {
 					$row['timestr'] = date('Y-m-d H:i', $row['timestart']) . '-' . date('Y-m-d H:i', $row['timeend']);
 				}
-				else {
+				 else {
 					$row['timestr'] = date('Y-m-d H:i', $row['timeend']);
 				}
 
 				if ($row['backtype'] == 0) {
 					$row['backstr'] = '立减';
 					$row['css'] = 'deduct';
-					$row['backmoney'] = $row['deduct'];
+					$row['backmoney'] = (double) $row['deduct'];
 					$row['backpre'] = true;
 
 					if ($row['enough'] == '0') {
 						$row['color'] = 'org ';
 					}
-					else {
+					 else {
 						$row['color'] = 'blue';
 					}
 				}
-				else if ($row['backtype'] == 1) {
+				 else if ($row['backtype'] == 1) {
 					$row['backstr'] = '折';
 					$row['css'] = 'discount';
-					$row['backmoney'] = $row['discount'];
+					$row['backmoney'] = (double) $row['discount'];
 					$row['color'] = 'red ';
 				}
-				else {
-					if ($row['backtype'] == 2) {
-						if ($row['coupontype'] == '0') {
-							$row['color'] = 'red ';
-						}
-						else {
-							$row['color'] = 'pink ';
-						}
-
-						if (0 < $row['backredpack']) {
-							$row['backstr'] = '返现';
-							$row['css'] = 'redpack';
-							$row['backmoney'] = $row['backredpack'];
-							$row['backpre'] = true;
-						}
-						else if (0 < $row['backmoney']) {
-							$row['backstr'] = '返利';
-							$row['css'] = 'money';
-							$row['backmoney'] = $row['backmoney'];
-							$row['backpre'] = true;
-						}
-						else {
-							if (!empty($row['backcredit'])) {
-								$row['backstr'] = '返积分';
-								$row['css'] = 'credit';
-								$row['backmoney'] = $row['backcredit'];
-							}
-						}
+				 else if ($row['backtype'] == 2) {
+					if ($row['coupontype'] == '0') {
+						$row['color'] = 'red ';
 					}
+					 else {
+						$row['color'] = 'pink ';
+					}
+
+					if (0 < $row['backredpack']) {
+						$row['backstr'] = '返现';
+						$row['css'] = 'redpack';
+						$row['backmoney'] = (double) $row['backredpack'];
+						$row['backpre'] = true;
+					}
+					 else if (0 < $row['backmoney']) {
+						$row['backstr'] = '返利';
+						$row['css'] = 'money';
+						$row['backmoney'] = (double) $row['backmoney'];
+						$row['backpre'] = true;
+					}
+					 else if (!(empty($row['backcredit']))) {
+						$row['backstr'] = '返积分';
+						$row['css'] = 'credit';
+						$row['backmoney'] = (double) $row['backcredit'];
+					}
+
 				}
+
 			}
 
 			unset($row);
 		}
+
 
 		return $list;
 	}
@@ -231,17 +245,18 @@ class Coupon_EweiShopV2ComModel extends ComModel
 	{
 		global $_W;
 
-		foreach ($list as $key => $row) {
+		foreach ($list as $key => $row ) {
 			$pass = 0;
 			$enough = 0;
 			if (($row['limitgoodcatetype'] == 0) && ($row['limitgoodtype'] == 0) && ($row['enough'] == 0)) {
 				$pass = 1;
 			}
-			else {
-				foreach ($goodlist as $good) {
+			 else {
+				foreach ($goodlist as $good ) {
 					if ((0 < $row['merchid']) && (0 < $good['merchid']) && ($row['merchid'] != $good['merchid'])) {
 						continue;
 					}
+
 
 					$p = 0;
 					$cates = explode(',', $good['cates']);
@@ -251,13 +266,16 @@ class Coupon_EweiShopV2ComModel extends ComModel
 						$p = 1;
 					}
 
+
 					if ($row['limitgoodcatetype'] == 1) {
 						$result = array_intersect($cates, $limitcateids);
 
 						if (0 < count($result)) {
 							$p = 1;
 						}
+
 					}
+
 
 					if ($row['limitgoodtype'] == 1) {
 						$isin = in_array($good['id'], $limitgoodids);
@@ -265,11 +283,14 @@ class Coupon_EweiShopV2ComModel extends ComModel
 						if ($isin) {
 							$p = 1;
 						}
+
 					}
+
 
 					if ($p == 1) {
 						$pass = 1;
 					}
+
 
 					if ((0 < $row['enough']) && ($p == 1)) {
 						if (0 < $good['optionid']) {
@@ -279,24 +300,27 @@ class Coupon_EweiShopV2ComModel extends ComModel
 							$sql .= ' where uniacid=:uniacid and id =:id order by id desc LIMIT 1 ';
 							$option = pdo_fetch($sql, $optionparam);
 
-							if (!empty($option)) {
+							if (!(empty($option))) {
 								$enough += (double) $option['marketprice'] * $good['saletotal'];
 							}
+
 						}
-						else {
+						 else {
 							$enough += (double) $good['marketprice'] * $good['saletotal'];
 						}
 					}
+
 				}
 
 				if ((0 < $row['enough']) && ($enough < $row['enough'])) {
 					$pass = 0;
 				}
-			}
+             }
 
 			if ($pass == 0) {
 				unset($list[$key]);
 			}
+
 		}
 
 		return array_values($list);
@@ -310,15 +334,18 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			return error(-1);
 		}
 
+
 		$log = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_coupon_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
 
 		if (empty($log)) {
 			return error(-1, '服务器错误!');
 		}
 
+
 		if (1 <= $log['status']) {
 			return true;
 		}
+
 
 		$coupon = pdo_fetch('select * from ' . tablename('ewei_shop_coupon') . ' where id=:id limit 1', array(':id' => $log['couponid']));
 		$coupon = $this->setCoupon($coupon, time());
@@ -327,30 +354,37 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			return error(-1, '无法领取');
 		}
 
+
 		if ($coupon['total'] != -1) {
 			if ($coupon['total'] <= 0) {
 				return error(-1, '优惠券数量不足');
 			}
+
 		}
 
-		if (!$coupon['canget']) {
+
+		if (!($coupon['canget'])) {
 			return error(-1, '您已超出领取次数限制');
 		}
+
 
 		if (empty($log['status'])) {
 			$update = array();
 			if ((0 < $coupon['credit']) && empty($log['creditstatus'])) {
-				m('member')->setCredit($log['openid'], 'credit1', 0 - $coupon['credit'], '购买优惠券扣除积分 ' . $coupon['credit']);
+				m('member')->setCredit($log['openid'], 'credit1', -$coupon['credit'], '购买优惠券扣除积分 ' . $coupon['credit']);
 				$update['creditstatus'] = 1;
 			}
 
+
 			if ((0 < $coupon['money']) && empty($log['paystatus'])) {
 				if ($log['paytype'] == 0) {
-					m('member')->setCredit($log['openid'], 'credit2', 0 - $coupon['money'], '购买优惠券扣除余额 ' . $coupon['money']);
+					m('member')->setCredit($log['openid'], 'credit2', -$coupon['money'], '购买优惠券扣除余额 ' . $coupon['money']);
 				}
+
 
 				$update['paystatus'] = 1;
 			}
+
 
 			$update['status'] = 1;
 			pdo_update('ewei_shop_coupon_log', $update, array('id' => $log['id']));
@@ -363,12 +397,13 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$this->sendMessage($coupon, 1, $member);
 		}
 
+
 		$url = mobileUrl('member', NULL, true);
 
 		if ($coupon['coupontype'] == 0) {
 			$coupon['url'] = mobileUrl('goods', NULL, true);
 		}
-		else {
+		 else {
 			$coupon['url'] = mobileUrl('member/recharge', NULL, true);
 		}
 
@@ -383,13 +418,14 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		$desc = str_replace('[nickname]', $member['nickname'], $coupon['respdesc']);
 		$title = str_replace('[total]', $send_total, $title);
 		$desc = str_replace('[total]', $send_total, $desc);
-		$url = (empty($coupon['respurl']) ? mobileUrl('sale/coupon/my', NULL, true) : $coupon['respurl']);
+		$url = ((empty($coupon['respurl']) ? mobileUrl('sale/coupon/my', NULL, true) : $coupon['respurl']));
 
-		if (!empty($coupon['resptitle'])) {
+		if (!(empty($coupon['resptitle']))) {
 			$articles[] = array('title' => urlencode($title), 'description' => urlencode($desc), 'url' => $url, 'picurl' => tomedia($coupon['respthumb']));
 		}
 
-		if (!empty($articles)) {
+
+		if (!(empty($articles))) {
 			$resp = m('message')->sendNews($member['openid'], $articles, $account);
 
 			if (is_error($resp)) {
@@ -402,8 +438,11 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				if (is_error($ret)) {
 					m('message')->sendCustomNotice($member['openid'], $msg, $url, $account);
 				}
+
 			}
+
 		}
+
 	}
 
 	public function sendBackMessage($openid, $coupon, $gives)
@@ -411,8 +450,9 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_W;
 
 		if (empty($gives)) {
-			return NULL;
+			return;
 		}
+
 
 		$set = m('common')->getPluginset('coupon');
 		$templateid = $set['templateid'];
@@ -423,21 +463,26 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$givestr .= ' ' . $gives['credit'] . '个积分';
 		}
 
+
 		if (isset($gives['money'])) {
-			if (!empty($givestr)) {
+			if (!(empty($givestr))) {
 				$givestr .= '，';
 			}
+
 
 			$givestr .= $gives['money'] . '元余额';
 		}
 
+
 		if (isset($gives['redpack'])) {
-			if (!empty($givestr)) {
+			if (!(empty($givestr))) {
 				$givestr .= '，';
 			}
 
+
 			$givestr .= $gives['redpack'] . '元现金';
 		}
+
 
 		$content .= $givestr;
 		$content .= '，请查看您的账户，谢谢!';
@@ -447,10 +492,10 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			);
 		$url = mobileUrl('member', NULL, true);
 
-		if (!empty($templateid)) {
+		if (!(empty($templateid))) {
 			m('message')->sendTplNotice($openid, $templateid, $msg, $url);
 		}
-		else {
+		 else {
 			m('message')->sendCustomNotice($openid, $msg, $url);
 		}
 	}
@@ -466,10 +511,10 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			);
 		$url = mobileUrl('sale/coupon/my', NULL, true);
 
-		if (!empty($templateid)) {
+		if (!(empty($templateid))) {
 			m('message')->sendTplNotice($openid, $templateid, $msg, $url);
 		}
-		else {
+		 else {
 			m('message')->sendCustomNotice($openid, $msg, $url);
 		}
 	}
@@ -479,37 +524,42 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_W;
 
 		if (empty($log['couponid'])) {
-			return NULL;
+			return;
 		}
+
 
 		$data = pdo_fetch('select id,openid,couponid,used from ' . tablename('ewei_shop_coupon_data') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $log['couponid'], ':uniacid' => $_W['uniacid']));
 
 		if (empty($data)) {
-			return NULL;
+			return;
 		}
 
-		if (!empty($data['used'])) {
-			return NULL;
+
+		if (!(empty($data['used']))) {
+			return;
 		}
+
 
 		$coupon = pdo_fetch('select enough,backcredit,backmoney,backredpack,couponname from ' . tablename('ewei_shop_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $data['couponid'], ':uniacid' => $_W['uniacid']));
 
 		if (empty($coupon)) {
-			return NULL;
+			return;
 		}
 
+
 		if ((0 < $coupon['enough']) && ($log['money'] < $coupon['enough'])) {
-			return NULL;
+			return;
 		}
+
 
 		$gives = array();
 		$backcredit = $coupon['backcredit'];
 
-		if (!empty($backcredit)) {
+		if (!(empty($backcredit))) {
 			if (strexists($backcredit, '%')) {
 				$backcredit = intval((floatval(str_replace('%', '', $backcredit)) / 100) * $log['money']);
 			}
-			else {
+			 else {
 				$backcredit = intval($backcredit);
 			}
 
@@ -517,15 +567,17 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				$gives['credit'] = $backcredit;
 				m('member')->setCredit($data['openid'], 'credit1', $backcredit, array(0, '充值优惠券返积分'));
 			}
+
 		}
+
 
 		$backmoney = $coupon['backmoney'];
 
-		if (!empty($backmoney)) {
+		if (!(empty($backmoney))) {
 			if (strexists($backmoney, '%')) {
 				$backmoney = round(floatval((floatval(str_replace('%', '', $backmoney)) / 100) * $log['money']), 2);
 			}
-			else {
+			 else {
 				$backmoney = round(floatval($backmoney), 2);
 			}
 
@@ -533,15 +585,17 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				$gives['money'] = $backmoney;
 				m('member')->setCredit($data['openid'], 'credit2', $backmoney, array(0, '充值优惠券返利'));
 			}
+
 		}
+
 
 		$backredpack = $coupon['backredpack'];
 
-		if (!empty($backredpack)) {
+		if (!(empty($backredpack))) {
 			if (strexists($backredpack, '%')) {
 				$backredpack = round(floatval((floatval(str_replace('%', '', $backredpack)) / 100) * $log['money']), 2);
 			}
-			else {
+			 else {
 				$backredpack = round(floatval($backredpack), 2);
 			}
 
@@ -550,7 +604,9 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				$backredpack = intval($backredpack * 100);
 				m('finance')->pay($data['openid'], 1, $backredpack, '', '充值优惠券-返现金', false);
 			}
+
 		}
+
 
 		pdo_update('ewei_shop_coupon_data', array('used' => 1, 'usetime' => time(), 'ordersn' => $log['logno']), array('id' => $data['id']));
 		$this->sendBackMessage($log['openid'], $coupon, $gives);
@@ -570,8 +626,8 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		$sql .= ' and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<=' . $time . ' && c.timeend>=' . $time . ')) order by d.gettime desc';
 		$list = pdo_fetchall($sql, $param);
 
-		if (!empty($merch_array)) {
-			foreach ($merch_array as $key => $value) {
+		if (!(empty($merch_array))) {
+			foreach ($merch_array as $key => $value ) {
 				$merchid = $key;
 
 				if (0 < $merchid) {
@@ -583,17 +639,20 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					$sql .= ' and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<=' . $time . ' && c.timeend>=' . $time . '))';
 					$merch_list = pdo_fetchall($sql, $param);
 
-					if (!empty($merch_list)) {
+					if (!(empty($merch_list))) {
 						$list = array_merge($list, $merch_list);
 					}
+
 				}
+
 			}
 		}
 
+
 		$goodlist = array();
 
-		if (!empty($goods_array)) {
-			foreach ($goods_array as $key => $value) {
+		if (!(empty($goods_array))) {
+			foreach ($goods_array as $key => $value ) {
 				$goodparam[':uniacid'] = $_W['uniacid'];
 				$goodparam[':id'] = $value['goodsid'];
 				$sql = 'select id,cates,marketprice,merchid  from ' . tablename('ewei_shop_goods');
@@ -602,11 +661,13 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				$good['saletotal'] = $value['total'];
 				$good['optionid'] = $value['optionid'];
 
-				if (!empty($good)) {
+				if (!(empty($good))) {
 					$goodlist[] = $good;
 				}
+
 			}
 		}
+
 
 		$list = $this->checkcouponlimit($list, $goodlist);
 		return count($list);
@@ -627,24 +688,28 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_GPC;
 
 		if (empty($orderid)) {
-			return NULL;
+			return;
 		}
+
 
 		$order = pdo_fetch('select ordersn,createtime,couponid from ' . tablename('ewei_shop_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
 
 		if (empty($order)) {
-			return NULL;
+			return;
 		}
+
 
 		$coupon = false;
 
-		if (!empty($order['couponid'])) {
+		if (!(empty($order['couponid']))) {
 			$coupon = $this->getCouponByDataID($order['couponid']);
 		}
 
+
 		if (empty($coupon)) {
-			return NULL;
+			return;
 		}
+
 
 		pdo_update('ewei_shop_coupon_data', array('used' => 1, 'usetime' => $order['createtime'], 'ordersn' => $order['ordersn']), array('id' => $order['couponid']));
 	}
@@ -653,39 +718,46 @@ class Coupon_EweiShopV2ComModel extends ComModel
 	{
 		global $_W;
 
-		if (!is_array($order)) {
+		if (!(is_array($order))) {
 			$order = pdo_fetch('select id,openid,ordersn,createtime,couponid,status,finishtime from ' . tablename('ewei_shop_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => intval($order), ':uniacid' => $_W['uniacid']));
 		}
 
+
 		if (empty($order)) {
-			return NULL;
+			return;
 		}
+
 
 		$coupon = $this->getCouponByDataID($order['couponid']);
 
 		if (empty($coupon)) {
-			return NULL;
+			return;
 		}
 
-		if (!empty($coupon['returntype'])) {
-			if (!empty($coupon['used'])) {
+
+		if (!(empty($coupon['returntype']))) {
+			if (!(empty($coupon['used']))) {
 				pdo_update('ewei_shop_coupon_data', array('used' => 0, 'usetime' => 0, 'ordersn' => ''), array('id' => $order['couponid']));
 				$this->sendReturnMessage($order['openid'], $coupon);
 			}
+
 		}
+
 	}
 
 	public function backConsumeCoupon($orderid)
 	{
 		global $_W;
 
-		if (!is_array($orderid)) {
+		if (!(is_array($orderid))) {
 			$order = pdo_fetch('select id,openid,ordersn,createtime,couponid,couponmerchid,status,finishtime,`virtual`,isparent,parentid,coupongoodprice  from ' . tablename('ewei_shop_order') . ' where id=:id and status>=0 and couponid >0 and uniacid=:uniacid limit 1', array(':id' => intval($orderid), ':uniacid' => $_W['uniacid']));
 		}
 
+
 		if (empty($order)) {
-			return NULL;
+			return;
 		}
+
 
 		$couponid = $order['couponid'];
 		$couponmerchid = $order['couponmerchid'];
@@ -694,24 +766,28 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		$finishtime = $order['finishtime'];
 
 		if (empty($couponid)) {
-			return NULL;
+			return;
 		}
+
 
 		$coupon = $this->getCouponByDataID($order['couponid']);
 
 		if (empty($coupon)) {
-			return NULL;
+			return;
 		}
 
-		if (!empty($coupon['back'])) {
-			return NULL;
+
+		if (!(empty($coupon['back']))) {
+			return;
 		}
+
 
 		$coupongoodprice = 0;
 
 		if ($parentid == 0) {
 			$coupongoodprice = $order['coupongoodprice'];
 		}
+
 
 		if (($isparent == 1) || ($parentid != 0)) {
 			$all_done = 1;
@@ -722,45 +798,47 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					$order = pdo_fetch($sql, array(':parentid' => $orderid, ':couponmerchid' => $couponmerchid, ':uniacid' => $_W['uniacid']));
 
 					if (empty($order)) {
-						return NULL;
+						return;
 					}
+
 
 					if ($order['status'] != 3) {
 						$all_done = 0;
 					}
-					else {
+					 else {
 						$finishtime = $order['finishtime'];
 					}
 				}
-				else {
+				 else {
 					$list = m('order')->getChildOrder($orderid);
 				}
 			}
-			else if (0 < $couponmerchid) {
+			 else if (0 < $couponmerchid) {
 				if ($order['status'] != 3) {
 					$all_done = 0;
 				}
-				else {
+				 else {
 					$finishtime = $order['finishtime'];
 				}
 			}
-			else {
+			 else {
 				$list = m('order')->getChildOrder($parentid);
 			}
 
-			if (!empty($list)) {
-				foreach ($list as $k => $v) {
+			if (!(empty($list))) {
+				foreach ($list as $k => $v ) {
 					if (($v['status'] != 3) && (0 < $v['couponid'])) {
 						$all_done = 0;
 					}
-					else {
-						if ($finishtime < $v['finishtime']) {
-							$finishtime = $v['finishtime'];
-						}
+					 else if ($finishtime < $v['finishtime']) {
+						$finishtime = $v['finishtime'];
 					}
+
 				}
 			}
+
 		}
+
 
 		if (($parentid != 0) && ($couponmerchid == 0)) {
 			if ($all_done == 1) {
@@ -768,62 +846,61 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				$order = pdo_fetch($sql, array(':id' => $parentid, ':uniacid' => $_W['uniacid']));
 
 				if (empty($order)) {
-					return NULL;
+					return;
 				}
+
 			}
+
 		}
+
 
 		$backcredit = $coupon['backcredit'];
 		$backmoney = $coupon['backmoney'];
 		$backredpack = $coupon['backredpack'];
 		$gives = array();
 		$canback = false;
-		if (($order['status'] == 1) && ($coupon['backwhen'] == 2)) {
-			$canback = true;
+		$canback = true;
+		$is_done = 0;
+		if (($isparent == 1) || ($parentid != 0)) {
+			if ($all_done == 1) {
+				$is_done = 1;
+			}
+
 		}
-		else {
-			$is_done = 0;
-			if (($isparent == 1) || ($parentid != 0)) {
-				if ($all_done == 1) {
-					$is_done = 1;
-				}
+		 else if ($order['status'] == 3) {
+			$is_done = 1;
+		}
+
+
+		if ($is_done == 1) {
+			if (!(empty($order['virtual']))) {
+				$canback = true;
 			}
-			else {
-				if ($order['status'] == 3) {
-					$is_done = 1;
-				}
+			 else if ($coupon['backwhen'] == 1) {
+				$canback = true;
 			}
+			 else if ($coupon['backwhen'] == 0) {
+				$canback = true;
+				$tradeset = m('common')->getSysset('trade');
+				$refunddays = intval($tradeset['refunddays']);
 
-			if ($is_done == 1) {
-				if (!empty($order['virtual'])) {
-					$canback = true;
-				}
-				else if ($coupon['backwhen'] == 1) {
-					$canback = true;
-				}
-				else {
-					if ($coupon['backwhen'] == 0) {
-						$canback = true;
-						$tradeset = m('common')->getSysset('trade');
-						$refunddays = intval($tradeset['refunddays']);
+				if (0 < $refunddays) {
+					$days = intval((time() - $finishtime) / 3600 / 24);
 
-						if (0 < $refunddays) {
-							$days = intval((time() - $finishtime) / 3600 / 24);
-
-							if ($days <= $refunddays) {
-								$canback = false;
-							}
-						}
+					if ($days <= $refunddays) {
+						$canback = false;
 					}
-				}
-			}
-		}
 
+				}
+
+			}
+
+		}
 		if ($canback) {
 			if (0 < $parentid) {
 				$ordermoney = pdo_fetchcolumn('select coupongoodprice from ' . tablename('ewei_shop_order') . ' where id=:id and status>=0 and couponid >0 and uniacid=:uniacid limit 1', array(':id' => intval($parentid), ':uniacid' => $_W['uniacid']));
 			}
-			else {
+			 else {
 				$ordermoney = $coupongoodprice;
 			}
 
@@ -833,7 +910,7 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				if (($couponmerchid == 0) && ($isparent == 1)) {
 					$sql .= ' o.id=og.parentorderid ';
 				}
-				else {
+				 else {
 					$sql .= ' o.id=og.orderid ';
 				}
 
@@ -841,11 +918,12 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				$ordermoney = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid'], ':openid' => $order['openid'], ':orderid' => $order['id']));
 			}
 
-			if (!empty($backcredit)) {
+
+			if (!(empty($backcredit))) {
 				if (strexists($backcredit, '%')) {
 					$backcredit = intval((floatval(str_replace('%', '', $backcredit)) / 100) * $ordermoney);
 				}
-				else {
+				 else {
 					$backcredit = intval($backcredit);
 				}
 
@@ -853,13 +931,15 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					$gives['credit'] = $backcredit;
 					m('member')->setCredit($order['openid'], 'credit1', $backcredit, array(0, '充值优惠券返积分'));
 				}
+
 			}
 
-			if (!empty($backmoney)) {
+
+			if (!(empty($backmoney))) {
 				if (strexists($backmoney, '%')) {
 					$backmoney = round(floatval((floatval(str_replace('%', '', $backmoney)) / 100) * $ordermoney), 2);
 				}
-				else {
+				 else {
 					$backmoney = round(floatval($backmoney), 2);
 				}
 
@@ -867,13 +947,15 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					$gives['money'] = $backmoney;
 					m('member')->setCredit($order['openid'], 'credit2', $backmoney, array(0, '购物优惠券返利'));
 				}
+
 			}
 
-			if (!empty($backredpack)) {
+
+			if (!(empty($backredpack))) {
 				if (strexists($backredpack, '%')) {
 					$backredpack = round(floatval((floatval(str_replace('%', '', $backredpack)) / 100) * $ordermoney), 2);
 				}
-				else {
+				 else {
 					$backredpack = round(floatval($backredpack), 2);
 				}
 
@@ -882,11 +964,14 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					$backredpack = intval($backredpack * 100);
 					m('finance')->pay($order['openid'], 1, $backredpack, '', '购物优惠券-返现金', false);
 				}
+
 			}
+
 
 			pdo_update('ewei_shop_coupon_data', array('back' => 1, 'backtime' => time()), array('id' => $order['couponid']));
 			$this->sendBackMessage($order['openid'], $coupon, $gives);
 		}
+
 	}
 
 	public function getCoupon($couponid = 0)
@@ -904,11 +989,13 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			return false;
 		}
 
+
 		$coupon = pdo_fetch('select * from ' . tablename('ewei_shop_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $data['couponid'], ':uniacid' => $_W['uniacid']));
 
 		if (empty($coupon)) {
 			return false;
 		}
+
 
 		$coupon['back'] = $data['back'];
 		$coupon['backtime'] = $data['backtime'];
@@ -925,6 +1012,7 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$openid = $_W['openid'];
 		}
 
+
 		$row['free'] = false;
 		$row['past'] = false;
 		$row['thumb'] = tomedia($row['thumb']);
@@ -937,25 +1025,28 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			if ($merch_plugin) {
 				$merch_user = $merch_plugin->getListUserOne($row['merchid']);
 
-				if (!empty($merch_user)) {
+				if (!(empty($merch_user))) {
 					$row['merchname'] = $merch_user['merchname'];
 				}
+
 			}
+
 		}
+
 
 		if ((0 < $row['money']) && (0 < $row['credit'])) {
 			$row['getstatus'] = 0;
 			$row['gettypestr'] = '购买';
 		}
-		else if (0 < $row['money']) {
+		 else if (0 < $row['money']) {
 			$row['getstatus'] = 1;
 			$row['gettypestr'] = '购买';
 		}
-		else if (0 < $row['credit']) {
+		 else if (0 < $row['credit']) {
 			$row['getstatus'] = 2;
 			$row['gettypestr'] = '兑换';
 		}
-		else {
+		 else {
 			$row['getstatus'] = 3;
 			$row['gettypestr'] = '领取';
 		}
@@ -963,14 +1054,15 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		$row['timestr'] = '0';
 
 		if (empty($row['timelimit'])) {
-			if (!empty($row['timedays'])) {
+			if (!(empty($row['timedays']))) {
 				$row['timestr'] = 1;
 			}
+
 		}
-		else if ($time <= $row['timestart']) {
+		 else if ($time <= $row['timestart']) {
 			$row['timestr'] = date('Y-m-d', $row['timestart']) . '-' . date('Y-m-d', $row['timeend']);
 		}
-		else {
+		 else {
 			$row['timestr'] = date('Y-m-d', $row['timeend']);
 		}
 
@@ -982,35 +1074,31 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$row['backpre'] = true;
 			$row['_backmoney'] = $row['deduct'];
 		}
-		else if ($row['backtype'] == 1) {
+		 else if ($row['backtype'] == 1) {
 			$row['backstr'] = '折';
 			$row['css'] = 'discount';
 			$row['_backmoney'] = $row['discount'];
 		}
-		else {
-			if ($row['backtype'] == 2) {
-				if (!empty($row['backredpack'])) {
-					$row['backstr'] = '返现';
-					$row['css'] = 'redpack';
-					$row['backpre'] = true;
-					$row['_backmoney'] = $row['backredpack'];
-				}
-				else if (!empty($row['backmoney'])) {
-					$row['backstr'] = '返利';
-					$row['css'] = 'money';
-					$row['backpre'] = true;
-					$row['_backmoney'] = $row['backmoney'];
-				}
-				else {
-					if (!empty($row['backcredit'])) {
-						$row['backstr'] = '返积分';
-						$row['css'] = 'credit';
-						$row['_backmoney'] = $row['backcredit'];
-					}
-				}
+		 else if ($row['backtype'] == 2) {
+			if (!(empty($row['backredpack']))) {
+				$row['backstr'] = '返现';
+				$row['css'] = 'redpack';
+				$row['backpre'] = true;
+				$row['_backmoney'] = $row['backredpack'];
 			}
-		}
+			 else if (!(empty($row['backmoney']))) {
+				$row['backstr'] = '返利';
+				$row['css'] = 'money';
+				$row['backpre'] = true;
+				$row['_backmoney'] = $row['backmoney'];
+			}
+			 else if (!(empty($row['backcredit']))) {
+				$row['backstr'] = '返积分';
+				$row['css'] = 'credit';
+				$row['_backmoney'] = $row['backcredit'];
+			}
 
+		}
 		if ($withOpenid) {
 			$row['cangetmax'] = -1;
 			$row['canget'] = true;
@@ -1020,6 +1108,7 @@ class Coupon_EweiShopV2ComModel extends ComModel
 				return $row;
 			}
 
+
 			if (0 < $row['getmax']) {
 				$gets = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_coupon_data') . ' where couponid=:couponid and openid=:openid and uniacid=:uniacid and gettype=1 limit 1', array(':couponid' => $row['id'], ':openid' => $openid, ':uniacid' => $_W['uniacid']));
 				$row['cangetmax'] = $row['getmax'] - $gets;
@@ -1028,8 +1117,11 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					$row['cangetmax'] = 0;
 					$row['canget'] = false;
 				}
+
 			}
+
 		}
+
 
 		return $row;
 	}
@@ -1047,36 +1139,40 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			if ($merch_plugin) {
 				$merch_user = $merch_plugin->getListUserOne($row['merchid']);
 
-				if (!empty($merch_user)) {
+				if (!(empty($merch_user))) {
 					$row['merchname'] = $merch_user['merchname'];
 				}
+
 			}
+
 		}
+
 
 		$row['timestr'] = '';
 
 		if (empty($row['timelimit'])) {
-			if (!empty($row['timedays'])) {
+			if (!(empty($row['timedays']))) {
 				$row['timestr'] = date('Y-m-d', $row['gettime'] + ($row['timedays'] * 86400));
 
 				if (($row['gettime'] + ($row['timedays'] * 86400)) < $time) {
 					$row['past'] = true;
 				}
+
 			}
+
 		}
-		else {
+		 else {
 			if ($time <= $row['timestart']) {
 				$row['timestr'] = date('Y-m-d H:i', $row['timestart']) . '-' . date('Y-m-d', $row['timeend']);
 			}
-			else {
+			 else {
 				$row['timestr'] = date('Y-m-d H:i', $row['timeend']);
 			}
 
 			if ($row['timeend'] < $time) {
 				$row['past'] = true;
 			}
-		}
-
+        }
 		$row['css'] = 'deduct';
 
 		if ($row['backtype'] == 0) {
@@ -1085,38 +1181,37 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$row['backpre'] = true;
 			$row['_backmoney'] = $row['deduct'];
 		}
-		else if ($row['backtype'] == 1) {
+		 else if ($row['backtype'] == 1) {
 			$row['backstr'] = '折';
 			$row['css'] = 'discount';
 			$row['_backmoney'] = $row['discount'];
 		}
-		else {
-			if ($row['backtype'] == 2) {
-				if (!empty($row['backredpack'])) {
-					$row['backstr'] = '返现';
-					$row['css'] = 'redpack';
-					$row['backpre'] = true;
-					$row['_backmoney'] = $row['backredpack'];
-				}
-				else if (!empty($row['backmoney'])) {
-					$row['backstr'] = '返利';
-					$row['css'] = 'money';
-					$row['backpre'] = true;
-					$row['_backmoney'] = $row['backmoney'];
-				}
-				else {
-					if (!empty($row['backcredit'])) {
-						$row['backstr'] = '返积分';
-						$row['css'] = 'credit';
-						$row['_backmoney'] = $row['backcredit'];
-					}
-				}
+		 else if ($row['backtype'] == 2) {
+			if (!(empty($row['backredpack']))) {
+				$row['backstr'] = '返现';
+				$row['css'] = 'redpack';
+				$row['backpre'] = true;
+				$row['_backmoney'] = $row['backredpack'];
 			}
+			 else if (!(empty($row['backmoney']))) {
+				$row['backstr'] = '返利';
+				$row['css'] = 'money';
+				$row['backpre'] = true;
+				$row['_backmoney'] = $row['backmoney'];
+			}
+			 else if (!(empty($row['backcredit']))) {
+				$row['backstr'] = '返积分';
+				$row['css'] = 'credit';
+				$row['_backmoney'] = $row['backcredit'];
+			}
+
 		}
+
 
 		if ($row['past']) {
 			$row['css'] = 'past';
 		}
+
 
 		return $row;
 	}
@@ -1133,21 +1228,23 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		if (p('commission')) {
 			$pset = p('commission')->getSet();
 
-			if (!empty($pset['level'])) {
+			if (!(empty($pset['level']))) {
 				$member = m('member')->getMember($openid);
-				if (!empty($member) && ($member['status'] == 1) && ($member['isagent'] == 1)) {
+				if (!(empty($member)) && ($member['status'] == 1) && ($member['isagent'] == 1)) {
 					$_W['shopshare']['link'] = $url . '&mid=' . $member['id'];
 					if (empty($pset['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
 						$trigger = true;
 					}
+
 				}
-				else {
-					if (!empty($_GPC['mid'])) {
-						$_W['shopshare']['link'] = $url . '&mid=' . $_GPC['id'];
-					}
+				 else if (!(empty($_GPC['mid']))) {
+					$_W['shopshare']['link'] = $url . '&mid=' . $_GPC['id'];
 				}
+
 			}
+
 		}
+
 	}
 
 	public function perms()
@@ -1174,44 +1271,50 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		$order = pdo_fetch('select id,openid,price  from ' . tablename('ewei_shop_order') . ' where id=:id   and uniacid=:uniacid limit 1', array(':id' => intval($orderid), ':uniacid' => $_W['uniacid']));
 
 		if (empty($order)) {
-			return NULL;
+			return;
 		}
+
 
 		if ($pdata['isopensendtask'] == 1) {
 			$price = $order['price'];
-			$sendtasks = pdo_fetch('select id,couponid,sendnum,num,sendpoint  from ' . tablename('ewei_shop_coupon_sendtasks') . "\n             where  status =1  and uniacid=:uniacid and starttime< :now and endtime>:now and enough<=:enough   and num>=sendnum\n             order by  enough desc,id  limit 1", array(':now' => time(), ':enough' => $price, ':uniacid' => $_W['uniacid']));
+			$sendtasks = pdo_fetch('select id,couponid,sendnum,num,sendpoint  from ' . tablename('ewei_shop_coupon_sendtasks') . "\n" . '             where  status =1  and uniacid=:uniacid and starttime< :now and endtime>:now and enough<=:enough   and num>=sendnum' . "\n" . '             order by  enough desc,id  limit 1', array(':now' => time(), ':enough' => $price, ':uniacid' => $_W['uniacid']));
 
-			if (!empty($sendtasks)) {
+			if (!(empty($sendtasks))) {
 				$data = array('uniacid' => $_W['uniacid'], 'openid' => $_W['openid'], 'taskid' => intval($sendtasks['id']), 'couponid' => intval($sendtasks['couponid']), 'parentorderid' => 0, 'sendnum' => intval($sendtasks['sendnum']), 'tasktype' => 1, 'orderid' => $orderid, 'createtime' => time(), 'status' => 0, 'sendpoint' => intval($sendtasks['sendpoint']));
 				pdo_insert('ewei_shop_coupon_taskdata', $data);
 				$num = intval($sendtasks['num']) - intval($sendtasks['sendnum']);
 				pdo_update('ewei_shop_coupon_sendtasks', array('num' => $num), array('id' => $sendtasks['id']));
 			}
+
 		}
 
-		if ($pdata['isopengoodssendtask'] == 1) {
-			$goodssendtasks = pdo_fetchall("select  og.id,og.goodsid,og.orderid,og.parentorderid,og.total,gst.id as taskid,gst.couponid,gst.sendnum,gst.sendpoint,gst.num\n            from " . tablename('ewei_shop_coupon_goodsendtask') . " gst\n            inner join " . tablename('ewei_shop_order_goods') . " og on og.goodsid =gst.goodsid  and (orderid=:orderid or parentorderid=:orderid)\n            where  og.uniacid=:uniacid and og.openid=:openid and gst.num>=gst.sendnum", array(':uniacid' => $_W['uniacid'], ':openid' => $_W['openid'], ':orderid' => $orderid));
 
-			foreach ($goodssendtasks as $task) {
+		if ($pdata['isopengoodssendtask'] == 1) {
+			$goodssendtasks = pdo_fetchall('select  og.id,og.goodsid,og.orderid,og.parentorderid,og.total,gst.id as taskid,gst.couponid,gst.sendnum,gst.sendpoint,gst.num' . "\n" . '            from ' . tablename('ewei_shop_coupon_goodsendtask') . ' gst' . "\n" . '            inner join ' . tablename('ewei_shop_order_goods') . ' og on og.goodsid =gst.goodsid  and (orderid=:orderid or parentorderid=:orderid)' . "\n" . '            where  og.uniacid=:uniacid and og.openid=:openid and gst.num>=gst.sendnum', array(':uniacid' => $_W['uniacid'], ':openid' => $_W['openid'], ':orderid' => $orderid));
+
+			foreach ($goodssendtasks as $task ) {
 				$data = array('uniacid' => $_W['uniacid'], 'openid' => $_W['openid'], 'taskid' => intval($task['taskid']), 'couponid' => intval($task['couponid']), 'sendnum' => intval($task['total']) * intval($task['sendnum']), 'tasktype' => 2, 'orderid' => intval($task['orderid']), 'parentorderid' => intval($task['parentorderid']), 'createtime' => time(), 'status' => 0, 'sendpoint' => intval($task['sendpoint']));
 				pdo_insert('ewei_shop_coupon_taskdata', $data);
 				$num = intval($task['num']) - (intval($task['total']) * intval($task['sendnum']));
 				pdo_update('ewei_shop_coupon_goodsendtask', array('num' => $num), array('id' => $task['taskid']));
 			}
 		}
+
 	}
 
 	public function sendcouponsbytask($orderid)
 	{
 		global $_W;
 
-		if (!is_array($orderid)) {
+		if (!(is_array($orderid))) {
 			$order = pdo_fetch('select id,openid,ordersn,createtime,status,finishtime,`virtual`,isparent,parentid  from ' . tablename('ewei_shop_order') . ' where id=:id and status>=0  and uniacid=:uniacid limit 1', array(':id' => intval($orderid), ':uniacid' => $_W['uniacid']));
 		}
 
+
 		if (empty($order)) {
-			return NULL;
+			return;
 		}
+
 
 		$parentid = $order['parentid'];
 		$gosendtask = false;
@@ -1220,34 +1323,35 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$gosendtask = true;
 			$sendpoint = 2;
 		}
-		else {
-			if ($order['status'] == 3) {
-				if (0 < $parentid) {
-					$num = pdo_fetchcolumn('select 1 from ' . tablename('ewei_shop_order') . "\n                where parentid =:parentid and uniacid=:uniacid  and openid=:openid  and status<>3", array(':parentid' => intval($parentid), ':uniacid' => $_W['uniacid'], ':openid' => $order['openid']));
+		 else if ($order['status'] == 3) {
+			if (0 < $parentid) {
+				$num = pdo_fetchcolumn('select 1 from ' . tablename('ewei_shop_order') . "\n" . '                where parentid =:parentid and uniacid=:uniacid  and openid=:openid  and status<>3', array(':parentid' => intval($parentid), ':uniacid' => $_W['uniacid'], ':openid' => $order['openid']));
 
-					if (empty($num)) {
-						$gosendtask = true;
-						$sendpoint = 1;
-					}
-				}
-				else {
+				if (empty($num)) {
 					$gosendtask = true;
 					$sendpoint = 1;
 				}
+
+			}
+			 else {
+				$gosendtask = true;
+				$sendpoint = 1;
 			}
 		}
-
 		if ($gosendtask) {
 			$list = $this->getOrderSendCoupons($orderid, $sendpoint, 1, $order['openid']);
-			if (!empty($list) && (0 < count($list))) {
+			if (!(empty($list)) && (0 < count($list))) {
 				$this->posterbylist($list, $order['openid'], 6);
 			}
+
 		}
 
+
 		$list2 = $this->getOrderSendCoupons($orderid, $sendpoint, 2, $order['openid']);
-		if (!empty($list2) && (0 < count($list2))) {
+		if (!(empty($list2)) && (0 < count($list2))) {
 			$this->posterbylist($list2, $order['openid'], 6);
 		}
+
 	}
 
 	public function getOrderSendCoupons($orderid, $sendpoint, $tasktype, $openid)
@@ -1255,10 +1359,10 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_W;
 
 		if ($sendpoint == 2) {
-			$taskdata = pdo_fetchall('select id, couponid, sendnum  from ' . tablename('ewei_shop_coupon_taskdata') . "\n            where  status=0  and openid=:openid and uniacid=:uniacid and sendpoint=:sendpoint and tasktype=:tasktype\n            and (orderid=:orderid or parentorderid=:orderid)", array(':openid' => $openid, ':uniacid' => $_W['uniacid'], ':sendpoint' => $sendpoint, ':tasktype' => $tasktype, ':orderid' => $orderid));
+			$taskdata = pdo_fetchall('select id, couponid, sendnum  from ' . tablename('ewei_shop_coupon_taskdata') . "\n" . '            where  status=0  and openid=:openid and uniacid=:uniacid and sendpoint=:sendpoint and tasktype=:tasktype' . "\n" . '            and (orderid=:orderid or parentorderid=:orderid)', array(':openid' => $openid, ':uniacid' => $_W['uniacid'], ':sendpoint' => $sendpoint, ':tasktype' => $tasktype, ':orderid' => $orderid));
 		}
-		else {
-			$taskdata = pdo_fetchall('select  id, couponid, sendnum  from ' . tablename('ewei_shop_coupon_taskdata') . "\n            where  status=0  and openid=:openid and uniacid=:uniacid and sendpoint=:sendpoint and tasktype=:tasktype\n            and orderid=:orderid", array(':openid' => $openid, ':uniacid' => $_W['uniacid'], ':sendpoint' => $sendpoint, ':tasktype' => $tasktype, ':orderid' => $orderid));
+		 else {
+			$taskdata = pdo_fetchall('select  id, couponid, sendnum  from ' . tablename('ewei_shop_coupon_taskdata') . "\n" . '            where  status=0  and openid=:openid and uniacid=:uniacid and sendpoint=:sendpoint and tasktype=:tasktype' . "\n" . '            and orderid=:orderid', array(':openid' => $openid, ':uniacid' => $_W['uniacid'], ':sendpoint' => $sendpoint, ':tasktype' => $tasktype, ':orderid' => $orderid));
 		}
 
 		return $taskdata;
@@ -1270,15 +1374,17 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_GPC;
 		$pposter = p('poster');
 
-		if (!$pposter) {
-			return NULL;
+		if (!($pposter)) {
+			return;
 		}
+
 
 		$coupon = $this->getCoupon($couponid);
 
 		if (empty($coupon)) {
-			return NULL;
+			return;
 		}
+
 
 		$i = 1;
 
@@ -1300,9 +1406,10 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		global $_GPC;
 		$pposter = p('poster');
 
-		if (!$pposter) {
-			return NULL;
+		if (!($pposter)) {
+			return;
 		}
+
 
 		$num = 0;
 		$showkey = random(20);
@@ -1310,11 +1417,11 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		if (empty($data['showtemplate']) || ($data['showtemplate'] == 2)) {
 			$url = $this->getUrl('sale/coupon/my/showcoupons3', array('key' => $showkey), true);
 		}
-		else {
+		 else {
 			$url = $this->getUrl('sale/coupon/my/showcoupons', array('key' => $showkey), true);
 		}
 
-		foreach ($list as $taskdata) {
+		foreach ($list as $taskdata ) {
 			$couponnum = 0;
 			$couponnum = intval($taskdata['sendnum']);
 			$num += $couponnum;
@@ -1355,24 +1462,26 @@ class Coupon_EweiShopV2ComModel extends ComModel
 			$sql .= 'and ' . $money . '>=c.enough ';
 		}
 
+
 		$sql .= ' and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<=' . $time . ' && c.timeend>=' . $time . ')) order by d.gettime desc';
 		$list = pdo_fetchall($sql, $param);
 		$list = set_medias($list, 'thumb');
 
-		if (!empty($list)) {
-			foreach ($list as &$row) {
+		if (!(empty($list))) {
+			foreach ($list as &$row ) {
 				$row['thumb'] = tomedia($row['thumb']);
 				$row['timestr'] = '永久有效';
 
 				if (empty($row['timelimit'])) {
-					if (!empty($row['timedays'])) {
+					if (!(empty($row['timedays']))) {
 						$row['timestr'] = date('Y-m-d H:i', $row['gettime'] + ($row['timedays'] * 86400));
 					}
+
 				}
-				else if ($time <= $row['timestart']) {
+				 else if ($time <= $row['timestart']) {
 					$row['timestr'] = date('Y-m-d H:i', $row['timestart']) . '-' . date('Y-m-d H:i', $row['timeend']);
 				}
-				else {
+				 else {
 					$row['timestr'] = date('Y-m-d H:i', $row['timeend']);
 				}
 
@@ -1385,50 +1494,49 @@ class Coupon_EweiShopV2ComModel extends ComModel
 					if ($row['enough'] == '0') {
 						$row['color'] = 'org ';
 					}
-					else {
+					 else {
 						$row['color'] = 'blue';
 					}
 				}
-				else if ($row['backtype'] == 1) {
+				 else if ($row['backtype'] == 1) {
 					$row['backstr'] = '折';
 					$row['css'] = 'discount';
 					$row['backmoney'] = $row['discount'];
 					$row['color'] = 'red ';
 				}
-				else {
-					if ($row['backtype'] == 2) {
-						if ($row['coupontype'] == '0') {
-							$row['color'] = 'red ';
-						}
-						else {
-							$row['color'] = 'pink ';
-						}
-
-						if (0 < $row['backredpack']) {
-							$row['backstr'] = '返现';
-							$row['css'] = 'redpack';
-							$row['backmoney'] = $row['backredpack'];
-							$row['backpre'] = true;
-						}
-						else if (0 < $row['backmoney']) {
-							$row['backstr'] = '返利';
-							$row['css'] = 'money';
-							$row['backmoney'] = $row['backmoney'];
-							$row['backpre'] = true;
-						}
-						else {
-							if (!empty($row['backcredit'])) {
-								$row['backstr'] = '返积分';
-								$row['css'] = 'credit';
-								$row['backmoney'] = $row['backcredit'];
-							}
-						}
+				 else if ($row['backtype'] == 2) {
+					if ($row['coupontype'] == '0') {
+						$row['color'] = 'red ';
 					}
+					 else {
+						$row['color'] = 'pink ';
+					}
+
+					if (0 < $row['backredpack']) {
+						$row['backstr'] = '返现';
+						$row['css'] = 'redpack';
+						$row['backmoney'] = $row['backredpack'];
+						$row['backpre'] = true;
+					}
+					 else if (0 < $row['backmoney']) {
+						$row['backstr'] = '返利';
+						$row['css'] = 'money';
+						$row['backmoney'] = $row['backmoney'];
+						$row['backpre'] = true;
+					}
+					 else if (!(empty($row['backcredit']))) {
+						$row['backstr'] = '返积分';
+						$row['css'] = 'credit';
+						$row['backmoney'] = $row['backcredit'];
+					}
+
 				}
+
 			}
 
 			unset($row);
 		}
+
 
 		return $list;
 	}
@@ -1440,5 +1548,6 @@ class Coupon_EweiShopV2ComModel extends ComModel
 		return pdo_fetchall('select * from ' . tablename('ewei_shop_coupon') . ' where  (timelimit = 0  or  (timelimit =1 and timestart<={$time} && timeend>={$time})) and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 	}
 }
+
 
 ?>

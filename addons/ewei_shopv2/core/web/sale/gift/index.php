@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -20,22 +19,22 @@ class Index_EweiShopV2Page extends WebPage
 		if ($type == 'ing') {
 			$condition .= ' and starttime <= ' . time() . ' and endtime >= ' . time() . ' and status = 1 ';
 		}
-		else if ($type == 'none') {
+		 else if ($type == 'none') {
 			$condition .= ' and starttime > ' . time() . ' and status = 1 ';
 		}
-		else {
-			if ($type == 'end') {
-				$condition .= ' and endtime < ' . time() . ' or status = 0 ';
-			}
+		 else if ($type == 'end') {
+			$condition .= ' and endtime < ' . time() . ' or status = 0 ';
 		}
 
-		if (!empty($_GPC['keyword'])) {
+
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' AND title LIKE :title';
 			$params[':title'] = '%' . trim($_GPC['keyword']) . '%';
 		}
 
-		$gifts = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_gift') . "\n                    WHERE 1 " . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
+
+		$gifts = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_gift') . "\n" . '                    WHERE 1 ' . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_gift') . ' WHERE 1 ' . $condition . ' ', $params);
 		$pager = pagination($total, $pindex, $psize);
 		include $this->template();
@@ -63,7 +62,7 @@ class Index_EweiShopV2Page extends WebPage
 			if (empty($id)) {
 				$activity = intval($_GPC['activity']);
 			}
-			else {
+			 else {
 				$activity = intval($_GPC['activitytype']);
 			}
 
@@ -72,41 +71,46 @@ class Index_EweiShopV2Page extends WebPage
 				show_json(0, '订单金额不能为空！');
 			}
 
+
 			if (($activity == 2) && empty($data['goodsid'])) {
 				show_json(0, '指定商品不能为空！');
 			}
 
-			if (!empty($data['goodsid'])) {
+
+			if (!(empty($data['goodsid']))) {
 				$goodsid = $data['goodsid'];
-				$data['goodsid'] = is_array($data['goodsid']) ? implode(',', $data['goodsid']) : 0;
+				$data['goodsid'] = ((is_array($data['goodsid']) ? implode(',', $data['goodsid']) : 0));
 			}
+
 
 			if (empty($data['giftgoodsid'])) {
 				show_json(0, '请选择赠品！');
 			}
-			else {
+			 else {
 				$giftgoodsid = $data['giftgoodsid'];
-				$data['giftgoodsid'] = is_array($data['giftgoodsid']) ? implode(',', $data['giftgoodsid']) : 0;
+				$data['giftgoodsid'] = ((is_array($data['giftgoodsid']) ? implode(',', $data['giftgoodsid']) : 0));
 			}
 
 			if (empty($data['thumb'])) {
-				foreach ($_GPC['giftgoodsid'] as $key => $value) {
+				foreach ($_GPC['giftgoodsid'] as $key => $value ) {
 					$giftgood = pdo_fetch('select id,title,thumb from ' . tablename('ewei_shop_goods') . ' where uniacid = ' . $uniacid . ' and status = 2 and deleted = 0 limit 1 ');
 				}
 
 				$data['thumb'] = $giftgood['thumb'];
 			}
 
+
 			if ($data['thumb'] || $data['share_icon']) {
 				$data['thumb'] = save_media($data['thumb']);
 				$data['share_icon'] = save_media($data['share_icon']);
 			}
 
-			if (!empty($id)) {
+
+			if (!(empty($id))) {
 				pdo_update('ewei_shop_gift', $data, array('id' => $id));
 				plog('sale.gift.edit', '编辑赠品 ID: ' . $id . ' <br/>赠品名称: ' . $data['title']);
 			}
-			else {
+			 else {
 				pdo_insert('ewei_shop_gift', $data);
 				$id = pdo_insertid();
 				plog('sale.gift.add', '添加赠品 ID: ' . $id . '  <br/>赠品名称: ' . $data['title']);
@@ -115,35 +119,41 @@ class Index_EweiShopV2Page extends WebPage
 			show_json(1, array('url' => webUrl('sale/gift/edit', array('type' => $type, 'id' => $id))));
 		}
 
+
 		$item = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_gift') . ' WHERE uniacid = ' . $uniacid . ' and id = ' . $id . ' ');
 
-		if (!empty($item['thumb'])) {
+		if (!(empty($item['thumb']))) {
 			$item = set_medias($item, array('thumb'));
 		}
 
-		if (!empty($item['goodsid'])) {
+
+		if (!(empty($item['goodsid']))) {
 			$goodsid = explode(',', $item['goodsid']);
 			$goods = array();
 
 			if ($goodsid) {
-				foreach ($goodsid as $key => $value) {
+				foreach ($goodsid as $key => $value ) {
 					$goods[$key] = pdo_fetch('select id,title,thumb from ' . tablename('ewei_shop_goods') . ' where uniacid = ' . $uniacid . ' and status = 1 and id = ' . $value . ' and deleted = 0 ');
 				}
 			}
+
 		}
 
-		if (!empty($item['giftgoodsid'])) {
+
+		if (!(empty($item['giftgoodsid']))) {
 			$giftid = explode(',', $item['giftgoodsid']);
 			$gift = array();
 
 			if ($giftid) {
-				foreach ($giftid as $key => $value) {
+				foreach ($giftid as $key => $value ) {
 					$gift[$key] = pdo_fetch('select id,title,thumb from ' . tablename('ewei_shop_goods') . ' where uniacid = ' . $uniacid . ' and status = 2 and id = ' . $value . ' and deleted = 0 and total > 0 ');
 				}
 			}
 
+
 			$gift = array_filter($gift);
 		}
+
 
 		include $this->template();
 	}
@@ -155,12 +165,13 @@ class Index_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_gift') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
-		foreach ($items as $item) {
+		foreach ($items as $item ) {
 			pdo_update('ewei_shop_gift', array('deleted' => 1, 'status' => 0), array('id' => $item['id']));
 			plog('sale.gift.delete', '删除赠品 ID: ' . $item['id'] . ' 赠品名称: ' . $item['title'] . ' ');
 		}
@@ -175,14 +186,15 @@ class Index_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_gift') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
-		foreach ($items as $item) {
+		foreach ($items as $item ) {
 			pdo_update('ewei_shop_gift', array('status' => intval($_GPC['status'])), array('id' => $item['id']));
-			plog('sale.gift.edit', ('修改赠品状态<br/>ID: ' . $item['id'] . '<br/>赠品名称: ' . $item['title'] . '<br/>状态: ' . $_GPC['status']) == 1 ? '上架' : '下架');
+			plog('sale.gift.edit', (('修改赠品状态<br/>ID: ' . $item['id'] . '<br/>赠品名称: ' . $item['title'] . '<br/>状态: ' . $_GPC['status']) == 1 ? '上架' : '下架'));
 		}
 
 		show_json(1, array('url' => referer()));
@@ -195,12 +207,13 @@ class Index_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_gift') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
-		foreach ($items as $item) {
+		foreach ($items as $item ) {
 			pdo_delete('ewei_shop_gift', array('id' => $item['id']));
 			plog('sale.gift.edit', '彻底删除赠品<br/>ID: ' . $item['id'] . '<br/>赠品名称: ' . $item['title']);
 		}
@@ -215,12 +228,13 @@ class Index_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_gift') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
-		foreach ($items as $item) {
+		foreach ($items as $item ) {
 			pdo_update('ewei_shop_gift', array('deleted' => 0), array('id' => $item['id']));
 			plog('sale.gift.edit', '恢复赠品<br/>ID: ' . $item['id'] . '<br/>赠品名称: ' . $item['title']);
 		}
@@ -238,18 +252,21 @@ class Index_EweiShopV2Page extends WebPage
 			show_json(0, array('message' => '参数错误'));
 		}
 
+
 		$type = trim($_GPC['typechange']);
 		$value = trim($_GPC['value']);
 
-		if (!in_array($type, array('title', 'displayorder'))) {
+		if (!(in_array($type, array('title', 'displayorder')))) {
 			show_json(0, array('message' => '参数错误'));
 		}
+
 
 		$gift = pdo_fetch('select id from ' . tablename('ewei_shop_gift') . ' where id=:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
 
 		if (empty($gift)) {
 			show_json(0, array('message' => '参数错误'));
 		}
+
 
 		pdo_update('ewei_shop_gift', array($type => $value), array('id' => $id));
 		show_json(1);
@@ -267,12 +284,13 @@ class Index_EweiShopV2Page extends WebPage
 		$params[':uniacid'] = $uniacid;
 		$condition = ' and status=1 and deleted=0 and uniacid=:uniacid';
 
-		if (!empty($kwd)) {
+		if (!(empty($kwd))) {
 			$condition .= ' AND (`title` LIKE :keywords OR `keywords` LIKE :keywords)';
 			$params[':keywords'] = '%' . $kwd . '%';
 		}
 
-		$ds = pdo_fetchall("SELECT id,title,thumb,marketprice,total,goodssn,productsn,`type`,isdiscount,istime,isverify,share_title,share_icon,description,hasoption,nocommission,groupstype\n            FROM " . tablename('ewei_shop_goods') . "\n            WHERE 1 " . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
+
+		$ds = pdo_fetchall('SELECT id,title,thumb,marketprice,total,goodssn,productsn,`type`,isdiscount,istime,isverify,share_title,share_icon,description,hasoption,nocommission,groupstype' . "\n" . '            FROM ' . tablename('ewei_shop_goods') . "\n" . '            WHERE 1 ' . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_goods') . ' WHERE 1 ' . $condition . ' ', $params);
 		$pager = pagination($total, $pindex, $psize, '', array('before' => 5, 'after' => 4, 'ajaxcallback' => 'select_page', 'callbackfuncname' => 'select_page'));
 		$ds = set_medias($ds, array('thumb'));
@@ -291,17 +309,19 @@ class Index_EweiShopV2Page extends WebPage
 		$params[':uniacid'] = $uniacid;
 		$condition = ' and status=2 and deleted=0 and uniacid=:uniacid';
 
-		if (!empty($kwd)) {
+		if (!(empty($kwd))) {
 			$condition .= ' AND (`title` LIKE :keywords OR `keywords` LIKE :keywords)';
 			$params[':keywords'] = '%' . $kwd . '%';
 		}
 
-		$ds = pdo_fetchall("SELECT id,title,thumb,marketprice,total\n            FROM " . tablename('ewei_shop_goods') . "\n            WHERE 1 " . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
+
+		$ds = pdo_fetchall('SELECT id,title,thumb,marketprice,total' . "\n" . '            FROM ' . tablename('ewei_shop_goods') . "\n" . '            WHERE 1 ' . $condition . ' ORDER BY displayorder DESC,id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('ewei_shop_goods') . ' WHERE 1 ' . $condition . ' ', $params);
 		$pager = pagination($total, $pindex, $psize, '', array('before' => 5, 'after' => 4, 'ajaxcallback' => 'select_page', 'callbackfuncname' => 'select_page'));
 		$ds = set_medias($ds, array('thumb'));
 		include $this->template();
 	}
 }
+
 
 ?>

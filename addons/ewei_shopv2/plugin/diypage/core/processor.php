@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require IA_ROOT . '/addons/ewei_shopv2/defines.php';
 require EWEI_SHOPV2_INC . '/plugin_processor.php';
@@ -26,15 +26,18 @@ class DiypageProcessor extends PluginProcessor
 				return $this->responseEmpty();
 			}
 
+
 			$page['data'] = base64_decode($page['data']);
 			$page['data'] = json_decode($page['data'], true);
-			if (empty($page['data']) || !is_array($page['data'])) {
+			if (empty($page['data']) || !(is_array($page['data']))) {
 				return $this->responseEmpty();
 			}
+
 
 			$resp = array('title' => $page['data']['page']['title'], 'description' => $page['data']['page']['desc'], 'picurl' => tomedia($page['data']['page']['icon']), 'url' => mobileUrl('diypage', array('id' => $page['id'])));
 			return $obj->respNews($resp);
 		}
+
 
 		return $this->responseEmpty();
 	}
@@ -49,5 +52,6 @@ class DiypageProcessor extends PluginProcessor
 		exit(0);
 	}
 }
+
 
 ?>

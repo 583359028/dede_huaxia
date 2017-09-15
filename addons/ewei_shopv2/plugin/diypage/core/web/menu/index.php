@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -12,10 +11,11 @@ class Index_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 		$condition = '';
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$keyword = '%' . trim($_GPC['keyword']) . '%';
 			$condition .= ' and name like \'' . $keyword . '\' ';
 		}
+
 
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 15;
@@ -41,24 +41,26 @@ class Index_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 		$id = intval($_GPC['id']);
 
-		if (!empty($id)) {
+		if (!(empty($id))) {
 			$menu = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_diypage_menu') . ' WHERE id=:id and merch=:merch and uniacid=:uniacid limit 1 ', array(':id' => $id, ':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid']));
 
-			if (!empty($menu)) {
+			if (!(empty($menu))) {
 				$menu['data'] = base64_decode($menu['data']);
 				$menu['data'] = json_decode($menu['data'], true);
 			}
+
 		}
+
 
 		if ($_W['ispost']) {
 			$data = $_GPC['menu'];
 			$menudata = array('name' => $data['name'], 'data' => base64_encode(json_encode($data)), 'lastedittime' => time(), 'merch' => intval($_W['merchid']));
 
-			if (!empty($id)) {
+			if (!(empty($id))) {
 				plog('diypage.menu.edit', '更新自定义菜单 id: ' . $id . '  名称:' . $menudata['name']);
 				pdo_update('ewei_shop_diypage_menu', $menudata, array('id' => $id, 'uniacid' => $_W['uniacid']));
 			}
-			else {
+			 else {
 				plog('diypage.menu.add', '添加自定义菜单 id: ' . $id . '  名称:' . $menudata['name']);
 				$menudata['uniacid'] = $_W['uniacid'];
 				$menudata['createtime'] = time();
@@ -68,6 +70,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 
 			show_json(1, array('id' => $id));
 		}
+
 
 		include $this->template();
 	}
@@ -79,12 +82,13 @@ class Index_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,name FROM ' . tablename('ewei_shop_diypage_menu') . ' WHERE id in( ' . $id . ' ) and merch=:merch and uniacid=:uniacid ', array(':merch' => intval($_W['merchid']), ':uniacid' => $_W['uniacid']));
 
-		foreach ($items as $item) {
+		foreach ($items as $item ) {
 			pdo_delete('ewei_shop_diypage_menu', array('id' => $item['id'], 'uniacid' => $_W['uniacid'], 'merch' => intval($_W['merchid'])));
 			plog('diypage.menu.delete', '删除自定义菜单 id: ' . $item['id'] . '  名称:' . $item['name']);
 		}
@@ -92,5 +96,6 @@ class Index_EweiShopV2Page extends PluginWebPage
 		show_json(1);
 	}
 }
+
 
 ?>

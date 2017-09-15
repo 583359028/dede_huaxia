@@ -20,6 +20,12 @@ class Sysset_EweiShopV2Page extends CashierWebPage
 		{
 			$manageopenid = m('member')->getMember($item['manageopenid']);
 		}
+		if (!(empty($item['management']))) 
+		{
+			$item['management'] = trim($item['management'], ',');
+			$item['management'] = str_replace(',', '\',\'', $item['management']);
+			$management = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_member') . ' WHERE  uniacid=:uniacid AND `openid` IN (\'' . $item['management'] . '\')', array(':uniacid' => $_W['uniacid']));
+		}
 		$diyform_flag = 0;
 		$diyform_plugin = p('diyform');
 		$f_data = array();
@@ -65,7 +71,7 @@ class Sysset_EweiShopV2Page extends CashierWebPage
 				}
 			}
 			$alipay = ((is_array($_GPC['alipay']) ? json_encode($_GPC['alipay']) : ''));
-			$params = array('uniacid' => $_W['uniacid'], 'title' => $_GPC['title'], 'logo' => $_GPC['logo'], 'manageopenid' => $_GPC['manageopenid'], 'isopen_commission' => $_GPC['isopen_commission'], 'openid' => $_GPC['openid'], 'name' => $_GPC['name'], 'mobile' => $_GPC['mobile'], 'wechat_status' => $_GPC['wechat_status'], 'wechatpay' => $wechatpay, 'alipay_status' => $_GPC['alipay_status'], 'alipay' => $alipay, 'username' => $_GPC['username'], 'password' => (!(empty($_GPC['password'])) ? $_GPC['password'] : ''));
+			$params = array('uniacid' => $_W['uniacid'], 'title' => $_GPC['title'], 'logo' => $_GPC['logo'], 'manageopenid' => $_GPC['manageopenid'], 'isopen_commission' => $_GPC['isopen_commission'], 'openid' => $_GPC['openid'], 'name' => $_GPC['name'], 'mobile' => $_GPC['mobile'], 'wechat_status' => $_GPC['wechat_status'], 'wechatpay' => $wechatpay, 'alipay_status' => $_GPC['alipay_status'], 'alipay' => $alipay, 'username' => $_GPC['username'], 'password' => (!(empty($_GPC['password'])) ? $_GPC['password'] : ''), 'management' => (is_array($_GPC['management']) ? implode(',', $_GPC['management']) : ''));
 			if (empty($item['show_paytype'])) 
 			{
 				unset($params['wechat_status']);

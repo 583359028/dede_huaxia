@@ -1,4 +1,5 @@
-<?php
+
+=<?php
 if (!(defined('IN_IA'))) 
 {
 	exit('Access Denied');
@@ -68,7 +69,7 @@ class Order_EweiShopV2Page extends CashierWebPage
 		$list = pdo_fetchall($sql, $params);
 		$operator = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_cashier_operator') . ' WHERE uniacid=:uniacid AND cashierid=:cashierid ORDER BY id DESC', array(':uniacid' => $_W['uniacid'], ':cashierid' => $_W['cashierid']), 'id');
 		$total = (int) pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_cashier_pay_log') . ' where uniacid=:uniacid ' . $condition, $params);
-		$total_money = (double) pdo_fetchcolumn('select sum(money) from ' . tablename('ewei_shop_cashier_pay_log') . ' where uniacid=:uniacid ' . $condition, $params);
+		$total_money = (double) pdo_fetchcolumn('select sum(money+deduction) from ' . tablename('ewei_shop_cashier_pay_log') . ' where uniacid=:uniacid ' . $condition, $params);
 		$pager = pagination($total, $pindex, $psize);
 		include $this->template();
 	}

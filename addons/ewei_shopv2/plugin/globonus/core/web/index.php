@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -13,37 +12,43 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if (cv('globonus.partner')) {
 			header('location: ' . webUrl('globonus/partner'));
 			exit();
-			return NULL;
+			return;
 		}
+
 
 		if (cv('globonus.level')) {
 			header('location: ' . webUrl('globonus/level'));
 			exit();
-			return NULL;
+			return;
 		}
+
 
 		if (cv('globonus.bonus')) {
 			header('location: ' . webUrl('globonus/bonus'));
 			exit();
-			return NULL;
+			return;
 		}
+
 
 		if (cv('globonus.bonus.send')) {
 			header('location: ' . webUrl('globonus/bonus/send'));
 			exit();
-			return NULL;
+			return;
 		}
+
 
 		if (cv('globonus.notice')) {
 			header('location: ' . webUrl('globonus/notice'));
 			exit();
-			return NULL;
+			return;
 		}
+
 
 		if (cv('globonus.set')) {
 			header('location: ' . webUrl('globonus/set'));
 			exit();
 		}
+
 	}
 
 	public function notice()
@@ -52,13 +57,14 @@ class Index_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 
 		if ($_W['ispost']) {
-			$data = (is_array($_GPC['data']) ? $_GPC['data'] : array());
+			$data = ((is_array($_GPC['data']) ? $_GPC['data'] : array()));
 			m('common')->updatePluginset(array(
 	'globonus' => array('tm' => $data)
 	));
 			plog('globonus.notice.edit', '修改通知设置');
 			show_json(1);
 		}
+
 
 		$data = m('common')->getPluginset('globonus');
 		$template_list = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE uniacid=:uniacid ', array(':uniacid' => $_W['uniacid']));
@@ -71,12 +77,13 @@ class Index_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 
 		if ($_W['ispost']) {
-			$data = (is_array($_GPC['data']) ? $_GPC['data'] : array());
+			$data = ((is_array($_GPC['data']) ? $_GPC['data'] : array()));
 
-			if (!empty($data['withdrawcharge'])) {
+			if (!(empty($data['withdrawcharge']))) {
 				$data['withdrawcharge'] = trim($data['withdrawcharge']);
 				$data['withdrawcharge'] = floatval(trim($data['withdrawcharge'], '%'));
 			}
+
 
 			$data['withdrawbegin'] = floatval(trim($data['withdrawbegin']));
 			$data['withdrawend'] = floatval(trim($data['withdrawend']));
@@ -84,13 +91,14 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$data['applycontent'] = m('common')->html_images($data['applycontent']);
 			$data['regbg'] = save_media($data['regbg']);
 			$data['become_goodsid'] = intval($_GPC['become_goodsid']);
-			$data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
+			$data['texts'] = ((is_array($_GPC['texts']) ? $_GPC['texts'] : array()));
 			m('common')->updatePluginset(array('globonus' => $data));
 			m('cache')->set('template_' . $this->pluginname, $data['style']);
-			$selfbuy = ($data['selfbuy'] ? '开启' : '关闭');
+			$selfbuy = (($data['selfbuy'] ? '开启' : '关闭'));
 
 			switch ($data['become']) {
 			case '0':
+
 			case '1':
 				$become = '申请';
 				break;
@@ -112,6 +120,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			show_json(1, array('url' => webUrl('globonus/set', array('tab' => str_replace('#tab_', '', $_GPC['tab'])))));
 		}
 
+
 		$styles = array();
 		$dir = IA_ROOT . '/addons/ewei_shopv2/plugin/' . $this->pluginname . '/template/mobile/';
 
@@ -121,21 +130,26 @@ class Index_EweiShopV2Page extends PluginWebPage
 					if (is_dir($dir . '/' . $file)) {
 						$styles[] = $file;
 					}
+
 				}
+
 			}
 
 			closedir($handle);
 		}
 
+
 		$data = m('common')->getPluginset('globonus');
 		$goods = false;
 
-		if (!empty($data['become_goodsid'])) {
+		if (!(empty($data['become_goodsid']))) {
 			$goods = pdo_fetch('select id,title,thumb from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $data['become_goodsid'], ':uniacid' => $_W['uniacid']));
 		}
+
 
 		include $this->template();
 	}
 }
+
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -20,7 +19,7 @@ class Banner_EweiShopV2Page extends SystemPage
 		}
 
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' and title like :keyword';
 			$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
@@ -54,7 +53,7 @@ class Banner_EweiShopV2Page extends SystemPage
 			empty($_GPC['thumb']) && show_json(0, array('message' => '幻灯图片不能为空', 'url' => referer()));
 			$data = array('title' => trim($_GPC['title']), 'background' => trim($_GPC['background']), 'thumb' => trim($_GPC['thumb']), 'url' => trim($_GPC['url']), 'displayorder' => intval($_GPC['displayorder']), 'status' => trim($_GPC['status']));
 
-			if (!empty($id)) {
+			if (!(empty($id))) {
 				pdo_update('ewei_shop_system_banner', $data, array('id' => $id));
 				plog('system.site.banner.edit', '修改幻灯片 ID: ' . $id);
 			}
@@ -66,7 +65,7 @@ class Banner_EweiShopV2Page extends SystemPage
 			}
 
 			show_json(1);
-			return NULL;
+			return;
 		}
 
 
@@ -103,7 +102,7 @@ class Banner_EweiShopV2Page extends SystemPage
 		$displayorder = intval($_GPC['value']);
 		$item = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_system_banner') . ' WHERE id in( ' . $id . ' )');
 
-		if (!empty($item)) {
+		if (!(empty($item))) {
 			pdo_update('ewei_shop_system_banner', array('displayorder' => $displayorder), array('id' => $id));
 			plog('system.site.banner.delete', '修改幻灯片排序 ID: ' . $item['id'] . ' 标题: ' . $item['title'] . ' 排序: ' . $displayorder . ' ');
 		}

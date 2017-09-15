@@ -58,7 +58,6 @@ class CashierWebPage extends PluginWebPage
 		global $_W;
 		global $_GPC;
 		load()->func('tpl');
-		$_W['routes'];
 		if (empty($filename)) 
 		{
 			$filename = str_replace('.', '/', $_W['routes']);
@@ -113,7 +112,6 @@ class CashierWebPage extends PluginWebPage
 	public function getUserSet($name = '') 
 	{
 		global $_W;
-		
 		return $this->model->getUserSet($name, $_W['cashierid']);
 	}
 	public function updateUserSet($data = array()) 

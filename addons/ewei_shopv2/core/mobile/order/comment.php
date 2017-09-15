@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -11,9 +10,10 @@ class Comment_EweiShopV2Page extends MobileLoginPage
 		parent::__construct();
 		$trade = m('common')->getSysset('trade');
 
-		if (!empty($trade['closecomment'])) {
+		if (!(empty($trade['closecomment']))) {
 			$this->message('不允许评论!', '', 'error');
 		}
+
 	}
 
 	public function main()
@@ -30,13 +30,16 @@ class Comment_EweiShopV2Page extends MobileLoginPage
 			exit();
 		}
 
+
 		if (($order['status'] != 3) && ($order['status'] != 4)) {
 			$this->message('订单未收货，不能评价!', mobileUrl('order/detail', array('id' => $orderid)));
 		}
 
+
 		if (2 <= $order['iscomment']) {
 			$this->message('您已经评价过了!', mobileUrl('order/detail', array('id' => $orderid)));
 		}
+
 
 		$goods = pdo_fetchall('select og.id,og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,o.title as optiontitle from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . ' left join ' . tablename('ewei_shop_goods_option') . ' o on o.id=og.optionid ' . ' where og.orderid=:orderid and og.uniacid=:uniacid ', array(':uniacid' => $uniacid, ':orderid' => $orderid));
 		$goods = set_medias($goods, 'thumb');
@@ -56,31 +59,33 @@ class Comment_EweiShopV2Page extends MobileLoginPage
 			show_json(0, '订单未找到');
 		}
 
+
 		$member = m('member')->getMember($openid);
 		$comments = $_GPC['comments'];
 
-		if (!is_array($comments)) {
+		if (!(is_array($comments))) {
 			show_json(0, '数据出错，请重试!');
 		}
 
+
 		$trade = m('common')->getSysset('trade');
 
-		if (!empty($trade['commentchecked'])) {
+		if (!(empty($trade['commentchecked']))) {
 			$checked = 0;
 		}
-		else {
+		 else {
 			$checked = 1;
 		}
 
-		foreach ($comments as $c) {
+		foreach ($comments as $c ) {
 			$old_c = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_order_comment') . ' where uniacid=:uniacid and orderid=:orderid and goodsid=:goodsid limit 1', array(':uniacid' => $_W['uniacid'], ':goodsid' => $c['goodsid'], ':orderid' => $orderid));
 
 			if (empty($old_c)) {
-				$comment = array('uniacid' => $uniacid, 'orderid' => $orderid, 'goodsid' => $c['goodsid'], 'level' => $c['level'], 'content' => trim($c['content']), 'images' => is_array($c['images']) ? iserializer($c['images']) : iserializer(array()), 'openid' => $openid, 'nickname' => $member['nickname'], 'headimgurl' => $member['avatar'], 'createtime' => time(), 'checked' => $checked);
+				$comment = array('uniacid' => $uniacid, 'orderid' => $orderid, 'goodsid' => $c['goodsid'], 'level' => $c['level'], 'content' => trim($c['content']), 'images' => (is_array($c['images']) ? iserializer($c['images']) : iserializer(array())), 'openid' => $openid, 'nickname' => $member['nickname'], 'headimgurl' => $member['avatar'], 'createtime' => time(), 'checked' => $checked);
 				pdo_insert('ewei_shop_order_comment', $comment);
 			}
-			else {
-				$comment = array('append_content' => trim($c['content']), 'append_images' => is_array($c['images']) ? iserializer($c['images']) : iserializer(array()), 'replychecked' => $checked);
+			 else {
+				$comment = array('append_content' => trim($c['content']), 'append_images' => (is_array($c['images']) ? iserializer($c['images']) : iserializer(array())), 'replychecked' => $checked);
 				pdo_update('ewei_shop_order_comment', $comment, array('uniacid' => $_W['uniacid'], 'goodsid' => $c['goodsid'], 'orderid' => $orderid));
 			}
 		}
@@ -88,7 +93,7 @@ class Comment_EweiShopV2Page extends MobileLoginPage
 		if ($order['iscomment'] <= 0) {
 			$d['iscomment'] = 1;
 		}
-		else {
+		 else {
 			$d['iscomment'] = 2;
 		}
 
@@ -96,5 +101,6 @@ class Comment_EweiShopV2Page extends MobileLoginPage
 		show_json(1);
 	}
 }
+
 
 ?>

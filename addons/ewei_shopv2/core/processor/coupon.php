@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require IA_ROOT . '/addons/ewei_shopv2/defines.php';
 require EWEI_SHOPV2_INC . 'com_processor.php';
@@ -24,6 +24,7 @@ class CouponProcessor extends ComProcessor
 			return $this->respondText($obj);
 		}
 
+
 		return $this->responseEmpty();
 	}
 
@@ -41,11 +42,11 @@ class CouponProcessor extends ComProcessor
 	{
 		$defaults = array('pwdask' => '请输入优惠券口令: ', 'pwdfail' => '很抱歉，您猜错啦，继续猜~', 'pwdsuc' => '恭喜你，猜中啦！优惠券已发到您账户了! ', 'pwdfull' => '很抱歉，您已经没有机会啦~ ', 'pwdown' => '您已经参加过啦,等待下次活动吧~', 'pwdexit' => '0', 'pwdexitstr' => '好的，等待您下次来玩!');
 
-		foreach ($defaults as $k => $v) {
+		foreach ($defaults as $k => $v ) {
 			if (empty($coupon[$k])) {
 				$coupon[$k] = $v;
 			}
-			else {
+			 else {
 				$coupon[$k] = str_replace('[nickname]', $member['nickname'], $coupon[$k]);
 				$coupon[$k] = str_replace('[couponname]', $coupon['couponname'], $coupon[$k]);
 				$coupon[$k] = str_replace('[times]', $times, $coupon[$k]);
@@ -70,7 +71,9 @@ class CouponProcessor extends ComProcessor
 			if ($lasttimes <= 0) {
 				$lasttimes = 0;
 			}
+
 		}
+
 
 		return array('times' => $times, 'lasttimes' => $lasttimes);
 	}
@@ -87,7 +90,7 @@ class CouponProcessor extends ComProcessor
 		if (isset($_SESSION['ewei_shop_coupon_key'])) {
 			$couponkey = $_SESSION['ewei_shop_coupon_key'];
 		}
-		else {
+		 else {
 			$_SESSION['ewei_shop_coupon_key'] = $content;
 		}
 
@@ -100,16 +103,18 @@ class CouponProcessor extends ComProcessor
 			return $this->responseEmpty();
 		}
 
-		if (!$obj->inContext) {
+
+		if (!($obj->inContext)) {
 			$guessok = pdo_fetch('select id,times from ' . tablename('ewei_shop_coupon_guess') . ' where couponid=:couponid and openid=:openid and pwdkey=:pwdkey and ok=1 and uniacid=:uniacid limit 1 ', array(':couponid' => $coupon['id'], ':openid' => $openid, ':pwdkey' => $coupon['pwdkey2'], ':uniacid' => $_W['uniacid']));
 
-			if (!empty($guessok)) {
+			if (!(empty($guessok))) {
 				$guess = $this->getGuess($coupon, $openid);
 				$coupon = $this->replaceCoupon($coupon, $member, $guess['times'], $guess['lasttimes']);
 				$obj->endContext();
 				unset($_SESSION['ewei_shop_coupon_key']);
 				return $obj->respText($coupon['pwdown']);
 			}
+
 
 			$guess = $this->getGuess($coupon, $openid);
 			$coupon = $this->replaceCoupon($coupon, $member, $guess['times'], $guess['lasttimes']);
@@ -120,9 +125,11 @@ class CouponProcessor extends ComProcessor
 				return $obj->respText($coupon['pwdfull']);
 			}
 
+
 			$obj->beginContext();
 			return $obj->respText($coupon['pwdask']);
 		}
+
 
 		if (($content == $coupon['pwdexit']) || ($content == '0')) {
 			unset($_SESSION['ewei_shop_coupon_key']);
@@ -132,15 +139,16 @@ class CouponProcessor extends ComProcessor
 			return $obj->respText($coupon['pwdexitstr']);
 		}
 
+
 		$guess = pdo_fetch('select id,times from ' . tablename('ewei_shop_coupon_guess') . ' where couponid=:couponid and openid=:openid and pwdkey=:pwdkey and uniacid=:uniacid limit 1 ', array(':couponid' => $coupon['id'], ':openid' => $openid, ':pwdkey' => $coupon['pwdkey2'], ':uniacid' => $_W['uniacid']));
 		$ok = in_array($content, $words);
 
 		if (empty($guess)) {
-			$guess = array('uniacid' => $_W['uniacid'], 'couponid' => $coupon['id'], 'openid' => $openid, 'times' => 1, 'pwdkey' => $coupon['pwdkey2'], 'ok' => $ok ? 1 : 0);
+			$guess = array('uniacid' => $_W['uniacid'], 'couponid' => $coupon['id'], 'openid' => $openid, 'times' => 1, 'pwdkey' => $coupon['pwdkey2'], 'ok' => ($ok ? 1 : 0));
 			pdo_insert('ewei_shop_coupon_guess', $guess);
 		}
-		else {
-			pdo_update('ewei_shop_coupon_guess', array('times' => $guess['times'] + 1, 'ok' => $ok ? 1 : 0), array('id' => $guess['id']));
+		 else {
+			pdo_update('ewei_shop_coupon_guess', array('times' => $guess['times'] + 1, 'ok' => ($ok ? 1 : 0)), array('id' => $guess['id']));
 		}
 
 		$time = time();
@@ -160,6 +168,7 @@ class CouponProcessor extends ComProcessor
 			return $obj->respText($coupon['pwdsuc']);
 		}
 
+
 		$guess = $this->getGuess($coupon, $openid);
 		$coupon = $this->replaceCoupon($coupon, $member, $guess['times'], $guess['lasttimes']);
 
@@ -169,8 +178,10 @@ class CouponProcessor extends ComProcessor
 			return $obj->respText($coupon['pwdfull']);
 		}
 
+
 		return $obj->respText($coupon['pwdfail']);
 	}
 }
+
 
 ?>

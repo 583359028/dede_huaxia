@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -27,7 +26,7 @@ class Setting_EweiShopV2Page extends SystemPage
 			}
 
 			show_json(1);
-			return NULL;
+			return;
 		}
 
 

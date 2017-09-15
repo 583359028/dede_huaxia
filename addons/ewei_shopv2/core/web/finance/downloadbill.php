@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -20,16 +19,20 @@ class Downloadbill_EweiShopV2Page extends WebPage
 				$this->message($result['message'], '', 'error');
 			}
 
+
 			plog('finance.downloadbill.main', '下载对账单');
 		}
+
 
 		if (empty($starttime) || empty($endtime)) {
 			$starttime = $endtime = time();
 		}
 
+
 		load()->func('tpl');
 		include $this->template();
 	}
 }
+
 
 ?>

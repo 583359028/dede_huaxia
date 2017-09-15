@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -26,7 +25,7 @@ class Index_EweiShopV2Page extends WebPage
 			$createtime1 = strtotime(date('Y-m-d', time() - ($day * 3600 * 24)));
 			$createtime2 = strtotime(date('Y-m-d', time()));
 		}
-		else {
+		 else {
 			$createtime1 = strtotime(date('Y-m-d', time()));
 			$createtime2 = strtotime(date('Y-m-d', time() + (3600 * 24)));
 		}
@@ -36,7 +35,7 @@ class Index_EweiShopV2Page extends WebPage
 		$pdo_res = pdo_fetchall($sql, $param);
 		$price = 0;
 
-		foreach ($pdo_res as $arr) {
+		foreach ($pdo_res as $arr ) {
 			$price += $arr['price'];
 		}
 
@@ -56,7 +55,7 @@ class Index_EweiShopV2Page extends WebPage
 		$transaction = array();
 		$days = (int) $days;
 
-		if (!empty($pdo_fetchall)) {
+		if (!(empty($pdo_fetchall))) {
 			$i = $days;
 
 			while (1 <= $i) {
@@ -65,15 +64,17 @@ class Index_EweiShopV2Page extends WebPage
 				--$i;
 			}
 
-			foreach ($pdo_fetchall as $key => $value) {
+			foreach ($pdo_fetchall as $key => $value ) {
 				if (array_key_exists(date('Y-m-d', $value['createtime']), $transaction['price'])) {
 					$transaction['price'][date('Y-m-d', $value['createtime'])] += $value['price'];
 					$transaction['count'][date('Y-m-d', $value['createtime'])] += 1;
 				}
+
 			}
 
 			return $transaction;
 		}
+
 
 		return array();
 	}
@@ -86,7 +87,7 @@ class Index_EweiShopV2Page extends WebPage
 		global $_GPC;
 		$day = (int) $day;
 		$orderPrice = $this->selectOrderPrice($day);
-		$orderPrice['avg'] = empty($orderPrice['count']) ? 0 : round($orderPrice['price'] / $orderPrice['count'], 1);
+		$orderPrice['avg'] = ((empty($orderPrice['count']) ? 0 : round($orderPrice['price'] / $orderPrice['count'], 1)));
 		unset($orderPrice['fetchall']);
 		return $orderPrice;
 	}
@@ -99,10 +100,10 @@ class Index_EweiShopV2Page extends WebPage
 		$order30 = $this->order(30);
 		$order7['price'] = $order7['price'] + $order0['price'];
 		$order7['count'] = $order7['count'] + $order0['count'];
-		$order7['avg'] = empty($order7['count']) ? 0 : round($order7['price'] / $order7['count'], 1);
+		$order7['avg'] = ((empty($order7['count']) ? 0 : round($order7['price'] / $order7['count'], 1)));
 		$order30['price'] = $order30['price'] + $order0['price'];
 		$order30['count'] = $order30['count'] + $order0['count'];
-		$order30['avg'] = empty($order30['count']) ? 0 : round($order30['price'] / $order30['count'], 1);
+		$order30['avg'] = ((empty($order30['count']) ? 0 : round($order30['price'] / $order30['count'], 1)));
 		show_json(1, array('order0' => $order0, 'order1' => $order1, 'order7' => $order7, 'order30' => $order30));
 	}
 
@@ -124,8 +125,10 @@ class Index_EweiShopV2Page extends WebPage
 			}
 		}
 
+
 		echo json_encode(array('price_key' => array_keys($transaction['price']), 'price_value' => array_values($transaction['price']), 'count_value' => array_values($transaction['count'])));
 	}
 }
+
 
 ?>

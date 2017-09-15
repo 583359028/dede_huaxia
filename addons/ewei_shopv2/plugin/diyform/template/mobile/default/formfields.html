@@ -71,23 +71,31 @@
     <input type="text" class='fui-input' id='field_data{php echo $i}' name='field_data{php echo $i}' placeholder="请输入{$v1['tp_name']}" maxlength="18" value="{php echo $f_data[$k1]}" />
 
     {else if $v1['data_type'] == 7}
-    <input type="text" class='fui-input datepicker' id="field_data{php echo $i}" name='field_data{php echo $i}' placeholder="请输入{$v1['tp_name']}"  readonly value='{if !empty($f_data[$k1])}{php echo $f_data[$k1]}{/if}'/>
+    <input type="text" class='fui-input datepicker' id="field_data{php echo $i}" name='field_data{php echo $i}' placeholder="请输入{$v1['tp_name']}" value='{if !empty($f_data[$k1])}{php echo $f_data[$k1]}{/if}' readonly/>
 
     {else if $v1['data_type'] == 8}
 
-    <input type="text" class='fui-input datepicker'  id="field_data{php echo $i}_0" name='field_data{php echo $i}' placeholder="开始日期" readonly value='{if !empty($f_data[$k1][0])}{php echo $f_data[$k1][0]}{/if}' style='width:40%;float:left;' readonly/>
+    <input type="text" class='fui-input datepicker'  id="field_data{php echo $i}_0" name='field_data{php echo $i}' placeholder="开始日期" value='{if !empty($f_data[$k1][0])}{php echo $f_data[$k1][0]}{/if}' style='width:40%;float:left;' readonly/>
 
-    <input type="text" class='fui-input datepicker'  id="field_data{php echo $i}_1" name='field_data{php echo $i}' placeholder="结束日期" readonly value='{if !empty($f_data[$k1][1])}{php echo $f_data[$k1][1]}{/if}' style='width:40%;float:left;margin-left:5px;' readonly/>
+    <input type="text" class='fui-input datepicker'  id="field_data{php echo $i}_1" name='field_data{php echo $i}' placeholder="结束日期" value='{if !empty($f_data[$k1][1])}{php echo $f_data[$k1][1]}{/if}' style='width:40%;float:left;margin-left:5px;' readonly/>
 
     {else if $v1['data_type'] == 9}
-    <input type="text" class='fui-input citypicker' id="field_data{php echo $i}" name='field_data{php echo $i}' placeholder="请选择{$v1['tp_name']}"  readonly value="" data-value="" data-area="{php echo intval($v1['tp_area'])}"/>
+    <input type="text" class='fui-input citypicker' id="field_data{php echo $i}" name='field_data{php echo $i}' placeholder="请选择{$v1['tp_name']}" value="" data-value="" data-area="{php echo intval($v1['tp_area'])}" readonly/>
 
     {else if $v1['data_type'] == 10}
     <input type="text" class='fui-input' id='field_data{php echo $i}' name='field_data{php echo $i}' placeholder="请输入{$v1['tp_name']}"  value="{php echo $f_data[$k1]['name1']}" />
     <br/>
     <input type="text" class='fui-input' id='field_data{php echo $i}_2' name='field_data{php echo $i}_2' placeholder="请输入{$v1['tp_name2']}"  value="{php echo $f_data[$k1]['name2']}" />
-    {/if}
 
+    {else if $v1['data_type'] == 11}
+    <input type="text" class='fui-input timepicker' id="field_data{php echo $i}" name='field_data{php echo $i}' placeholder="请选择{$v1['tp_name']}"  readonly value='{if !empty($f_data[$k1])}{php echo $f_data[$k1]}{/if}'/>
+
+    {else if $v1['data_type'] == 12}
+    <input type="text" class='fui-input timepicker'  id="field_data{php echo $i}_0" name='field_data{php echo $i}' placeholder="开始时间" value='{if !empty($f_data[$k1][0])}{php echo $f_data[$k1][0]}{/if}' style='width:40%;float:left;' readonly/>
+
+    <input type="text" class='fui-input timepicker'  id="field_data{php echo $i}_1" name='field_data{php echo $i}' placeholder="结束时间" value='{if !empty($f_data[$k1][1])}{php echo $f_data[$k1][1]}{/if}' style='width:40%;float:left;margin-left:5px;' readonly/>
+
+    {/if}
 
 </div>
 </div>
@@ -110,52 +118,37 @@
     }
 
     require(reqParams,function(){
-        $('.diyform-container .datepicker').datePicker({
-            onShow:function(){
-                {if $inPicker}
-                    $('.option-picker').css('z-index',999);
-                    $('.fui-mask').unbind('click').click(function(){
-                        $('.diyform-container .datepicker').datePicker('close');
-                    });
-                    {/if}
-                    }
-                ,onClose:function(){
-                    {if $inPicker}
-                        $('.option-picker').css('z-index',1001);
-                        $('.fui-mask').unbind('click').click(function(){
-                            FoxUI.mask.hide();
-                            $('.option-picker').removeClass('in');
-                        });
-                        {/if}
-                        }
-                    });
-                    $('.diyform-container .citypicker').cityPicker({
-                        new_area: new_area,
-                        address_street: address_street,
-                        showArea:showArea,
-                        onShow:function(){
+        $('.diyform-container .datepicker').datePicker();
+        $('.diyform-container .timepicker').timePicker();
 
-                            {if $inPicker}
-                                $('.option-picker').css('z-index',999);
-                                $('.fui-mask').unbind('click').click(function(){
-                                    $('.diyform-container .datepicker').cityPicker('close');
-                                });
-                                {/if}
-                                }
-                            ,onClose:function(){
-                                {if $inPicker}
-                                    $('.option-picker').css('z-index',1001);
-                                    $('.fui-mask').unbind('click').click(function(){
-                                        FoxUI.mask.hide();
-                                        $('.option-picker').removeClass('in');
-                                    });
-                                    {/if}
-                                    }
-                                });
-                                $('.diyform-container .diyform-container-uploader').uploader({
-                                    uploadUrl: "{php echo mobileUrl('util/uploader')}",
-                                    removeUrl:"{php echo mobileUrl('util/uploader/remove')}"
-                                });
-                            })
+
+        $('.diyform-container .citypicker').cityPicker({
+            new_area: new_area,
+            address_street: address_street,
+            showArea:showArea,
+            onShow:function(){
+
+                {if $inPicker}
+                $('.option-picker').css('z-index',999);
+                $('.fui-mask').unbind('click').click(function(){
+                    $('.diyform-container .datepicker').cityPicker('close');
+                });
+                {/if}
+            }
+            ,onClose:function(){
+                {if $inPicker}
+                $('.option-picker').css('z-index',1001);
+                $('.fui-mask').unbind('click').click(function(){
+                    FoxUI.mask.hide();
+                    $('.option-picker').removeClass('in');
+                });
+                {/if}
+            }
+        });
+        $('.diyform-container .diyform-container-uploader').uploader({
+            uploadUrl: "{php echo mobileUrl('util/uploader')}",
+            removeUrl:"{php echo mobileUrl('util/uploader/remove')}"
+        });
+    })
 </script>
 </div>

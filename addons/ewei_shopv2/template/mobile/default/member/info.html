@@ -10,6 +10,20 @@
 
 	<div class='fui-content' style='margin-top:5px;'>
 
+		<div class="fui-list-group">
+			<a class="fui-list" href="{php echo mobileUrl('member/info/face')}" data-nocache="true">
+				<div class="fui-list-media">
+					<img class="round avatar" src="{php echo tomedia($member['avatar'])}" />
+				</div>
+				<div class="fui-list-inner">
+					<div class="title nickname">{$member['nickname']}</div>
+				</div>
+				<div class="fui-list-angle">
+					<div class="angle"></div>
+				</div>
+			</a>
+		</div>
+
 		{if !empty($wapset['open'])}
 		<div class="fui-cell-group">
 			<div class="fui-cell must">
@@ -19,7 +33,6 @@
 			</div>
 		</div>
 		{/if}
-
 
 		{if empty($template_flag)}
 			 

@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Plugin_EweiShopV2Model
 {
 	/**
@@ -13,6 +16,7 @@ class Plugin_EweiShopV2Model
 		if (empty($dbplugin)) {
 			return false;
 		}
+
 
 		return true;
 	}
@@ -29,7 +33,6 @@ class Plugin_EweiShopV2Model
 		if ($status !== '') {
 			$status = 'and status = ' . intval($status);
 		}
-
 		if ($iscom) {
 			$plugins = m('cache')->getArray('coms2', 'global');
 
@@ -37,14 +40,16 @@ class Plugin_EweiShopV2Model
 				$plugins = pdo_fetchall('select * from ' . tablename('ewei_shop_plugin') . ' where iscom=1 and deprecated=0 ' . $status . ' order by displayorder asc');
 				m('cache')->set('coms2', $plugins, 'global');
 			}
+
 		}
-		else {
+		 else {
 			$plugins = m('cache')->getArray('plugins2', 'global');
 
 			if (empty($plugins)) {
 				$plugins = pdo_fetchall('select * from ' . tablename('ewei_shop_plugin') . ' where iscom=0 and deprecated=0 ' . $status . ' order by displayorder asc');
 				m('cache')->set('plugins2', $plugins, 'global');
 			}
+
 		}
 
 		return $plugins;
@@ -56,6 +61,7 @@ class Plugin_EweiShopV2Model
 			$status = 'and status = ' . intval($status);
 		}
 
+
 		$com = pdo_fetchall('select * from ' . tablename('ewei_shop_plugin') . ' where iscom=1 and deprecated=0 ' . $status . ' order by displayorder asc');
 		m('cache')->set('coms2', $com, 'global');
 		$plugins = pdo_fetchall('select * from ' . tablename('ewei_shop_plugin') . ' where iscom=0 and deprecated=0 ' . $status . ' order by displayorder asc');
@@ -65,6 +71,7 @@ class Plugin_EweiShopV2Model
 			return $com;
 		}
 
+
 		return $plugins;
 	}
 
@@ -73,13 +80,14 @@ class Plugin_EweiShopV2Model
 		$list = $this->getCategory();
 		$plugins = $this->getAll(false, $status);
 
-		foreach ($list as $ck => &$cv) {
+		foreach ($list as $ck => &$cv ) {
 			$ps = array();
 
-			foreach ($plugins as $p) {
+			foreach ($plugins as $p ) {
 				if ($p['category'] == $ck) {
 					$ps[] = $p;
 				}
+
 			}
 
 			$cv['plugins'] = $ps;
@@ -93,10 +101,11 @@ class Plugin_EweiShopV2Model
 	{
 		$plugins = $this->getAll();
 
-		foreach ($plugins as $p) {
+		foreach ($plugins as $p ) {
 			if ($p['identity'] == $identity) {
 				return $p['name'];
 			}
+
 		}
 
 		return '';
@@ -106,7 +115,7 @@ class Plugin_EweiShopV2Model
 	{
 		static $_model;
 
-		if (!$_model) {
+		if (!($_model)) {
 			$modelfile = IA_ROOT . '/addons/ewei_shopv2/plugin/' . $pluginname . '/core/model.php';
 
 			if (is_file($modelfile)) {
@@ -115,7 +124,9 @@ class Plugin_EweiShopV2Model
 				require_once $modelfile;
 				$_model = new $classname($pluginname);
 			}
+
 		}
+
 
 		return $_model;
 	}
@@ -131,8 +142,5 @@ class Plugin_EweiShopV2Model
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

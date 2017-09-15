@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Express_EweiShopV2Model
 {
 	/**
@@ -14,8 +17,5 @@ class Express_EweiShopV2Model
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

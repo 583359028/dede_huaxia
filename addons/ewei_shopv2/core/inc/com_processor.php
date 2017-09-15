@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require MODULE_ROOT . '/defines.php';
 class ComProcessor extends WeModuleProcessor
@@ -30,6 +30,7 @@ class ComProcessor extends WeModuleProcessor
 			require $modelfile;
 			$this->model = new $classname($this->pluginname);
 		}
+
 	}
 
 	public function respond()
@@ -37,5 +38,6 @@ class ComProcessor extends WeModuleProcessor
 		$this->message = $this->message;
 	}
 }
+
 
 ?>

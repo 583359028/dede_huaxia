@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -10,10 +9,12 @@ class ComWebPage extends WebPage
 	{
 		parent::__construct();
 
-		if (!com('perm')->check_com($_com)) {
+		if (!(com('perm')->check_com($_com))) {
 			$this->message('你没有相应的权限查看');
 		}
+
 	}
 }
+
 
 ?>

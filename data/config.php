@@ -7,13 +7,13 @@ $config['db']['host'] = '127.0.0.1';
 $config['db']['username'] = 'root';
 $config['db']['password'] = 'root';
 $config['db']['port'] = '3306';
-$config['db']['database'] = 'xingfuyun';
+$config['db']['database'] = 'symiyun.com';
 $config['db']['charset'] = 'utf8';
 $config['db']['pconnect'] = 0;
 $config['db']['tablepre'] = 'ims_';
 
 // --------------------------  CONFIG COOKIE  --------------------------- //
-$config['cookie']['pre'] = '1147_';
+$config['cookie']['pre'] = 'd053_';
 $config['cookie']['domain'] = '';
 $config['cookie']['path'] = '/';
 
@@ -23,7 +23,7 @@ $config['setting']['cache'] = 'mysql';
 $config['setting']['timezone'] = 'Asia/Shanghai';
 $config['setting']['memory_limit'] = '256M';
 $config['setting']['filemode'] = 0644;
-$config['setting']['authkey'] = '97642bbc';
+$config['setting']['authkey'] = 'd009d9ea';
 $config['setting']['founder'] = '1';
 $config['setting']['development'] = 0;
 $config['setting']['referrer'] = 0;

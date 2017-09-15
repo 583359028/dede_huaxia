@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -15,28 +14,31 @@ class Short_EweiShopV2Page extends PluginWebPage
 		$condition = ' uniacid = :uniacid AND deleted = :deleted and merchid=0';
 		$params = array(':uniacid' => $_W['uniacid'], ':deleted' => '0');
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' AND ( title LIKE :title or shorttitle like :title ) ';
 			$params[':title'] = '%' . trim($_GPC['keyword']) . '%';
 		}
 
-		if (!empty($_GPC['shorttitle'])) {
+
+		if (!(empty($_GPC['shorttitle']))) {
 			$_GPC['shorttitle'] = intval($_GPC['shorttitle']);
 
 			if ($_GPC['shorttitle'] < 2) {
 				$condition .= ' AND shorttitle <> "" ';
 			}
-			else {
+			 else {
 				$condition .= ' AND shorttitle = "" ';
 			}
 		}
+
 
 		if ($_GPC['status'] != '') {
 			$_GPC['status'] = intval($_GPC['status']);
 			$condition .= ' AND status=:status ';
 			$params[':status'] = $_GPC['status'];
 		}
+
 
 		$sql = 'SELECT id,title,shorttitle,status FROM ' . tablename('ewei_shop_goods') . ' where  1 and ' . $condition . ' ORDER BY  shorttitle desc, status desc, id DESC LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
 		$list = pdo_fetchall($sql, $params);
@@ -53,19 +55,20 @@ class Short_EweiShopV2Page extends PluginWebPage
 		$shorttitle = trim($_GPC['value']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 			$shorttitle = '';
 		}
 
+
 		$goods = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_goods') . ' WHERE id in( ' . $id . ' ) and merchid=0 AND uniacid=' . $_W['uniacid']);
 
-		foreach ($goods as $good) {
+		foreach ($goods as $good ) {
 			pdo_update('ewei_shop_goods', array('shorttitle' => $shorttitle), array('id' => $good['id'], 'uniacid' => $_W['uniacid']));
 
 			if (empty($shorttitle)) {
 				plog('exhelper.short.edit', '清空商品简称 ID: ' . $good['id'] . ' 商品名称: ' . $good['title']);
 			}
-			else {
+			 else {
 				plog('exhelper.short.edit', '修改商品简称 ID: ' . $good['id'] . ' 商品名称: ' . $good['title'] . ' 商品简称: ' . $shorttitle);
 			}
 		}
@@ -73,5 +76,6 @@ class Short_EweiShopV2Page extends PluginWebPage
 		show_json(1, array('url' => referer()));
 	}
 }
+
 
 ?>

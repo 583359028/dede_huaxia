@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Common_EweiShopV2Model
 {
 	public function getSetData($uniacid = 0)
@@ -10,6 +13,7 @@ class Common_EweiShopV2Model
 			$uniacid = $_W['uniacid'];
 		}
 
+
 		$set = m('cache')->getArray('sysset', $uniacid);
 
 		if (empty($set)) {
@@ -19,8 +23,10 @@ class Common_EweiShopV2Model
 				$set = array();
 			}
 
+
 			m('cache')->set('sysset', $set, $uniacid);
 		}
+
 
 		return $set;
 	}
@@ -36,18 +42,19 @@ class Common_EweiShopV2Model
 		$allset = iunserializer($set['sets']);
 		$retsets = array();
 
-		if (!empty($key)) {
+		if (!(empty($key))) {
 			if (is_array($key)) {
-				foreach ($key as $k) {
-					$retsets[$k] = isset($allset[$k]) ? $allset[$k] : array();
+				foreach ($key as $k ) {
+					$retsets[$k] = ((isset($allset[$k]) ? $allset[$k] : array()));
 				}
 			}
-			else {
-				$retsets = (isset($allset[$key]) ? $allset[$key] : array());
+			 else {
+				$retsets = ((isset($allset[$key]) ? $allset[$key] : array()));
 			}
 
 			return $retsets;
 		}
+
 
 		return $allset;
 	}
@@ -60,18 +67,19 @@ class Common_EweiShopV2Model
 		$allset = iunserializer($set['plugins']);
 		$retsets = array();
 
-		if (!empty($key)) {
+		if (!(empty($key))) {
 			if (is_array($key)) {
-				foreach ($key as $k) {
-					$retsets[$k] = isset($allset[$k]) ? $allset[$k] : array();
+				foreach ($key as $k ) {
+					$retsets[$k] = ((isset($allset[$k]) ? $allset[$k] : array()));
 				}
 			}
-			else {
-				$retsets = (isset($allset[$key]) ? $allset[$key] : array());
+			 else {
+				$retsets = ((isset($allset[$key]) ? $allset[$key] : array()));
 			}
 
 			return $retsets;
 		}
+
 
 		return $allset;
 	}
@@ -85,17 +93,18 @@ class Common_EweiShopV2Model
 			$uniacid = $_W['uniacid'];
 		}
 
+
 		$setdata = pdo_fetch('select id, sets from ' . tablename('ewei_shop_sysset') . ' where uniacid=:uniacid limit 1', array(':uniacid' => $uniacid));
 
 		if (empty($setdata)) {
 			pdo_insert('ewei_shop_sysset', array('sets' => iserializer($values), 'uniacid' => $uniacid));
 		}
-		else {
+		 else {
 			$sets = iunserializer($setdata['sets']);
-			$sets = (is_array($sets) ? $sets : array());
+			$sets = ((is_array($sets) ? $sets : array()));
 
-			foreach ($values as $key => $value) {
-				foreach ($value as $k => $v) {
+			foreach ($values as $key => $value ) {
+				foreach ($value as $k => $v ) {
 					$sets[$key][$k] = $v;
 				}
 			}
@@ -117,16 +126,17 @@ class Common_EweiShopV2Model
 			$uniacid = $_W['uniacid'];
 		}
 
+
 		$setdata = pdo_fetch('select id, plugins from ' . tablename('ewei_shop_sysset') . ' where uniacid=:uniacid limit 1', array(':uniacid' => $uniacid));
 
 		if (empty($setdata)) {
 			pdo_insert('ewei_shop_sysset', array('plugins' => iserializer($values), 'uniacid' => $uniacid));
 		}
-		else {
+		 else {
 			$plugins = iunserializer($setdata['plugins']);
 
-			foreach ($values as $key => $value) {
-				foreach ($value as $k => $v) {
+			foreach ($values as $key => $value ) {
+				foreach ($value as $k => $v ) {
 					$plugins[$key][$k] = $v;
 				}
 			}
@@ -142,14 +152,15 @@ class Common_EweiShopV2Model
 	public function setGlobalSet($uniacid = 0)
 	{
 		$sysset = $this->getSysset('', $uniacid);
-		$sysset = (is_array($sysset) ? $sysset : array());
+		$sysset = ((is_array($sysset) ? $sysset : array()));
 		$pluginset = $this->getPluginset('', $uniacid);
 
 		if (is_array($pluginset)) {
-			foreach ($pluginset as $k => $v) {
+			foreach ($pluginset as $k => $v ) {
 				$sysset[$k] = $v;
 			}
 		}
+
 
 		m('cache')->set('globalset', $sysset, $uniacid);
 		return $sysset;
@@ -167,19 +178,23 @@ class Common_EweiShopV2Model
 
 		if (empty($type)) {
 			$set['notify_url'] = $_W['siteroot'] . 'addons/ewei_shopv2/payment/alipay/notify.php';
-			$set['return_url'] = mobileUrl('order/pay_alipay/complete', array('openid' => $openid, 'fromwechat' => is_weixin() ? 1 : 0), true);
+			$set['return_url'] = mobileUrl('order/pay_alipay/complete', array('openid' => $openid, 'fromwechat' => (is_weixin() ? 1 : 0)), true);
 		}
-		else if ($type == 20) {
+		 else if ($type == 20) {
 			$set['notify_url'] = $_W['siteroot'] . 'addons/ewei_shopv2/payment/alipay/notify.php';
-			$set['return_url'] = mobileUrl('creditshop/detail/creditshop_complete', array('openid' => $openid, 'fromwechat' => is_weixin() ? 1 : 0), true);
+			$set['return_url'] = mobileUrl('creditshop/detail/creditshop_complete', array('openid' => $openid, 'fromwechat' => (is_weixin() ? 1 : 0)), true);
 		}
-		else if ($type == 21) {
+		 else if ($type == 21) {
 			$set['notify_url'] = $_W['siteroot'] . 'addons/ewei_shopv2/payment/alipay/notify.php';
-			$set['return_url'] = mobileUrl('creditshop/log/dispatch_complete', array('openid' => $openid, 'fromwechat' => is_weixin() ? 1 : 0), true);
+			$set['return_url'] = mobileUrl('creditshop/log/dispatch_complete', array('openid' => $openid, 'fromwechat' => (is_weixin() ? 1 : 0)), true);
 		}
-		else {
+		 else if ($type == 22) {
 			$set['notify_url'] = $_W['siteroot'] . 'addons/ewei_shopv2/payment/alipay/notify.php';
-			$set['return_url'] = mobileUrl('order/pay_alipay/recharge_complete', array('openid' => $openid, 'fromwechat' => is_weixin() ? 1 : 0), true);
+			$set['return_url'] = mobileUrl('threen/register/threen_complete', array('openid' => $openid, 'fromwechat' => (is_weixin() ? 1 : 0)), true);
+		}
+		 else {
+			$set['notify_url'] = $_W['siteroot'] . 'addons/ewei_shopv2/payment/alipay/notify.php';
+			$set['return_url'] = mobileUrl('order/pay_alipay/recharge_complete', array('openid' => $openid, 'fromwechat' => (is_weixin() ? 1 : 0)), true);
 		}
 
 		$set['out_trade_no'] = $tid;
@@ -191,10 +206,11 @@ class Common_EweiShopV2Model
 		$set['body'] = $_W['uniacid'] . ':' . $type;
 		$prepares = array();
 
-		foreach ($set as $key => $value) {
+		foreach ($set as $key => $value ) {
 			if (($key != 'sign') && ($key != 'sign_type')) {
 				$prepares[] = $key . '=' . $value;
 			}
+
 		}
 
 		sort($prepares);
@@ -208,29 +224,34 @@ class Common_EweiShopV2Model
 	{
 		$public = array('app_id' => $params['app_id'], 'method' => $params['method'], 'format' => 'JSON', 'charset' => 'utf-8', 'sign_type' => 'RSA', 'timestamp' => date('Y-m-d H:i:s'), 'version' => '1.0');
 
-		if (!empty($params['return_url'])) {
+		if (!(empty($params['return_url']))) {
 			$public['return_url'] = $params['return_url'];
 		}
 
-		if (!empty($params['app_auth_token'])) {
+
+		if (!(empty($params['app_auth_token']))) {
 			$public['app_auth_token'] = $params['app_auth_token'];
 		}
 
-		if (!empty($params['notify_url'])) {
+
+		if (!(empty($params['notify_url']))) {
 			$public['notify_url'] = $params['notify_url'];
 		}
 
-		if (!empty($params['biz_content'])) {
-			$public['biz_content'] = is_array($params['biz_content']) ? json_encode($params['biz_content']) : $params['biz_content'];
+
+		if (!(empty($params['biz_content']))) {
+			$public['biz_content'] = ((is_array($params['biz_content']) ? json_encode($params['biz_content']) : $params['biz_content']));
 		}
+
 
 		ksort($public);
 		$string1 = '';
 
-		foreach ($public as $key => $v) {
+		foreach ($public as $key => $v ) {
 			if (empty($v)) {
 				continue;
 			}
+
 
 			$string1 .= $key . '=' . $v . '&';
 		}
@@ -242,17 +263,19 @@ class Common_EweiShopV2Model
 			return error(-1, '提供的私钥格式不对');
 		}
 
+
 		$signature = '';
 		openssl_sign($string1, $signature, $pkeyid, OPENSSL_ALGO_SHA1);
 		openssl_free_key($pkeyid);
 		$signature = base64_encode($signature);
 		$public['sign'] = $signature;
 		load()->func('communication');
-		$url = (EWEI_SHOPV2_DEBUG ? 'https://openapi.alipaydev.com/gateway.do' : 'https://openapi.alipay.com/gateway.do');
+		$url = ((EWEI_SHOPV2_DEBUG ? 'https://openapi.alipaydev.com/gateway.do' : 'https://openapi.alipay.com/gateway.do'));
 
 		if ($return !== NULL) {
 			return $public;
 		}
+
 
 		$response = ihttp_post($url, $public);
 		$result = json_decode(iconv('GBK', 'UTF-8//IGNORE', $response['content']), true);
@@ -264,20 +287,19 @@ class Common_EweiShopV2Model
 		if (empty($key)) {
 			return $key;
 		}
-
 		if ($public) {
 			if (strexists($key, '-----BEGIN PUBLIC KEY-----')) {
 				$key = str_replace(array('-----BEGIN PUBLIC KEY-----', '-----END PUBLIC KEY-----'), '', $key);
 			}
 
-			$head_end = "-----BEGIN PUBLIC KEY-----\n{key}\n-----END PUBLIC KEY-----";
-		}
-		else {
-			if (strexists($key, '-----BEGIN RSA PRIVATE KEY-----')) {
-				$key = str_replace(array('-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'), '', $key);
-			}
 
-			$head_end = "-----BEGIN RSA PRIVATE KEY-----\n{key}\n-----END RSA PRIVATE KEY-----";
+			$head_end = '-----BEGIN PUBLIC KEY-----' . "\n" . '{key}' . "\n" . '-----END PUBLIC KEY-----';
+		}
+		 else if (strexists($key, '-----BEGIN RSA PRIVATE KEY-----')) {
+			$key = str_replace(array('-----BEGIN RSA PRIVATE KEY-----', '-----END RSA PRIVATE KEY-----'), '', $key);
+		}
+		 else {
+			$head_end = '-----BEGIN RSA PRIVATE KEY-----' . "\n" . '{key}' . "\n" . '-----END RSA PRIVATE KEY-----';
 		}
 
 		$key = str_replace(array("\r\n", "\r", "\n"), '', trim($key));
@@ -314,11 +336,13 @@ class Common_EweiShopV2Model
 			return $result;
 		}
 
+
 		$key = str_replace('.', '_', $config['method']) . '_response';
 
 		if ($result[$key]['code'] == '10000') {
 			return $result[$key];
 		}
+
 
 		return error($result[$key]['code'], $result[$key]['msg'] . ':' . $result[$key]['sub_msg']);
 	}
@@ -367,14 +391,17 @@ class Common_EweiShopV2Model
 			return $result;
 		}
 
+
 		$key = str_replace('.', '_', $config['method']) . '_response';
 		if (($result[$key]['code'] == '10000') && ($result[$key]['trade_status'] == 'TRADE_SUCCESS')) {
 			return $result[$key];
 		}
 
-		if (!empty($result[$key]['trade_status']) && ($result[$key]['trade_status'] == 'TRADE_CLOSED')) {
+
+		if (!(empty($result[$key]['trade_status'])) && ($result[$key]['trade_status'] == 'TRADE_CLOSED')) {
 			return error($result[$key]['code'], '该订单已经关闭或者已经退款');
 		}
+
 
 		return error($result[$key]['code'], $result[$key]['msg'] . ':' . $result[$key]['sub_msg']);
 	}
@@ -398,10 +425,12 @@ class Common_EweiShopV2Model
 			return $result;
 		}
 
+
 		$key = str_replace('.', '_', $config['method']) . '_response';
 		if (($result[$key]['code'] == '10000') && ($result[$key]['msg'] == 'Success')) {
 			return $result[$key];
 		}
+
 
 		return error($result[$key]['code'], $result[$key]['msg'] . ':' . $result[$key]['sub_msg']);
 	}
@@ -425,10 +454,12 @@ class Common_EweiShopV2Model
 			return $result;
 		}
 
+
 		$key = str_replace('.', '_', $config['method']) . '_response';
 		if (($result[$key]['code'] == '10000') && ($result[$key]['msg'] == 'Success')) {
 			return $result[$key];
 		}
+
 
 		return error($result[$key]['code'], $result[$key]['msg'] . ':' . $result[$key]['sub_msg']);
 	}
@@ -445,10 +476,12 @@ class Common_EweiShopV2Model
 			return $result;
 		}
 
+
 		$key = str_replace('.', '_', $config['method']) . '_response';
 		if (($result[$key]['code'] == '10000') && ($result[$key]['msg'] == 'Success')) {
 			return $result[$key];
 		}
+
 
 		return error($result[$key]['code'], $result[$key]['msg'] . ':' . $result[$key]['sub_msg']);
 	}
@@ -467,16 +500,18 @@ class Common_EweiShopV2Model
 		$sec = m('common')->getSec();
 		$sec = iunserializer($sec['sec']);
 
-		if (!empty($set['weixin_sub'])) {
-			$wechat = array('appid' => $sec['appid_sub'], 'mch_id' => $sec['mchid_sub'], 'sub_appid' => !empty($sec['sub_appid_sub']) ? $sec['sub_appid_sub'] : '', 'sub_mch_id' => $sec['sub_mchid_sub'], 'apikey' => $sec['apikey_sub']);
-			$params['openid'] = isset($params['user']) ? $params['user'] : $_W['openid'];
+		if (!(empty($set['weixin_sub']))) {
+			$wechat = array('appid' => $sec['appid_sub'], 'mch_id' => $sec['mchid_sub'], 'sub_appid' => (!(empty($sec['sub_appid_sub'])) ? $sec['sub_appid_sub'] : ''), 'sub_mch_id' => $sec['sub_mchid_sub'], 'apikey' => $sec['apikey_sub']);
+			$params['openid'] = ((isset($params['user']) ? $params['user'] : $_W['openid']));
 			return $this->wechat_child_build($params, $wechat, $type);
 		}
 
+
 		load()->func('communication');
-		if (empty($wechat['version']) && !empty($wechat['signkey'])) {
+		if (empty($wechat['version']) && !(empty($wechat['signkey']))) {
 			$wechat['version'] = 1;
 		}
+
 
 		$wOpt = array();
 
@@ -499,10 +534,11 @@ class Common_EweiShopV2Model
 			ksort($package);
 			$string1 = '';
 
-			foreach ($package as $key => $v) {
+			foreach ($package as $key => $v ) {
 				if (empty($v)) {
 					continue;
 				}
+
 
 				$string1 .= $key . '=' . $v . '&';
 			}
@@ -511,7 +547,7 @@ class Common_EweiShopV2Model
 			$sign = strtoupper(md5($string1));
 			$string2 = '';
 
-			foreach ($package as $key => $v) {
+			foreach ($package as $key => $v ) {
 				$v = urlencode($v);
 				$string2 .= $key . '=' . $v . '&';
 			}
@@ -522,12 +558,13 @@ class Common_EweiShopV2Model
 			$keys = array('appId', 'timeStamp', 'nonceStr', 'package', 'appKey');
 			sort($keys);
 
-			foreach ($keys as $key) {
+			foreach ($keys as $key ) {
 				$v = $wOpt[$key];
 
 				if ($key == 'appKey') {
 					$v = $wechat['signkey'];
 				}
+
 
 				$key = strtolower($key);
 				$string .= $key . '=' . $v . '&';
@@ -538,6 +575,12 @@ class Common_EweiShopV2Model
 			$wOpt['paySign'] = sha1($string);
 			return $wOpt;
 		}
+
+
+		if (IMS_VERSION <= 0.80000000000000004) {
+			$wechat['apikey'] = $wechat['signkey'];
+		}
+
 
 		$package = array();
 		$package['appid'] = $wechat['appid'];
@@ -550,25 +593,27 @@ class Common_EweiShopV2Model
 		$package['total_fee'] = $params['fee'] * 100;
 		$package['spbill_create_ip'] = CLIENT_IP;
 
-		if (!empty($params['goods_tag'])) {
+		if (!(empty($params['goods_tag']))) {
 			$package['goods_tag'] = $params['goods_tag'];
 		}
 
+
 		$package['notify_url'] = $_W['siteroot'] . 'addons/ewei_shopv2/payment/wechat/notify.php';
 		$package['trade_type'] = 'JSAPI';
-		$package['openid'] = empty($params['openid']) ? $_W['openid'] : $params['openid'];
+		$package['openid'] = ((empty($params['openid']) ? $_W['openid'] : $params['openid']));
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $key => $v) {
+		foreach ($package as $key => $v ) {
 			if (empty($v)) {
 				continue;
 			}
 
+
 			$string1 .= $key . '=' . $v . '&';
 		}
 
-		$string1 .= 'key=' . $wechat['signkey'];
+		$string1 .= 'key=' . $wechat['apikey'];
 		$package['sign'] = strtoupper(md5($string1));
 		$dat = array2xml($package);
 		$response = ihttp_request('https://api.mch.weixin.qq.com/pay/unifiedorder', $dat);
@@ -577,15 +622,18 @@ class Common_EweiShopV2Model
 			return $response;
 		}
 
+
 		$xml = @simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);
 
 		if (strval($xml->return_code) == 'FAIL') {
 			return error(-1, strval($xml->return_msg));
 		}
 
+
 		if (strval($xml->result_code) == 'FAIL') {
 			return error(-1, strval($xml->err_code) . ': ' . strval($xml->err_code_des));
 		}
+
 
 		$prepayid = $xml->prepay_id;
 		$wOpt['appId'] = $wechat['appid'];
@@ -596,11 +644,11 @@ class Common_EweiShopV2Model
 		ksort($wOpt, SORT_STRING);
 		$string = '';
 
-		foreach ($wOpt as $key => $v) {
+		foreach ($wOpt as $key => $v ) {
 			$string .= $key . '=' . $v . '&';
 		}
 
-		$string .= 'key=' . $wechat['signkey'];
+		$string .= 'key=' . $wechat['apikey'];
 		$wOpt['paySign'] = strtoupper(md5($string));
 		return $wOpt;
 	}
@@ -615,37 +663,39 @@ class Common_EweiShopV2Model
 		$package['sub_mch_id'] = $wechat['sub_mch_id'];
 		$package['nonce_str'] = random(32);
 		$package['body'] = $params['title'];
-		$package['device_info'] = isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2';
-		$package['attach'] = (isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid']) . ':' . $type;
+		$package['device_info'] = ((isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2'));
+		$package['attach'] = ((isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid'])) . ':' . $type;
 		$package['out_trade_no'] = $params['tid'];
 		$package['total_fee'] = $params['fee'] * 100;
 		$package['spbill_create_ip'] = CLIENT_IP;
 		$package['product_id'] = $params['goods_id'];
 
-		if (!empty($params['goods_tag'])) {
+		if (!(empty($params['goods_tag']))) {
 			$package['goods_tag'] = $params['goods_tag'];
 		}
 
+
 		$package['time_start'] = date('YmdHis', TIMESTAMP);
 		$package['time_expire'] = date('YmdHis', TIMESTAMP + 3600);
-		$package['notify_url'] = empty($params['notify_url']) ? $_W['siteroot'] . 'addons/ewei_shopv2/payment/wechat/notify.php' : $params['notify_url'];
+		$package['notify_url'] = ((empty($params['notify_url']) ? $_W['siteroot'] . 'addons/ewei_shopv2/payment/wechat/notify.php' : $params['notify_url']));
 		$package['trade_type'] = 'JSAPI';
 
-		if (!empty($wechat['sub_appid'])) {
+		if (!(empty($wechat['sub_appid']))) {
 			$package['sub_appid'] = $wechat['sub_appid'];
 			$package['sub_openid'] = $params['openid'];
 		}
-		else {
+		 else {
 			$package['openid'] = $params['openid'];
 		}
 
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $key => $v) {
+		foreach ($package as $key => $v ) {
 			if (empty($v)) {
 				continue;
 			}
+
 
 			$string1 .= $key . '=' . $v . '&';
 		}
@@ -659,15 +709,18 @@ class Common_EweiShopV2Model
 			return $response;
 		}
 
+
 		$xml = simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);
 
 		if (strval($xml->return_code) == 'FAIL') {
 			return error(-1, strval($xml->return_msg));
 		}
 
+
 		if (strval($xml->result_code) == 'FAIL') {
 			return error(-1, strval($xml->err_code) . ': ' . strval($xml->err_code_des));
 		}
+
 
 		libxml_disable_entity_loader(true);
 		$prepayid = $xml->prepay_id;
@@ -675,7 +728,7 @@ class Common_EweiShopV2Model
 		ksort($wOpt, SORT_STRING);
 		$string = '';
 
-		foreach ($wOpt as $key => $v) {
+		foreach ($wOpt as $key => $v ) {
 			$string .= $key . '=' . $v . '&';
 		}
 
@@ -693,46 +746,51 @@ class Common_EweiShopV2Model
 			$sec = m('common')->getSec();
 			$sec = iunserializer($sec['sec']);
 
-			if (!empty($set['weixin_jie_sub'])) {
-				$wechat = array('appid' => $sec['appid_jie_sub'], 'mch_id' => $sec['mchid_jie_sub'], 'sub_appid' => !empty($sec['sub_appid_jie_sub']) ? $sec['sub_appid_jie_sub'] : '', 'sub_mch_id' => $sec['sub_mchid_jie_sub'], 'apikey' => $sec['apikey_jie_sub']);
+			if (!(empty($set['weixin_jie_sub']))) {
+				$wechat = array('appid' => $sec['appid_jie_sub'], 'mch_id' => $sec['mchid_jie_sub'], 'sub_appid' => (!(empty($sec['sub_appid_jie_sub'])) ? $sec['sub_appid_jie_sub'] : ''), 'sub_mch_id' => $sec['sub_mchid_jie_sub'], 'apikey' => $sec['apikey_jie_sub']);
 				return $this->wechat_native_child_build($params, $wechat, $type);
 			}
+
 		}
 
-		if (!empty($params['openid'])) {
+
+		if (!(empty($params['openid']))) {
 			$wechat['version'] = 2;
 			$wechat['signkey'] = $wechat['apikey'];
 			$wechat['mch_id'] = $wechat['mchid'];
 			return $this->wechat_build($params, $wechat, $type);
 		}
 
+
 		$package = array();
 		$package['appid'] = $wechat['appid'];
 		$package['mch_id'] = $wechat['mchid'];
 		$package['nonce_str'] = random(32);
 		$package['body'] = $params['title'];
-		$package['device_info'] = isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2';
-		$package['attach'] = (isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid']) . ':' . $type;
+		$package['device_info'] = ((isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2'));
+		$package['attach'] = ((isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid'])) . ':' . $type;
 		$package['out_trade_no'] = $params['tid'];
 		$package['total_fee'] = $params['fee'] * 100;
 		$package['spbill_create_ip'] = CLIENT_IP;
 		$package['product_id'] = $params['tid'];
 
-		if (!empty($params['goods_tag'])) {
+		if (!(empty($params['goods_tag']))) {
 			$package['goods_tag'] = $params['goods_tag'];
 		}
 
+
 		$package['time_start'] = date('YmdHis', TIMESTAMP);
 		$package['time_expire'] = date('YmdHis', TIMESTAMP + 3600);
-		$package['notify_url'] = empty($params['notify_url']) ? $_W['siteroot'] . 'addons/ewei_shopv2/payment/wechat/notify.php' : $params['notify_url'];
+		$package['notify_url'] = ((empty($params['notify_url']) ? $_W['siteroot'] . 'addons/ewei_shopv2/payment/wechat/notify.php' : $params['notify_url']));
 		$package['trade_type'] = 'NATIVE';
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $key => $v) {
+		foreach ($package as $key => $v ) {
 			if (empty($v)) {
 				continue;
 			}
+
 
 			$string1 .= $key . '=' . $v . '&';
 		}
@@ -747,6 +805,7 @@ class Common_EweiShopV2Model
 			return $response;
 		}
 
+
 		libxml_disable_entity_loader(true);
 		$xml = simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);
 
@@ -754,9 +813,11 @@ class Common_EweiShopV2Model
 			return error(-1, strval($xml->return_msg));
 		}
 
+
 		if (strval($xml->result_code) == 'FAIL') {
 			return error(-1, strval($xml->err_code) . ': ' . strval($xml->err_code_des));
 		}
+
 
 		$result = json_decode(json_encode($xml), true);
 		return $result;
@@ -766,43 +827,47 @@ class Common_EweiShopV2Model
 	{
 		global $_W;
 
-		if (!empty($params['openid'])) {
+		if (!(empty($params['openid']))) {
 			return $this->wechat_child_build($params, $wechat, $type);
 		}
+
 
 		$package = array();
 		$package['appid'] = $wechat['appid'];
 
-		if (!empty($wechat['sub_appid'])) {
+		if (!(empty($wechat['sub_appid']))) {
 			$package['sub_appid'] = $wechat['sub_appid'];
 		}
+
 
 		$package['mch_id'] = $wechat['mch_id'];
 		$package['sub_mch_id'] = $wechat['sub_mch_id'];
 		$package['nonce_str'] = random(32);
 		$package['body'] = $params['title'];
-		$package['device_info'] = isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2';
-		$package['attach'] = (isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid']) . ':' . $type;
+		$package['device_info'] = ((isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2'));
+		$package['attach'] = ((isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid'])) . ':' . $type;
 		$package['out_trade_no'] = $params['tid'];
 		$package['total_fee'] = $params['fee'] * 100;
 		$package['spbill_create_ip'] = CLIENT_IP;
 		$package['product_id'] = $params['tid'];
 
-		if (!empty($params['goods_tag'])) {
+		if (!(empty($params['goods_tag']))) {
 			$package['goods_tag'] = $params['goods_tag'];
 		}
 
+
 		$package['time_start'] = date('YmdHis', TIMESTAMP);
 		$package['time_expire'] = date('YmdHis', TIMESTAMP + 3600);
-		$package['notify_url'] = empty($params['notify_url']) ? $_W['siteroot'] . 'addons/ewei_shopv2/payment/wechat/notify.php' : $params['notify_url'];
+		$package['notify_url'] = ((empty($params['notify_url']) ? $_W['siteroot'] . 'addons/ewei_shopv2/payment/wechat/notify.php' : $params['notify_url']));
 		$package['trade_type'] = 'NATIVE';
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $key => $v) {
+		foreach ($package as $key => $v ) {
 			if (empty($v)) {
 				continue;
 			}
+
 
 			$string1 .= $key . '=' . $v . '&';
 		}
@@ -817,6 +882,7 @@ class Common_EweiShopV2Model
 			return $response;
 		}
 
+
 		libxml_disable_entity_loader(true);
 		$xml = simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);
 
@@ -824,9 +890,11 @@ class Common_EweiShopV2Model
 			return error(-1, strval($xml->return_msg));
 		}
 
+
 		if (strval($xml->result_code) == 'FAIL') {
 			return error(-1, strval($xml->err_code) . ': ' . strval($xml->err_code_des));
 		}
+
 
 		$result = json_decode(json_encode($xml), true);
 		return $result;
@@ -842,7 +910,7 @@ class Common_EweiShopV2Model
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $key => $v) {
+		foreach ($package as $key => $v ) {
 			$string1 .= $key . '=' . $v . '&';
 		}
 
@@ -856,6 +924,7 @@ class Common_EweiShopV2Model
 			return $response;
 		}
 
+
 		libxml_disable_entity_loader(true);
 		$xml = simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);
 
@@ -863,9 +932,11 @@ class Common_EweiShopV2Model
 			return error(-1, strval($xml->return_msg));
 		}
 
+
 		if (strval($xml->result_code) == 'FAIL') {
 			return error(-1, strval($xml->err_code) . ': ' . strval($xml->err_code_des));
 		}
+
 
 		$result = json_decode(json_encode($xml), true);
 		return $result;
@@ -907,16 +978,16 @@ class Common_EweiShopV2Model
 		$package['re_openid'] = $params['openid'];
 		$package['total_amount'] = $params['money'] * 100;
 		$package['total_num'] = 1;
-		$package['wishing'] = isset($params['wishing']) ? $params['wishing'] : '恭喜发财,大吉大利';
+		$package['wishing'] = ((isset($params['wishing']) ? $params['wishing'] : '恭喜发财,大吉大利'));
 		$package['client_ip'] = CLIENT_IP;
 		$package['act_name'] = $params['act_name'];
-		$package['remark'] = isset($params['remark']) ? $params['remark'] : '暂无备注';
-		$package['scene_id'] = isset($params['scene_id']) ? $params['scene_id'] : 'PRODUCT_1';
+		$package['remark'] = ((isset($params['remark']) ? $params['remark'] : '暂无备注'));
+		$package['scene_id'] = ((isset($params['scene_id']) ? $params['scene_id'] : 'PRODUCT_1'));
 		$url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $k => $v) {
+		foreach ($package as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -932,8 +1003,10 @@ class Common_EweiShopV2Model
 					show_json(0, array('message' => $errmsg));
 				}
 
+
 				show_message($errmsg, '', 'error');
 			}
+
 
 			$certfile = IA_ROOT . '/addons/ewei_shopv2/cert/' . random(128);
 			file_put_contents($certfile, $wechat['certs']['cert']);
@@ -945,10 +1018,11 @@ class Common_EweiShopV2Model
 			$extras['CURLOPT_SSLKEY'] = $keyfile;
 			$extras['CURLOPT_CAINFO'] = $rootfile;
 		}
-		else {
+		 else {
 			if ($_W['ispost']) {
 				show_json(0, array('message' => $errmsg));
 			}
+
 
 			show_message($errmsg, '', 'error');
 		}
@@ -963,19 +1037,22 @@ class Common_EweiShopV2Model
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		$arr = json_decode(json_encode(simplexml_load_string($resp['content'], 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'SUCCESS')) {
 			return true;
 		}
 
+
 		if ($arr['return_msg'] == $arr['err_code_des']) {
 			$error = $arr['return_msg'];
 		}
-		else {
+		 else {
 			$error = $arr['return_msg'] . ' | ' . $arr['err_code_des'];
 		}
 
@@ -1010,24 +1087,26 @@ class Common_EweiShopV2Model
 		$package['mch_id'] = $wechat['mch_id'];
 		$package['nonce_str'] = random(32);
 		$package['body'] = $params['title'];
-		$package['device_info'] = isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2';
-		$package['attach'] = (isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid']) . ':' . $type;
+		$package['device_info'] = ((isset($params['device_info']) ? 'ewei_shopv2:' . $params['device_info'] : 'ewei_shopv2'));
+		$package['attach'] = ((isset($params['uniacid']) ? $params['uniacid'] : $_W['uniacid'])) . ':' . $type;
 		$package['out_trade_no'] = $params['tid'];
 		$package['total_fee'] = $params['fee'] * 100;
 		$package['spbill_create_ip'] = CLIENT_IP;
 		$package['auth_code'] = $params['auth_code'];
 
-		if (!empty($wechat['sub_mch_id'])) {
+		if (!(empty($wechat['sub_mch_id']))) {
 			$package['sub_mch_id'] = $wechat['sub_mch_id'];
 		}
+
 
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $key => $v) {
+		foreach ($package as $key => $v ) {
 			if (empty($v)) {
 				continue;
 			}
+
 
 			$string1 .= $key . '=' . $v . '&';
 		}
@@ -1041,6 +1120,7 @@ class Common_EweiShopV2Model
 			return $response;
 		}
 
+
 		$xml = simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);
 		libxml_disable_entity_loader(true);
 		$result = json_decode(json_encode($xml), true);
@@ -1049,9 +1129,11 @@ class Common_EweiShopV2Model
 			return error(-1, $result['return_msg']);
 		}
 
+
 		if ($result['result_code'] == 'FAIL') {
 			return error(-2, $result['err_code'] . ': ' . $result['err_code_des']);
 		}
+
 
 		return $result;
 	}
@@ -1075,17 +1157,19 @@ class Common_EweiShopV2Model
 		$package['nonce_str'] = random(32);
 		$package['out_trade_no'] = $out_trade_no;
 
-		if (!empty($wechat['sub_mch_id'])) {
+		if (!(empty($wechat['sub_mch_id']))) {
 			$package['sub_mch_id'] = $wechat['sub_mch_id'];
 		}
+
 
 		ksort($package, SORT_STRING);
 		$string1 = '';
 
-		foreach ($package as $key => $v) {
+		foreach ($package as $key => $v ) {
 			if (empty($v)) {
 				continue;
 			}
+
 
 			$string1 .= $key . '=' . $v . '&';
 		}
@@ -1100,21 +1184,25 @@ class Common_EweiShopV2Model
 			return $response;
 		}
 
+
 		$xml = simplexml_load_string($response['content'], 'SimpleXMLElement', LIBXML_NOCDATA);
 
 		if (strval($xml->return_code) == 'FAIL') {
 			return error(-1, strval($xml->return_msg));
 		}
 
+
 		if (strval($xml->result_code) == 'FAIL') {
 			return error(-2, strval($xml->err_code) . ': ' . strval($xml->err_code_des));
 		}
 
+
 		libxml_disable_entity_loader(true);
 		$result = json_decode(json_encode($xml), true);
-		if (($result['total_fee'] != ($money * 100)) && ($money != 0)) {
+		if (($result['total_fee'] != $money * 100) && ($money != 0)) {
 			return error(-1, '金额出错');
 		}
+
 
 		return $result;
 	}
@@ -1124,9 +1212,10 @@ class Common_EweiShopV2Model
 		global $_W;
 		load()->model('account');
 
-		if (!empty($_W['acid'])) {
+		if (!(empty($_W['acid']))) {
 			return WeAccount::create($_W['acid']);
 		}
+
 
 		$acid = pdo_fetchcolumn('SELECT acid FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid LIMIT 1', array(':uniacid' => $_W['uniacid']));
 		return WeAccount::create($acid);
@@ -1143,6 +1232,7 @@ class Common_EweiShopV2Model
 				break;
 			}
 
+
 			$billno = date('YmdHis') . random(6, true);
 		}
 
@@ -1156,13 +1246,14 @@ class Common_EweiShopV2Model
 		$images = array();
 
 		if (isset($imgs[1])) {
-			foreach ($imgs[1] as $img) {
+			foreach ($imgs[1] as $img ) {
 				$im = array('old' => $img, 'new' => save_media($img, $enforceQiniu));
 				$images[] = $im;
 			}
 		}
 
-		foreach ($images as $img) {
+
+		foreach ($images as $img ) {
 			$detail = str_replace($img['old'], $img['new'], $detail);
 		}
 
@@ -1176,13 +1267,14 @@ class Common_EweiShopV2Model
 		$images = array();
 
 		if (isset($imgs[1])) {
-			foreach ($imgs[1] as $img) {
+			foreach ($imgs[1] as $img ) {
 				$im = array('old' => $img, 'new' => tomedia($img));
 				$images[] = $im;
 			}
 		}
 
-		foreach ($images as $img) {
+
+		foreach ($images as $img ) {
 			$detail = str_replace($img['old'], $img['new'], $detail);
 		}
 
@@ -1191,7 +1283,7 @@ class Common_EweiShopV2Model
 
 	public function array_images($arr)
 	{
-		foreach ($arr as &$a) {
+		foreach ($arr as &$a ) {
 			$a = save_media($a);
 		}
 
@@ -1207,11 +1299,13 @@ class Common_EweiShopV2Model
 			$uniacid = $_W['uniacid'];
 		}
 
+
 		$set = pdo_fetch('select sec from ' . tablename('ewei_shop_sysset') . ' where uniacid=:uniacid limit 1', array(':uniacid' => $uniacid));
 
 		if (empty($set)) {
 			$set = array();
 		}
+
 
 		return $set;
 	}
@@ -1221,17 +1315,19 @@ class Common_EweiShopV2Model
 		global $_W;
 		$openpaylog = m('cache')->getString('paylog', 'global');
 
-		if (!empty($openpaylog)) {
+		if (!(empty($openpaylog))) {
 			$path = IA_ROOT . '/addons/ewei_shopv2/data/paylog/' . $_W['uniacid'] . '/' . date('Ymd');
 
-			if (!is_dir($path)) {
+			if (!(is_dir($path))) {
 				load()->func('file');
 				@mkdirs($path, '0777');
 			}
 
+
 			$file = $path . '/' . date('H') . '.log';
 			file_put_contents($file, $log, FILE_APPEND);
 		}
+
 	}
 
 	public function getAreas()
@@ -1239,17 +1335,17 @@ class Common_EweiShopV2Model
 		$area_set = m('util')->get_area_config_set();
 		$new_area = intval($area_set['new_area']);
 
-		if (!empty($new_area)) {
+		if (!(empty($new_area))) {
 			$file = IA_ROOT . '/addons/ewei_shopv2/static/js/dist/area/AreaNew.xml';
 		}
-		else {
+		 else {
 			$file = IA_ROOT . '/addons/ewei_shopv2/static/js/dist/area/Area.xml';
 		}
 
 		$file_str = file_get_contents($file);
 		$areas = json_decode(json_encode(simplexml_load_string($file_str)), true);
-		if (!empty($new_area) && !empty($areas['province'])) {
-			foreach ($areas['province'] as $k => &$row) {
+		if (!(empty($new_area)) && !(empty($areas['province']))) {
+			foreach ($areas['province'] as $k => &$row ) {
 				if (0 < $k) {
 					if (empty($row['city'][0])) {
 						$row['city'][0]['@attributes'] = $row['city']['@attributes'];
@@ -1257,21 +1353,24 @@ class Common_EweiShopV2Model
 						unset($row['city']['@attributes']);
 						unset($row['city']['county']);
 					}
+
 				}
-				else {
+				 else {
 					unset($areas['province'][0]);
 				}
 
-				foreach ($row['city'] as $k1 => $v1) {
+				foreach ($row['city'] as $k1 => $v1 ) {
 					if (empty($v1['county'][0])) {
 						$row['city'][$k1]['county'][0]['@attributes'] = $v1['county']['@attributes'];
 						unset($row['city'][$k1]['county']['@attributes']);
 					}
+
 				}
 			}
 
 			unset($row);
 		}
+
 
 		return $areas;
 	}
@@ -1286,42 +1385,50 @@ class Common_EweiShopV2Model
 		global $_W;
 		$copyrights = m('cache')->getArray('systemcopyright', 'global');
 
-		if (!is_array($copyrights)) {
+		if (!(is_array($copyrights))) {
 			$copyrights = pdo_fetchall('select *  from ' . tablename('ewei_shop_system_copyright'));
 			m('cache')->set('systemcopyright', $copyrights, 'global');
 		}
 
+
 		$copyright = false;
 
-		foreach ($copyrights as $cr) {
+		foreach ($copyrights as $cr ) {
 			if ($cr['uniacid'] == $_W['uniacid']) {
 				if ($ismanage && ($cr['ismanage'] == 1)) {
 					$copyright = $cr;
 					break;
 				}
 
-				if (!$ismanage && ($cr['ismanage'] == 0)) {
+
+				if (!($ismanage) && ($cr['ismanage'] == 0)) {
 					$copyright = $cr;
 					break;
 				}
+
 			}
+
 		}
 
-		if (!$copyright) {
-			foreach ($copyrights as $cr) {
+		if (!($copyright)) {
+			foreach ($copyrights as $cr ) {
 				if ($cr['uniacid'] == -1) {
 					if ($ismanage && ($cr['ismanage'] == 1)) {
 						$copyright = $cr;
 						break;
 					}
 
-					if (!$ismanage && ($cr['ismanage'] == 0)) {
+
+					if (!($ismanage) && ($cr['ismanage'] == 0)) {
 						$copyright = $cr;
 						break;
 					}
+
 				}
+
 			}
 		}
+
 
 		return $copyright;
 	}
@@ -1331,18 +1438,21 @@ class Common_EweiShopV2Model
 		global $_W;
 
 		if (empty($key)) {
-			return NULL;
+			return;
 		}
+
 
 		$keyword = pdo_fetch('SELECT * FROM ' . tablename('rule_keyword') . ' WHERE content=:content and uniacid=:uniacid limit 1 ', array(':content' => trim($key), ':uniacid' => $_W['uniacid']));
 
-		if (!empty($keyword)) {
+		if (!(empty($keyword))) {
 			$rule = pdo_fetch('SELECT * FROM ' . tablename('rule') . ' WHERE id=:id and uniacid=:uniacid limit 1 ', array(':id' => $keyword['rid'], ':uniacid' => $_W['uniacid']));
 
-			if (!empty($rule)) {
+			if (!(empty($rule))) {
 				return $rule;
 			}
+
 		}
+
 	}
 
 	public function createStaticFile($url, $regen = false)
@@ -1350,8 +1460,9 @@ class Common_EweiShopV2Model
 		global $_W;
 
 		if (empty($url)) {
-			return NULL;
+			return;
 		}
+
 
 		$url = preg_replace('/(&|\\?)mid=[^&]+/', '', $url);
 		$cache = md5($url) . '_html';
@@ -1363,16 +1474,18 @@ class Common_EweiShopV2Model
 			m('cache')->set($cache, $content);
 		}
 
+
 		return $content;
 	}
 
 	public function delrule($rids)
 	{
-		if (!is_array($rids)) {
+		if (!(is_array($rids))) {
 			$rids = array($rids);
 		}
 
-		foreach ($rids as $rid) {
+
+		foreach ($rids as $rid ) {
 			$rid = intval($rid);
 			load()->model('reply');
 			$reply = reply_single($rid);
@@ -1386,7 +1499,9 @@ class Common_EweiShopV2Model
 				if (method_exists($module, 'ruleDeleted')) {
 					$module->ruleDeleted($rid);
 				}
+
 			}
+
 		}
 	}
 
@@ -1399,38 +1514,38 @@ class Common_EweiShopV2Model
 			return false;
 		}
 
+
 		$media = pdo_get('core_attachment', array('uniacid' => $_W['uniacid'], 'attachment' => $attachment));
 
 		if (empty($media)) {
 			return false;
 		}
 
+
 		if (empty($_W['isfounder']) && ($_W['role'] != 'manager')) {
 			return false;
 		}
-
 		if ($fileDelete) {
 			load()->func('file');
 
-			if (!empty($_W['setting']['remote']['type'])) {
+			if (!(empty($_W['setting']['remote']['type']))) {
 				$status = file_remote_delete($media['attachment']);
 			}
-			else {
+			 else {
 				$status = file_delete($media['attachment']);
 			}
 
 			if (is_error($status)) {
 				exit($status['message']);
 			}
+
 		}
+
 
 		pdo_delete('core_attachment', array('uniacid' => $_W['uniacid'], 'id' => $media['id']));
 		return true;
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

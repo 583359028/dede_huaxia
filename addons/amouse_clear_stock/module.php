@@ -1,1 +1,0 @@
-<?phpdefined('IN_IA') or exit('Access Denied');class Amouse_Clear_StockModule extends WeModule{    public function settingsDisplay($settings){    }}

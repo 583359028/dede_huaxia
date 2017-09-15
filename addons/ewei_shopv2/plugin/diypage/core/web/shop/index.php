@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -37,13 +36,14 @@ class Index_EweiShopV2Page extends PluginWebPage
 			m('common')->updatePluginset(array('diypage' => $data));
 			$plog = '保存商城 自定义页面: ';
 
-			foreach ($data['page'] as $key => $val) {
+			foreach ($data['page'] as $key => $val ) {
 				$plog .= $key . '=>' . $val . '; ';
 			}
 
 			plog('diypage.shop.page.save', $plog);
 			show_json(1);
 		}
+
 
 		$pluginList = array(
 			'commission' => array('status' => 0, 'list' => $commission_list),
@@ -56,12 +56,14 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if (empty($pluginAll)) {
 			$pluginList = array();
 		}
-		else {
-			foreach ($pluginAll as $plugin) {
+		 else {
+			foreach ($pluginAll as $plugin ) {
 				$identity = $plugin['identity'];
+
 				if (isset($pluginList[$identity]) && empty($pluginList[$identity]['status'])) {
 					$pluginList[$identity]['status'] = 1;
 				}
+
 			}
 		}
 
@@ -81,7 +83,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			m('common')->updatePluginset(array('diypage' => $data));
 			$plog = '保存商城 自定义菜单: ';
 
-			foreach ($data['menu'] as $key => $val) {
+			foreach ($data['menu'] as $key => $val ) {
 				$plog .= $key . '=>' . $val . '; ';
 			}
 
@@ -89,18 +91,21 @@ class Index_EweiShopV2Page extends PluginWebPage
 			show_json(1);
 		}
 
-		$pluginList = array('creditshop' => 0, 'commission' => 0, 'groups' => 0, 'mr' => 0, 'sns' => 0, 'sign' => 0, 'seckill' => 0);
+
+		$pluginList = array('creditshop' => 0, 'commission' => 0, 'groups' => 0, 'mr' => 0, 'sns' => 0, 'sign' => 0, 'seckill' => 0, 'threen' => 0);
 		$pluginAll = m('plugin')->getAll();
 
 		if (empty($pluginAll)) {
 			$pluginList = array();
 		}
-		else {
-			foreach ($pluginAll as $plugin) {
+		 else {
+			foreach ($pluginAll as $plugin ) {
 				$identity = $plugin['identity'];
+
 				if (isset($pluginList[$identity]) && empty($pluginList[$identity])) {
 					$pluginList[$identity] = 1;
 				}
+
 			}
 		}
 
@@ -118,15 +123,17 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if ($_W['ispost']) {
 			$data = $_GPC['data'];
 
-			if (!empty($data)) {
+			if (!(empty($data))) {
 				$diypagedata['followbar'] = $data;
 				m('common')->updatePluginset(array('diypage' => $diypagedata));
 				plog('diypage.shop.followbar.main', '编辑自定义关注条');
 				show_json(1);
 			}
 
+
 			show_json(0, '数据错误，请刷新页面重试！');
 		}
+
 
 		include $this->template();
 	}
@@ -141,15 +148,17 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if ($_W['ispost']) {
 			$data = $_GPC['data'];
 
-			if (!empty($data)) {
+			if (!(empty($data))) {
 				$diypagedata['layer'] = $data;
 				m('common')->updatePluginset(array('diypage' => $diypagedata));
 				plog('diypage.shop.layer.main', '编辑自定义悬浮按钮');
 				show_json(1);
 			}
 
+
 			show_json(0, '数据错误，请刷新页面重试！');
 		}
+
 
 		include $this->template();
 	}
@@ -168,18 +177,46 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if ($_W['ispost']) {
 			$data = $_GPC['data'];
 
-			if (!empty($data)) {
+			if (!(empty($data))) {
 				$diypagedata['gotop'] = $data;
 				m('common')->updatePluginset(array('diypage' => $diypagedata));
 				plog('diypage.shop.layer.main', '编辑自定义悬浮按钮');
 				show_json(1);
 			}
 
+
 			show_json(0, '数据错误，请刷新页面重试！');
 		}
+
+
+		include $this->template();
+	}
+
+	public function danmu()
+	{
+		global $_W;
+		global $_GPC;
+		$diypagedata = m('common')->getPluginset('diypage');
+		$danmu = $diypagedata['danmu'];
+
+		if ($_W['ispost']) {
+			$data = $_GPC['data'];
+
+			if (!(empty($data))) {
+				$diypagedata['danmu'] = $data;
+				m('common')->updatePluginset(array('diypage' => $diypagedata));
+				plog('diypage.shop.danmu.main', '编辑自定义悬浮按钮');
+				show_json(1);
+			}
+
+
+			show_json(0, '数据错误，请刷新页面重试！');
+		}
+
 
 		include $this->template();
 	}
 }
+
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -16,5 +15,6 @@ class Show_EweiShopV2Page extends MobileLoginPage
 		include $this->template('sale/coupon/my/showcoupons2');
 	}
 }
+
 
 ?>

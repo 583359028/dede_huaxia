@@ -132,6 +132,24 @@
 </div>
 
 <div class="form-group">
+    <label class="col-sm-2 control-label">关注后自动接任务</label>
+    <div class="col-sm-9 col-xs-12">
+        {ifp 'task.edit'}
+        <label class="radio-inline">
+            <input type="radio" name="autoposter" value="0" {if empty($item['autoposter'])}checked{/if} /> 禁用
+        </label>
+
+        <label class="radio-inline">
+            <input type="radio" name="autoposter" value="1" {if $item['autoposter']==1}checked{/if} /> 启用
+        </label>
+        {else}
+        <div class='form-control-static'>{if empty($item['autoposter'])}禁用{else}启用{/if}</div>
+        {/if}
+        <div class="help-block">关注别人的任务海报后，自动生成自己的海报</div>
+    </div>
+</div>
+
+<div class="form-group">
     <label class="col-sm-2 control-label">奖励商品参与分销</label>
     <div class="col-sm-9 col-xs-12">
         {ifp 'task.edit'}

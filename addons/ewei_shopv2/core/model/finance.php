@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Finance_EweiShopV2Model
 {
 	/**
@@ -17,22 +20,26 @@ class Finance_EweiShopV2Model
 			return error(-1, 'openid不能为空');
 		}
 
+
 		$member = m('member')->getMember($openid);
 
 		if (empty($member)) {
 			return error(-1, '未找到用户');
 		}
 
+
 		if (empty($paytype)) {
 			m('member')->setCredit($openid, 'credit2', $money, array(0, $desc));
 			return true;
 		}
 
+
 		$setting = uni_setting($_W['uniacid'], array('payment'));
 
-		if (!is_array($setting['payment'])) {
+		if (!(is_array($setting['payment']))) {
 			return error(1, '没有设定支付参数');
 		}
+
 
 		$pay = m('common')->getSysset('pay');
 		$sec = m('common')->getSec();
@@ -46,16 +53,16 @@ class Finance_EweiShopV2Model
 		$pars['mch_appid'] = $row['key'];
 		$pars['mchid'] = $wechat['mchid'];
 		$pars['nonce_str'] = random(32);
-		$pars['partner_trade_no'] = empty($trade_no) ? time() . random(4, true) : $trade_no;
+		$pars['partner_trade_no'] = ((empty($trade_no) ? time() . random(4, true) : $trade_no));
 		$pars['openid'] = $openid;
 		$pars['check_name'] = 'NO_CHECK';
 		$pars['amount'] = $money;
-		$pars['desc'] = empty($desc) ? '现金提现' : $desc;
+		$pars['desc'] = ((empty($desc) ? '现金提现' : $desc));
 		$pars['spbill_create_ip'] = gethostbyname($_SERVER['HTTP_HOST']);
 		ksort($pars, SORT_STRING);
 		$string1 = '';
 
-		foreach ($pars as $k => $v) {
+		foreach ($pars as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -72,12 +79,14 @@ class Finance_EweiShopV2Model
 						show_json(0, array('message' => $errmsg));
 					}
 
+
 					show_message($errmsg, '', 'error');
 				}
-				else {
+				 else {
 					return error(-1, $errmsg);
 				}
 			}
+
 
 			$certfile = IA_ROOT . '/addons/ewei_shopv2/cert/' . random(128);
 			file_put_contents($certfile, $certs['cert']);
@@ -89,14 +98,15 @@ class Finance_EweiShopV2Model
 			$extras['CURLOPT_SSLKEY'] = $keyfile;
 			$extras['CURLOPT_CAINFO'] = $rootfile;
 		}
-		else if ($return) {
+		 else if ($return) {
 			if ($_W['ispost']) {
 				show_json(0, array('message' => $errmsg));
 			}
 
+
 			show_message($errmsg, '', 'error');
 		}
-		else {
+		 else {
 			return error(-1, $errmsg);
 		}
 
@@ -110,19 +120,22 @@ class Finance_EweiShopV2Model
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		$arr = json_decode(json_encode(simplexml_load_string($resp['content'], 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'SUCCESS')) {
 			return true;
 		}
 
+
 		if ($arr['return_msg'] == $arr['err_code_des']) {
 			$error = $arr['return_msg'];
 		}
-		else {
+		 else {
 			$error = $arr['return_msg'] . ' | ' . $arr['err_code_des'];
 		}
 
@@ -149,22 +162,24 @@ class Finance_EweiShopV2Model
 			return error(-1, '发送金额错误 ,或者已经全部发送');
 		}
 
+
 		$error = 0;
 		$senddata = array();
 		$senddata_count = 0;
 
-		if (!empty($data['senddata'])) {
+		if (!(empty($data['senddata']))) {
 			$senddata = json_decode($data['senddata'], true);
 			$senddata_count = count($senddata);
 		}
 
+
 		if (empty($config['redpack'])) {
 			$redpack = 188;
 		}
-		else if ($config['redpack'] == '1') {
+		 else if ($config['redpack'] == '1') {
 			$redpack = 288;
 		}
-		else {
+		 else {
 			$redpack = 388;
 		}
 
@@ -187,14 +202,15 @@ class Finance_EweiShopV2Model
 				++$senddata_count;
 				$params['tid'] = $logno . 'R' . $senddata_count;
 				$params['money'] = $redpack;
-				if (($for_count == ($i + 1)) && !empty($end_money)) {
+				if (($for_count == $i + 1) && !(empty($end_money))) {
 					$params['money'] = $end_money;
 				}
+
 
 				if ($params['money'] < 1) {
 					$res = m('member')->setCredit($openid, 'credit2', $money, array(0, $desc));
 				}
-				else {
+				 else {
 					$res = m('common')->sendredpack($params, $wechat);
 				}
 
@@ -203,12 +219,13 @@ class Finance_EweiShopV2Model
 					break;
 				}
 
+
 				$senddata[] = array('no' => $params['tid'], 'money' => $params['money']);
 				$sendmoney += $params['money'];
 				++$i;
 			}
 		}
-		else {
+		 else {
 			++$senddata_count;
 			$params['tid'] = $logno . 'R' . $senddata_count;
 			$params['money'] = $realsendmoney;
@@ -216,14 +233,14 @@ class Finance_EweiShopV2Model
 			if ($params['money'] < 1) {
 				$res = m('member')->setCredit($openid, 'credit2', $money, array(0, $desc));
 			}
-			else {
+			 else {
 				$res = m('common')->sendredpack($params, $wechat);
 			}
 
 			if (is_error($res)) {
 				$error = $res;
 			}
-			else {
+			 else {
 				$senddata[] = array('no' => $params['tid'], 'money' => $params['money']);
 				$sendmoney += $params['money'];
 			}
@@ -246,21 +263,26 @@ class Finance_EweiShopV2Model
 			return error('-1', '打款账户错误');
 		}
 
+
 		if (empty($config['partner'])) {
 			return error('-1', 'partner 未配置!');
 		}
+
 
 		if (empty($config['account_name'])) {
 			return error('-1', 'account_name 未配置!');
 		}
 
+
 		if (empty($config['email'])) {
 			return error('-1', 'email 未配置!');
 		}
 
+
 		if (empty($config['key'])) {
 			return error('-1', '支付秘钥 未配置!');
 		}
+
 
 		$data = date('YmdHis');
 		$detail_data = '';
@@ -268,10 +290,11 @@ class Finance_EweiShopV2Model
 		$total = 0;
 
 		if (is_array2($aliPayAccount)) {
-			foreach ($aliPayAccount as $val) {
+			foreach ($aliPayAccount as $val ) {
 				if ($val['money'] <= 0) {
 					continue;
 				}
+
 
 				$detail_data .= $data . random(8, true) . '^' . $val['account'] . '^' . $val['name'] . '^' . $val['money'] . '^' . $remark . '|';
 				$money += $val['money'];
@@ -280,7 +303,7 @@ class Finance_EweiShopV2Model
 
 			$detail_data = substr($detail_data, 0, -1);
 		}
-		else {
+		 else {
 			$detail_data .= $data . random(8, true) . '^' . $aliPayAccount['account'] . '^' . $aliPayAccount['name'] . '^' . $aliPayAccount['money'] . '^' . $remark;
 			$money = $aliPayAccount['money'];
 			$total = 1;
@@ -289,6 +312,7 @@ class Finance_EweiShopV2Model
 		if (empty($money)) {
 			return error('-1', '打款资金错误');
 		}
+
 
 		$set = array();
 		$set['service'] = 'batch_trans_notify';
@@ -305,10 +329,11 @@ class Finance_EweiShopV2Model
 		$set['pay_date'] = date('Ymd');
 		$prepares = array();
 
-		foreach ($set as $key => $value) {
+		foreach ($set as $key => $value ) {
 			if (($key != 'sign') && ($key != 'sign_type')) {
 				$prepares[] = $key . '=' . $value;
 			}
+
 		}
 
 		sort($prepares);
@@ -333,29 +358,32 @@ class Finance_EweiShopV2Model
 			return error(-1, 'openid不能为空');
 		}
 
+
 		$member = m('member')->getMember($openid);
 
 		if (empty($member)) {
 			return error(-1, '未找到用户');
 		}
 
+
 		$setting = uni_setting($_W['uniacid'], array('payment'));
 
-		if (!is_array($setting['payment'])) {
+		if (!(is_array($setting['payment']))) {
 			return error(1, '没有设定支付参数');
 		}
+
 
 		$pay = m('common')->getSysset('pay');
 		$sec = m('common')->getSec();
 		$sec = iunserializer($sec['sec']);
 		$certs = $sec;
 
-		if (!empty($pay['weixin_sub'])) {
-			$wechat = array('appid' => $sec['appid_sub'], 'mchid' => $sec['mchid_sub'], 'sub_appid' => !empty($sec['sub_appid_sub']) ? $sec['sub_appid_sub'] : '', 'sub_mch_id' => $sec['sub_mchid_sub'], 'apikey' => $sec['apikey_sub']);
+		if (!(empty($pay['weixin_sub']))) {
+			$wechat = array('appid' => $sec['appid_sub'], 'mchid' => $sec['mchid_sub'], 'sub_appid' => (!(empty($sec['sub_appid_sub'])) ? $sec['sub_appid_sub'] : ''), 'sub_mch_id' => $sec['sub_mchid_sub'], 'apikey' => $sec['apikey_sub']);
 			$row = array('key' => $sec['appid_sub']);
 			$certs = $sec['sub'];
 		}
-		else {
+		 else {
 			$wechat = $setting['payment']['wechat'];
 			$sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
 			$row = pdo_fetch($sql, array(':uniacid' => $_W['uniacid']));
@@ -366,10 +394,12 @@ class Finance_EweiShopV2Model
 				return error(1, '没有设定APP支付参数');
 			}
 
+
 			$wechat = array('appid' => $sec['app_wechat']['appid'], 'mchid' => $sec['app_wechat']['merchid'], 'apikey' => $sec['app_wechat']['apikey']);
 			$row = array('key' => $sec['app_wechat']['appid'], 'secret' => $sec['app_wechat']['appsecret']);
 			$certs = array('cert' => $sec['app_wechat']['cert'], 'key' => $sec['app_wechat']['key'], 'root' => $sec['app_wechat']['root']);
 		}
+
 
 		$url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
 		$pars = array();
@@ -386,18 +416,21 @@ class Finance_EweiShopV2Model
 			$pars['refund_account'] = $refund_account;
 		}
 
-		if (!empty($pay['weixin_sub']) && !$app) {
-			if (!empty($wechat['sub_appid'])) {
+
+		if (!(empty($pay['weixin_sub'])) && !($app)) {
+			if (!(empty($wechat['sub_appid']))) {
 				$pars['sub_appid'] = $wechat['sub_appid'];
 			}
+
 
 			$pars['sub_mch_id'] = $wechat['sub_mch_id'];
 		}
 
+
 		ksort($pars, SORT_STRING);
 		$string1 = '';
 
-		foreach ($pars as $k => $v) {
+		foreach ($pars as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -413,8 +446,10 @@ class Finance_EweiShopV2Model
 					show_json(0, array('message' => $errmsg));
 				}
 
+
 				show_message($errmsg, '', 'error');
 			}
+
 
 			$certfile = IA_ROOT . '/addons/ewei_shopv2/cert/' . random(128);
 			file_put_contents($certfile, $certs['cert']);
@@ -426,10 +461,11 @@ class Finance_EweiShopV2Model
 			$extras['CURLOPT_SSLKEY'] = $keyfile;
 			$extras['CURLOPT_CAINFO'] = $rootfile;
 		}
-		else {
+		 else {
 			if ($_W['ispost']) {
 				show_json(0, array('message' => $errmsg));
 			}
+
 
 			show_message($errmsg, '', 'error');
 		}
@@ -444,25 +480,171 @@ class Finance_EweiShopV2Model
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		$arr = json_decode(json_encode(simplexml_load_string($resp['content'], 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'SUCCESS')) {
 			return true;
 		}
 
-		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'FAIL') && ($arr['return_msg'] == 'OK') && !$refund_account) {
+
+		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'FAIL') && ($arr['return_msg'] == 'OK') && !($refund_account)) {
 			if ($arr['err_code'] == 'NOTENOUGH') {
 				return $this->refund($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney, $app, 'REFUND_SOURCE_RECHARGE_FUNDS');
 			}
+
 		}
-		else {
+
+
+		if ($arr['return_msg'] == $arr['err_code_des']) {
+			$error = $arr['return_msg'];
+		}
+		 else {
+			$error = $arr['return_msg'] . ' | ' . $arr['err_code_des'];
+		}
+
+		return error(-2, $error);
+	}
+
+	/**
+     * 微信小程序退款
+     * @param type $openid openid
+     * @param type $money
+     */
+	public function wxapp_refund($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney = 0, $app = false, $refund_account = false)
+	{
+		global $_W;
+		global $_GPC;
+
+		if (empty($openid)) {
+			return error(-1, 'openid不能为空');
+		}
+
+
+		$member = m('member')->getMember($openid);
+
+		if (empty($member)) {
+			return error(-1, '未找到用户');
+		}
+
+
+		$data = m('common')->getSysset('app');
+
+		if (empty($data['appid'])) {
+			return error(-1, '未设置小程序 APPID');
+		}
+
+
+		$sec = m('common')->getSec();
+		$sec = iunserializer($sec['sec']);
+		$certs = array('cert' => $sec['wxapp_cert'], 'key' => $sec['wxapp_key'], 'root' => $sec['wxapp_root']);
+
+		if (empty($sec['wxapp']['mchid'])) {
+			return error(-1, '未设置小程序微信支付商户号');
+		}
+
+
+		if (empty($sec['wxapp']['apikey'])) {
+			return error(-1, '未设置小程序微信商户apikey');
+		}
+
+
+		$url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
+		$pars = array();
+		$pars['appid'] = $data['appid'];
+		$pars['mch_id'] = $sec['wxapp']['mchid'];
+		$pars['nonce_str'] = random(32);
+		$pars['out_trade_no'] = $out_trade_no;
+		$pars['out_refund_no'] = $out_refund_no;
+		$pars['total_fee'] = $totalmoney;
+		$pars['refund_fee'] = $refundmoney;
+		$pars['op_user_id'] = $sec['wxapp']['mchid'];
+
+		if ($refund_account) {
+			$pars['refund_account'] = $refund_account;
+		}
+
+
+		ksort($pars, SORT_STRING);
+		$string1 = '';
+
+		foreach ($pars as $k => $v ) {
+			$string1 .= $k . '=' . $v . '&';
+		}
+
+		$string1 .= 'key=' . $sec['wxapp']['apikey'];
+		$pars['sign'] = strtoupper(md5($string1));
+		$xml = array2xml($pars);
+		$extras = array();
+		$errmsg = '未上传完整的微信支付证书，请到【小程序】->【支付设置】中上传!';
+
+		if (is_array($certs)) {
+			if (empty($certs['cert']) || empty($certs['key']) || empty($certs['root'])) {
+				if ($_W['ispost']) {
+					show_json(0, array('message' => $errmsg));
+				}
+
+
+				show_message($errmsg, '', 'error');
+			}
+
+
+			$certfile = IA_ROOT . '/addons/ewei_shopv2/cert/' . random(64);
+			file_put_contents($certfile, $certs['cert']);
+			$keyfile = IA_ROOT . '/addons/ewei_shopv2/cert/' . random(64);
+			file_put_contents($keyfile, $certs['key']);
+			$rootfile = IA_ROOT . '/addons/ewei_shopv2/cert/' . random(64);
+			file_put_contents($rootfile, $certs['root']);
+			$extras['CURLOPT_SSLCERT'] = $certfile;
+			$extras['CURLOPT_SSLKEY'] = $keyfile;
+			$extras['CURLOPT_CAINFO'] = $rootfile;
+		}
+		 else {
+			if ($_W['ispost']) {
+				show_json(0, array('message' => $errmsg));
+			}
+
+
+			show_message($errmsg, '', 'error');
+		}
+
+		load()->func('communication');
+		$resp = ihttp_request($url, $xml, $extras);
+		@unlink($certfile);
+		@unlink($keyfile);
+		@unlink($rootfile);
+
+		if (is_error($resp)) {
+			return error(-2, $resp['message']);
+		}
+
+
+		if (empty($resp['content'])) {
+			return error(-2, '网络错误');
+		}
+
+
+		$arr = json_decode(json_encode(simplexml_load_string($resp['content'], 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'SUCCESS')) {
+			return true;
+		}
+
+
+		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'FAIL') && ($arr['return_msg'] == 'OK') && !($refund_account)) {
+			if ($arr['err_code'] == 'NOTENOUGH') {
+				return $this->refund($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney, $app, 'REFUND_SOURCE_RECHARGE_FUNDS');
+			}
+
+		}
+		 else {
 			if ($arr['return_msg'] == $arr['err_code_des']) {
 				$error = $arr['return_msg'];
 			}
-			else {
+			 else {
 				$error = $arr['return_msg'] . ' | ' . $arr['err_code_des'];
 			}
 
@@ -479,29 +661,31 @@ class Finance_EweiShopV2Model
 			return error(-1, 'openid不能为空');
 		}
 
+
 		$pay = m('common')->getSysset('pay');
 		$sec = m('common')->getSec();
 		$sec = iunserializer($sec['sec']);
 		$certs = $sec['jie'];
 
-		if (!empty($pay['weixin_jie_sub'])) {
-			$wechat = array('sub_appid' => !empty($sec['sub_appid_jie_sub']) ? $sec['sub_appid_jie_sub'] : '', 'sub_mch_id' => $sec['sub_mchid_jie_sub']);
+		if (!(empty($pay['weixin_jie_sub']))) {
+			$wechat = array('sub_appid' => (!(empty($sec['sub_appid_jie_sub'])) ? $sec['sub_appid_jie_sub'] : ''), 'sub_mch_id' => $sec['sub_mchid_jie_sub']);
 			$sec['appid'] = $sec['appid_jie_sub'];
 			$sec['mchid'] = $sec['mchid_jie_sub'];
 			$sec['apikey'] = $sec['apikey_jie_sub'];
 			$row = array('key' => $sec['appid_jie_sub']);
 			$certs = $sec['jie_sub'];
 		}
-		else {
+		 else {
 			if (empty($sec['appid']) || empty($sec['mchid']) || empty($sec['apikey'])) {
 				return error(1, '没有设定支付参数');
 			}
+
 		}
 
-		if (!empty($gaijia)) {
+		if (!(empty($gaijia))) {
 			$out_trade_no = $out_trade_no . '_B';
 		}
-		else {
+		 else {
 			$out_trade_no = $out_trade_no . '_borrow';
 		}
 
@@ -520,19 +704,22 @@ class Finance_EweiShopV2Model
 			$pars['refund_account'] = $refund_account;
 		}
 
-		if (!empty($pay['weixin_jie_sub'])) {
+
+		if (!(empty($pay['weixin_jie_sub']))) {
 			$pars['sub_mch_id'] = $wechat['sub_mch_id'];
 			$pars['op_user_id'] = $wechat['sub_mch_id'];
 
 			if ($wechat['sub_appid']) {
 				$pars['sub_appid'] = $wechat['sub_appid'];
 			}
+
 		}
+
 
 		ksort($pars, SORT_STRING);
 		$string1 = '';
 
-		foreach ($pars as $k => $v) {
+		foreach ($pars as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -548,8 +735,10 @@ class Finance_EweiShopV2Model
 					show_json(0, array('message' => $errmsg));
 				}
 
+
 				show_message($errmsg, '', 'error');
 			}
+
 
 			$certfile = IA_ROOT . '/addons/ewei_shopv2/cert/' . random(128);
 			file_put_contents($certfile, $certs['cert']);
@@ -561,10 +750,11 @@ class Finance_EweiShopV2Model
 			$extras['CURLOPT_SSLKEY'] = $keyfile;
 			$extras['CURLOPT_CAINFO'] = $rootfile;
 		}
-		else {
+		 else {
 			if ($_W['ispost']) {
 				show_json(0, array('message' => $errmsg));
 			}
+
 
 			show_message($errmsg, '', 'error');
 		}
@@ -579,25 +769,29 @@ class Finance_EweiShopV2Model
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		$arr = json_decode(json_encode(simplexml_load_string($resp['content'], 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'SUCCESS')) {
 			return true;
 		}
 
-		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'FAIL') && ($arr['return_msg'] == 'OK') && !$refund_account) {
+
+		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'FAIL') && ($arr['return_msg'] == 'OK') && !($refund_account)) {
 			if ($arr['err_code'] == 'NOTENOUGH') {
 				$this->refundBorrow($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney, $gaijia, 'REFUND_SOURCE_RECHARGE_FUNDS');
 			}
+
 		}
-		else {
+		 else {
 			if ($arr['return_msg'] == $arr['err_code_des']) {
 				$error = $arr['return_msg'];
 			}
-			else {
+			 else {
 				$error = $arr['return_msg'] . ' | ' . $arr['err_code_des'];
 			}
 
@@ -614,11 +808,11 @@ class Finance_EweiShopV2Model
 	{
 		global $_W;
 		$params['refund_reason'] = str_replace(array('^', '|', '$', '#'), '', $params['refund_reason']);
-		$parameter = array('service' => 'refund_fastpay_by_platform_pwd', 'partner' => $config['partner'], '_input_charset' => 'UTF-8', 'notify_url' => isset($params['notify_url']) ? $params['notify_url'] : $_W['siteroot'] . 'addons/ewei_shopv2/payment/alipay/notify.php', 'seller_user_id' => $config['partner'], 'seller_email' => $config['account'], 'refund_date' => date('Y-m-d H:i:s'), 'batch_no' => $batch_no, 'batch_num' => '1', 'detail_data' => $params['trade_no'] . '^' . $params['refund_price'] . '^' . $params['refund_reason']);
+		$parameter = array('service' => 'refund_fastpay_by_platform_pwd', 'partner' => $config['partner'], '_input_charset' => 'UTF-8', 'notify_url' => (isset($params['notify_url']) ? $params['notify_url'] : $_W['siteroot'] . 'addons/ewei_shopv2/payment/alipay/notify.php'), 'seller_user_id' => $config['partner'], 'seller_email' => $config['account'], 'refund_date' => date('Y-m-d H:i:s'), 'batch_no' => $batch_no, 'batch_num' => '1', 'detail_data' => $params['trade_no'] . '^' . $params['refund_price'] . '^' . $params['refund_reason']);
 		$parameter = array_filter($parameter);
 		$prepares = array();
 
-		foreach ($parameter as $key => $value) {
+		foreach ($parameter as $key => $value ) {
 			$prepares[] = $key . '=' . $value;
 		}
 
@@ -656,9 +850,11 @@ class Finance_EweiShopV2Model
 			return $result;
 		}
 
+
 		if ($result['alipay_trade_refund_response']['code'] == '10000') {
 			return $result['alipay_trade_refund_response'];
 		}
+
 
 		return error($result['alipay_trade_refund_response']['code'], $result['alipay_trade_refund_response']['msg'] . ':' . $result['alipay_trade_refund_response']['sub_msg']);
 	}
@@ -679,8 +875,8 @@ class Finance_EweiShopV2Model
 		if ($startdate == $enddate) {
 			$dates = array($startdate);
 		}
-		else {
-			$days = (double) ($endtime - $starttime) / 86400;
+		 else {
+			$days = (double) $endtime - ($starttime / 86400);
 			$d = 0;
 
 			while ($d < $days) {
@@ -693,28 +889,31 @@ class Finance_EweiShopV2Model
 			show_message('对账单日期选择错误!', '', 'error');
 		}
 
+
 		$setting = uni_setting($_W['uniacid'], array('payment'));
 
-		if (!is_array($setting['payment'])) {
+		if (!(is_array($setting['payment']))) {
 			return error(1, '没有设定支付参数');
 		}
+
 
 		$wechat = $setting['payment']['wechat'];
 		$sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
 		$row = pdo_fetch($sql, array(':uniacid' => $_W['uniacid']));
 		$content = '';
 
-		foreach ($dates as $date) {
+		foreach ($dates as $date ) {
 			$dc = $this->downloadday($date, $row, $wechat, $type);
 			if (is_error($dc) || strexists($dc, 'CDATA[FAIL]')) {
 				continue;
 			}
 
-			$content .= $date . " 账单\r\n\r\n";
+
+			$content .= $date . ' 账单' . "\r\n\r\n";
 			$content .= $dc . "\r\n\r\n";
 		}
 
-		$content = "\xef\xbb\xbf" . $content;
+		$content = '﻿' . $content;
 		$file = time() . '.csv';
 		header('Content-type: application/octet-stream ');
 		header('Accept-Ranges: bytes ');
@@ -739,7 +938,7 @@ class Finance_EweiShopV2Model
 		ksort($pars, SORT_STRING);
 		$string1 = '';
 
-		foreach ($pars as $k => $v) {
+		foreach ($pars as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -754,13 +953,16 @@ class Finance_EweiShopV2Model
 			return error(-2, '未搜索到任何账单');
 		}
 
+
 		if (is_error($resp)) {
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		return $resp['content'];
 	}
@@ -771,9 +973,10 @@ class Finance_EweiShopV2Model
 		global $_GPC;
 		$setting = uni_setting($_W['uniacid'], array('payment'));
 
-		if (!is_array($setting['payment'])) {
+		if (!(is_array($setting['payment']))) {
 			return error(1, '没有设定支付参数');
 		}
+
 
 		$wechat = $setting['payment']['wechat'];
 		$sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
@@ -787,7 +990,7 @@ class Finance_EweiShopV2Model
 		ksort($pars, SORT_STRING);
 		$string1 = '';
 
-		foreach ($pars as $k => $v) {
+		foreach ($pars as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -801,19 +1004,22 @@ class Finance_EweiShopV2Model
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		$arr = json_decode(json_encode(simplexml_load_string($resp['content'], 'SimpleXMLElement', LIBXML_NOCDATA)), true);
 		if (($arr['return_code'] == 'SUCCESS') && ($arr['result_code'] == 'SUCCESS')) {
 			return true;
 		}
 
+
 		if ($arr['return_msg'] == $arr['err_code_des']) {
 			$error = $arr['return_msg'];
 		}
-		else {
+		 else {
 			$error = $arr['return_msg'] . ' | ' . $arr['err_code_des'];
 		}
 
@@ -828,16 +1034,17 @@ class Finance_EweiShopV2Model
 		$sec = m('common')->getSec();
 		$sec = iunserializer($sec['sec']);
 
-		if (!empty($pay['weixin_sub'])) {
-			$wechat = array('appid' => $sec['appid_sub'], 'mchid' => $sec['mchid_sub'], 'sub_appid' => !empty($sec['sub_appid_sub']) ? $sec['sub_appid_sub'] : '', 'sub_mch_id' => $sec['sub_mchid_sub'], 'apikey' => $sec['apikey_sub']);
+		if (!(empty($pay['weixin_sub']))) {
+			$wechat = array('appid' => $sec['appid_sub'], 'mchid' => $sec['mchid_sub'], 'sub_appid' => (!(empty($sec['sub_appid_sub'])) ? $sec['sub_appid_sub'] : ''), 'sub_mch_id' => $sec['sub_mchid_sub'], 'apikey' => $sec['apikey_sub']);
 			$row = array('key' => $sec['appid_sub']);
 		}
-		else {
+		 else {
 			$setting = uni_setting($_W['uniacid'], array('payment'));
 
-			if (!is_array($setting['payment'])) {
+			if (!(is_array($setting['payment']))) {
 				return error(1, '没有设定支付参数');
 			}
+
 
 			$wechat = $setting['payment']['wechat'];
 			$sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
@@ -848,20 +1055,22 @@ class Finance_EweiShopV2Model
 			$wechat = array('version' => 1, 'apikey' => $sec['app_wechat']['apikey'], 'signkey' => $sec['app_wechat']['apikey'], 'appid' => $sec['app_wechat']['appid'], 'mchid' => $sec['app_wechat']['merchid']);
 		}
 
+
 		$url = 'https://api.mch.weixin.qq.com/pay/orderquery';
 		$pars = array();
-		$pars['appid'] = $app ? $wechat['appid'] : $row['key'];
+		$pars['appid'] = (($app ? $wechat['appid'] : $row['key']));
 		$pars['mch_id'] = $wechat['mchid'];
 		$pars['nonce_str'] = random(8);
 		$pars['out_trade_no'] = $out_trade_no;
-		if (!empty($pay['weixin_sub']) && !is_h5app()) {
+		if (!(empty($pay['weixin_sub'])) && !(is_h5app())) {
 			$pars['sub_mch_id'] = $wechat['sub_mch_id'];
 		}
+
 
 		ksort($pars, SORT_STRING);
 		$string1 = '';
 
-		foreach ($pars as $k => $v) {
+		foreach ($pars as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -875,9 +1084,11 @@ class Finance_EweiShopV2Model
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		$arr = json_decode(json_encode((array) simplexml_load_string($resp['content'])), true);
 		$xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
@@ -895,18 +1106,21 @@ class Finance_EweiShopV2Model
 					return error(-1, '金额出错');
 				}
 
+
 				return true;
 			}
+
 
 			if ($xpath->evaluate('string(//xml/return_msg)') == $xpath->evaluate('string(//xml/err_code_des)')) {
 				$error = $xpath->evaluate('string(//xml/return_msg)');
 			}
-			else {
+			 else {
 				$error = $xpath->evaluate('string(//xml/return_msg)') . ' | ' . $xpath->evaluate('string(//xml/err_code_des)');
 			}
 
 			return error(-2, $error);
 		}
+
 
 		return error(-1, '未知错误');
 	}
@@ -919,7 +1133,7 @@ class Finance_EweiShopV2Model
 		if (strexists($out_trade_no, 'GJ')) {
 			$out_trade_no = $out_trade_no . '_B';
 		}
-		else {
+		 else {
 			$out_trade_no = $out_trade_no . '_borrow';
 		}
 
@@ -927,16 +1141,17 @@ class Finance_EweiShopV2Model
 		$sec = m('common')->getSec();
 		$sec = iunserializer($sec['sec']);
 
-		if (!empty($pay['weixin_jie_sub'])) {
-			$wechat = array('sub_appid' => !empty($sec['sub_appid_jie_sub']) ? $sec['sub_appid_jie_sub'] : '', 'sub_mch_id' => $sec['sub_mchid_jie_sub']);
+		if (!(empty($pay['weixin_jie_sub']))) {
+			$wechat = array('sub_appid' => (!(empty($sec['sub_appid_jie_sub'])) ? $sec['sub_appid_jie_sub'] : ''), 'sub_mch_id' => $sec['sub_mchid_jie_sub']);
 			$sec['appid'] = $sec['appid_jie_sub'];
 			$sec['mchid'] = $sec['mchid_jie_sub'];
 			$sec['apikey'] = $sec['apikey_jie_sub'];
 		}
-		else {
+		 else {
 			if (empty($sec['appid']) || empty($sec['mchid']) || empty($sec['apikey'])) {
 				return error(1, '没有设定支付参数');
 			}
+
 		}
 
 		$url = 'https://api.mch.weixin.qq.com/pay/orderquery';
@@ -946,14 +1161,15 @@ class Finance_EweiShopV2Model
 		$pars['nonce_str'] = random(8);
 		$pars['out_trade_no'] = $out_trade_no;
 
-		if (!empty($pay['weixin_jie_sub'])) {
+		if (!(empty($pay['weixin_jie_sub']))) {
 			$pars['sub_mch_id'] = $wechat['sub_mch_id'];
 		}
+
 
 		ksort($pars, SORT_STRING);
 		$string1 = '';
 
-		foreach ($pars as $k => $v) {
+		foreach ($pars as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -967,9 +1183,11 @@ class Finance_EweiShopV2Model
 			return error(-2, $resp['message']);
 		}
 
+
 		if (empty($resp['content'])) {
 			return error(-2, '网络错误');
 		}
+
 
 		$arr = json_decode(json_encode((array) simplexml_load_string($resp['content'])), true);
 		$xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
@@ -987,18 +1205,21 @@ class Finance_EweiShopV2Model
 					return error(-1, '金额出错');
 				}
 
+
 				return true;
 			}
+
 
 			if ($xpath->evaluate('string(//xml/return_msg)') == $xpath->evaluate('string(//xml/err_code_des)')) {
 				$error = $xpath->evaluate('string(//xml/return_msg)');
 			}
-			else {
+			 else {
 				$error = $xpath->evaluate('string(//xml/return_msg)') . ' | ' . $xpath->evaluate('string(//xml/err_code_des)');
 			}
 
 			return error(-2, $error);
 		}
+
 
 		return error(-1, '未知错误');
 	}
@@ -1012,18 +1233,20 @@ class Finance_EweiShopV2Model
 			return false;
 		}
 
+
 		$setting = uni_setting($_W['uniacid'], array('payment'));
 
-		if (!is_array($setting['payment'])) {
+		if (!(is_array($setting['payment']))) {
 			return false;
 		}
+
 
 		$alipay = $setting['payment']['alipay'];
 		$params = array('body' => $gpc['body'], 'is_success' => $gpc['is_success'], 'notify_id' => $gpc['notify_id'], 'notify_time' => $gpc['notify_time'], 'notify_type' => $gpc['notify_type'], 'out_trade_no' => $gpc['out_trade_no'], 'payment_type' => $gpc['payment_type'], 'seller_id' => $gpc['seller_id'], 'service' => $gpc['service'], 'subject' => $gpc['subject'], 'total_fee' => $gpc['total_fee'], 'trade_no' => $gpc['trade_no'], 'trade_status' => $gpc['trade_status']);
 		ksort($params, SORT_STRING);
 		$string1 = '';
 
-		foreach ($params as $k => $v) {
+		foreach ($params as $k => $v ) {
 			$string1 .= $k . '=' . $v . '&';
 		}
 
@@ -1034,6 +1257,7 @@ class Finance_EweiShopV2Model
 			return false;
 		}
 
+
 		$url = 'https://mapi.alipay.com/gateway.do?service=notify_verify&partner=' . $alipay['partner'] . '&notify_id=' . $notify_id;
 		$resp = @file_get_contents($url);
 		return preg_match('/true$/i', $resp);
@@ -1041,9 +1265,10 @@ class Finance_EweiShopV2Model
 
 	public function RSAVerify($return_data, $public_key, $ksort = true)
 	{
-		if (empty($return_data) || !is_array($return_data)) {
+		if (empty($return_data) || !(is_array($return_data))) {
 			return false;
 		}
+
 
 		$public_key = m('common')->chackKey($public_key);
 		$pkeyid = openssl_pkey_get_public($public_key);
@@ -1051,6 +1276,7 @@ class Finance_EweiShopV2Model
 		if (empty($pkeyid)) {
 			return false;
 		}
+
 
 		$rsasign = $return_data['sign'];
 		unset($return_data['sign']);
@@ -1060,22 +1286,25 @@ class Finance_EweiShopV2Model
 			ksort($return_data);
 		}
 
-		if (is_array($return_data) && !empty($return_data)) {
+
+		if (is_array($return_data) && !(empty($return_data))) {
 			$strdata = '';
 
-			foreach ($return_data as $k => $v) {
+			foreach ($return_data as $k => $v ) {
 				if (empty($v)) {
 					continue;
 				}
 
+
 				if (is_array($v)) {
 					$strdata .= $k . '=' . json_encode($v) . '&';
 				}
-				else {
+				 else {
 					$strdata .= $k . '=' . $v . '&';
 				}
 			}
 		}
+
 
 		$strdata = trim($strdata, '&');
 		$rsasign = str_replace(' ', '+', $rsasign);
@@ -1086,8 +1315,5 @@ class Finance_EweiShopV2Model
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

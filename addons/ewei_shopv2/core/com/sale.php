@@ -1,18 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-function sort_enoughs($a, $b)
-{
-	$enough1 = floatval($a['enough']);
-	$enough2 = floatval($b['enough']);
-
-	if ($enough1 == $enough2) {
-		return 0;
-	}
-
-	return $enough1 < $enough2 ? 1 : -1;
-}
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -38,13 +25,16 @@ class Sale_EweiShopV2ComModel extends ComModel
 			$allenoughs[] = array('enough' => floatval($set['enoughmoney']), 'money' => floatval($set['enoughdeduct']));
 		}
 
+
 		if (is_array($enoughs)) {
-			foreach ($enoughs as $e) {
+			foreach ($enoughs as $e ) {
 				if ((0 < floatval($e['enough'])) && (0 < floatval($e['give']))) {
 					$allenoughs[] = array('enough' => floatval($e['enough']), 'money' => floatval($e['give']));
 				}
+
 			}
 		}
+
 
 		usort($allenoughs, 'sort_enoughs');
 		return $allenoughs;
@@ -56,9 +46,10 @@ class Sale_EweiShopV2ComModel extends ComModel
 		global $_S;
 		$set = $_S['sale'];
 
-		if (!empty($set['enoughfree'])) {
-			return 0 < $set['enoughorder'] ? $set['enoughorder'] : -1;
+		if (!(empty($set['enoughfree']))) {
+			return (0 < $set['enoughorder'] ? $set['enoughorder'] : -1);
 		}
+
 
 		return false;
 	}
@@ -73,6 +64,7 @@ class Sale_EweiShopV2ComModel extends ComModel
 			usort($recharges, 'sort_enoughs');
 			return $recharges;
 		}
+
 
 		return false;
 	}
@@ -90,16 +82,17 @@ class Sale_EweiShopV2ComModel extends ComModel
 		if (is_array($recharges)) {
 			usort($recharges, 'sort_enoughs');
 
-			foreach ($recharges as $r) {
+			foreach ($recharges as $r ) {
 				if (empty($r['enough']) || empty($r['give'])) {
 					continue;
 				}
+
 
 				if (floatval($r['enough']) <= $log['money']) {
 					if (strexists($r['give'], '%')) {
 						$credit2 = round((floatval(str_replace('%', '', $r['give'])) / 100) * $log['money'], 2);
 					}
-					else {
+					 else {
 						$credit2 = round(floatval($r['give']), 2);
 					}
 
@@ -107,13 +100,16 @@ class Sale_EweiShopV2ComModel extends ComModel
 					$give = $r['give'];
 					break;
 				}
+
 			}
 		}
+
 
 		if (0 < $credit2) {
 			m('member')->setCredit($log['openid'], 'credit2', $credit2, array('0', $_S['shop']['name'] . '充值满' . $enough . '赠送' . $give, '现金活动'));
 			pdo_update('ewei_shop_member_log', array('gives' => $credit2), array('id' => $log['id']));
 		}
+
 
 		$this->getCredit1($log['openid'], $log['money'], 21, 2);
 	}
@@ -136,49 +132,56 @@ class Sale_EweiShopV2ComModel extends ComModel
 			return 0;
 		}
 
+
 		$data = m('common')->getPluginset('sale');
 		$credit1 = iunserializer($data['credit1']);
 
 		if ($type == '1') {
 			$name = '积分活动购物送积分';
-			$enoughs = (empty($credit1['enough1']) ? array() : $credit1['enough1']);
+			$enoughs = ((empty($credit1['enough1']) ? array() : $credit1['enough1']));
 
 			if (empty($credit1['paytype'])) {
 				return 0;
 			}
 
-			if (!empty($credit1['paytype']) && !in_array($paytype, array_keys($credit1['paytype']))) {
+
+			if (!(empty($credit1['paytype'])) && !(in_array($paytype, array_keys($credit1['paytype'])))) {
 				return 0;
 			}
+
 		}
-		else {
-			if ($type = '2') {
-				$name = '积分活动充值送积分';
-				$enoughs = (empty($credit1['enough2']) ? array() : $credit1['enough2']);
-			}
+		 else if ($type = '2') {
+			$name = '积分活动充值送积分';
+			$enoughs = ((empty($credit1['enough2']) ? array() : $credit1['enough2']));
 		}
 
-		if (!empty($desc)) {
+
+		if (!(empty($desc))) {
 			$name = $desc;
 		}
+
 
 		$allenoughs = array();
 
 		if (is_array($enoughs)) {
-			foreach ($enoughs as $e) {
+			foreach ($enoughs as $e ) {
 				if ((floatval($e['enough' . $type . '_1']) <= $price) && ($price <= floatval($e['enough' . $type . '_2']))) {
 					if (0 < floatval($e['give' . $type])) {
 						$allenoughs[] = floatval($e['give' . $type]);
 					}
+
 				}
+
 			}
 		}
 
+
 		$money = 0;
 
-		if (!empty($allenoughs)) {
+		if (!(empty($allenoughs))) {
 			$money = (double) max($allenoughs);
 		}
+
 
 		if (0 < $money) {
 			$money *= $price;
@@ -187,10 +190,11 @@ class Sale_EweiShopV2ComModel extends ComModel
 			if (empty($refund)) {
 				m('member')->setCredit($openid, 'credit1', $money, $name . ': ' . $money . '积分');
 			}
-			else {
-				m('member')->setCredit($openid, 'credit1', 0 - $money, $name . '退款 : ' . (0 - $money) . '积分');
+			 else {
+				m('member')->setCredit($openid, 'credit1', -$money, $name . '退款 : ' . (-$money) . '积分');
 			}
 		}
+
 
 		return $money;
 	}
@@ -212,31 +216,50 @@ class Sale_EweiShopV2ComModel extends ComModel
 			return false;
 		}
 
-		$enough1 = (empty($data['enough1']) ? array() : $data['enough1']);
-		$enough2 = (empty($data['enough2']) ? array() : $data['enough2']);
 
-		if (!empty($enough1)) {
+		$enough1 = ((empty($data['enough1']) ? array() : $data['enough1']));
+		$enough2 = ((empty($data['enough2']) ? array() : $data['enough2']));
+
+		if (!(empty($enough1))) {
 			$key = array_rand($enough1);
 			$res[0] = $enough1[$key];
 		}
 
-		if (!empty($enough2)) {
+
+		if (!(empty($enough2))) {
 			$key = array_rand($enough2);
 			$res[1][0] = $enough2[$key]['enough2_1'];
 			$res[1][1] = $enough2[$key]['enough2_2'];
 		}
 
-		if (!empty($data['self_peerpay'])) {
+
+		if (!(empty($data['self_peerpay']))) {
 			$res['self_peerpay'] = (double) $data['self_peerpay'];
 		}
 
-		if (!empty($data['peerpay_price'])) {
+
+		if (!(empty($data['peerpay_price']))) {
 			$res['peerpay_price'] = (double) $data['peerpay_price'];
 			$res['peerpay_privilege'] = (double) $data['peerpay_privilege'];
 		}
 
+
 		return $res;
 	}
 }
+
+function sort_enoughs($a, $b)
+{
+	$enough1 = floatval($a['enough']);
+	$enough2 = floatval($b['enough']);
+
+	if ($enough1 == $enough2) {
+		return 0;
+	}
+
+
+	return ($enough1 < $enough2 ? 1 : -1);
+}
+
 
 ?>

@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Cookie_EweiShopV2Model
 {
 	private $prefix;
@@ -17,16 +20,14 @@ class Cookie_EweiShopV2Model
 
 	public function get($key)
 	{
-		if (!isset($_COOKIE[$this->prefix . $key])) {
+		if (!(isset($_COOKIE[$this->prefix . $key]))) {
 			return false;
 		}
+
 
 		return iunserializer($_COOKIE[$this->prefix . $key]);
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

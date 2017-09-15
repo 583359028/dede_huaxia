@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require EWEI_SHOPV2_PLUGIN . 'seckill/core/seckill_page_web.php';
 class Category_EweiShopV2Page extends SeckillWebPage
@@ -16,29 +16,32 @@ class Category_EweiShopV2Page extends SeckillWebPage
 	{
 		global $_W;
 		global $_GPC;
-		if (!empty($_GPC['catname']) || !empty($_GPC['catname_new'])) {
+		if (!(empty($_GPC['catname'])) || !(empty($_GPC['catname_new']))) {
 			ca('seckill.category.edit');
 
 			if (is_array($_GPC['catname'])) {
-				foreach ($_GPC['catname'] as $id => $catname) {
+				foreach ($_GPC['catname'] as $id => $catname ) {
 					$catname = trim($catname);
 
 					if (empty($catname)) {
 						continue;
 					}
+
 
 					pdo_update('ewei_shop_seckill_category', array('name' => $catname), array('id' => $id));
 					plog('seckill.category.edit', '修改分类 ID: ' . $id);
 				}
 			}
 
+
 			if (is_array($_GPC['catname_new'])) {
-				foreach ($_GPC['catname_new'] as $id => $catname) {
+				foreach ($_GPC['catname_new'] as $id => $catname ) {
 					$catname = trim($catname);
 
 					if (empty($catname)) {
 						continue;
 					}
+
 
 					pdo_insert('ewei_shop_seckill_category', array('name' => $catname, 'uniacid' => $_W['uniacid']));
 					$insert_id = pdo_insertid();
@@ -46,9 +49,11 @@ class Category_EweiShopV2Page extends SeckillWebPage
 				}
 			}
 
+
 			plog('seckill.category.edit', '批量修改分类');
 			show_json(1, array('url' => webUrl('seckill/category')));
 		}
+
 
 		$list = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_seckill_category') . ' WHERE uniacid = \'' . $_W['uniacid'] . '\'  ORDER BY id DESC');
 		include $this->template();
@@ -65,10 +70,12 @@ class Category_EweiShopV2Page extends SeckillWebPage
 			$this->message('抱歉，分类不存在或是已经被删除！', webUrl('seckill/category', array('op' => 'display')), 'error');
 		}
 
+
 		pdo_delete('ewei_shop_seckill_category', array('id' => $id));
 		plog('seckill.category.delete', '删除分类 ID: ' . $id . ' 标题: ' . $item['name'] . ' ');
 		show_json(1, array('url' => webUrl('seckill/category', array('op' => 'display'))));
 	}
 }
+
 
 ?>

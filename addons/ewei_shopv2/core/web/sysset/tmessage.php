@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -15,11 +14,12 @@ class Tmessage_EweiShopV2Page extends WebPage
 		$condition = ' and uniacid=:uniacid';
 		$params = array(':uniacid' => $_W['uniacid']);
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' and title  like :keyword';
 			$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
 		}
+
 
 		$list = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE 1 ' . $condition . '  ORDER BY id asc limit ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE 1 ' . $condition, $params);
@@ -46,23 +46,23 @@ class Tmessage_EweiShopV2Page extends WebPage
 		$templatetypes = pdo_fetchall('SELECT id,`name`,`typegroup`,typecode   FROM ' . tablename('ewei_shop_member_message_template_type'));
 		$type_json = @json_encode($templatetypes);
 
-		if (!empty($_GPC['id'])) {
+		if (!(empty($_GPC['id']))) {
 			$list = pdo_fetch('SELECT *  FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE id=:id and uniacid=:uniacid ', array(':id' => $_GPC['id'], ':uniacid' => $_W['uniacid']));
 			$types = pdo_fetch('SELECT *  FROM ' . tablename('ewei_shop_member_message_template_type') . ' WHERE typecode=:typecode ', array(':typecode' => $list['typecode']));
 			$data = iunserializer($list['data']);
 		}
 
+
 		$templatetypes2 = array();
 
-		foreach ($templatetypes as $temp) {
-			if (!empty($types) && ($types['typegroup'] == $temp['typegroup'])) {
+		foreach ($templatetypes as $temp ) {
+			if (!(empty($types)) && ($types['typegroup'] == $temp['typegroup'])) {
 				$templatetypes2[] = $temp;
 			}
-			else {
-				if (empty($types) && ($temp['typegroup'] == 'sys')) {
-					$templatetypes2[] = $temp;
-				}
+			 else if (empty($types) && ($temp['typegroup'] == 'sys')) {
+				$templatetypes2[] = $temp;
 			}
+
 		}
 
 		$templatetypes = $templatetypes2;
@@ -73,13 +73,14 @@ class Tmessage_EweiShopV2Page extends WebPage
 			$value = $_GPC['tp_value'];
 			$color = $_GPC['tp_color'];
 
-			if (!empty($keywords)) {
+			if (!(empty($keywords))) {
 				$data = array();
 
-				foreach ($keywords as $key => $val) {
+				foreach ($keywords as $key => $val ) {
 					$data[] = array('keywords' => $keywords[$key], 'value' => $value[$key], 'color' => $color[$key]);
 				}
 			}
+
 
 			$insert = array('title' => $_GPC['title'], 'typecode' => trim($_GPC['typecode']), 'messagetype' => $_GPC['messagetype'], 'template_id' => trim($_GPC['tp_template_id']), 'first' => trim($_GPC['tp_first']), 'firstcolor' => trim($_GPC['firstcolor']), 'data' => iserializer($data), 'remark' => trim($_GPC['tp_remark']), 'remarkcolor' => trim($_GPC['remarkcolor']), 'send_desc' => $_GPC['send_desc'], 'uniacid' => $_W['uniacid']);
 
@@ -88,13 +89,14 @@ class Tmessage_EweiShopV2Page extends WebPage
 				$id = pdo_insertid();
 				plog('sysset.tmessage.delete', '添加群发模板 ID: ' . $id . ' 标题: ' . $insert['title'] . ' ');
 			}
-			else {
+			 else {
 				pdo_update('ewei_shop_member_message_template', $insert, array('id' => $id));
 				plog('sysset.tmessage.delete', '编辑群发模板 ID: ' . $id . ' 标题: ' . $insert['title'] . ' ');
 			}
 
 			show_json(1, array('url' => webUrl('sysset/tmessage')));
 		}
+
 
 		include $this->template();
 	}
@@ -106,12 +108,13 @@ class Tmessage_EweiShopV2Page extends WebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$items = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE id in( ' . $id . ' ) AND uniacid=' . $_W['uniacid']);
 
-		foreach ($items as $item) {
+		foreach ($items as $item ) {
 			pdo_delete('ewei_shop_member_message_template', array('id' => $item['id'], 'uniacid' => $_W['uniacid']));
 			plog('sysset.tmessage.delete', '删除群发模板 ID: ' . $item['id'] . ' 标题: ' . $item['title'] . ' ');
 		}
@@ -128,16 +131,18 @@ class Tmessage_EweiShopV2Page extends WebPage
 		$params[':uniacid'] = $_W['uniacid'];
 		$condition = ' and uniacid=:uniacid';
 
-		if (!empty($kwd)) {
+		if (!(empty($kwd))) {
 			$condition .= ' AND `title` LIKE :keyword';
 			$params[':keyword'] = '%' . $kwd . '%';
 		}
+
 
 		$ds = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE 1 ' . $condition . ' order by id asc', $params);
 
 		if ($_GPC['suggest']) {
 			exit(json_encode(array('value' => $ds)));
 		}
+
 
 		include $this->template();
 	}
@@ -163,13 +168,15 @@ class Tmessage_EweiShopV2Page extends WebPage
 		$c = ihttp_request($url, $bb);
 		$result = @json_decode($c['content'], true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			show_json(0);
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			show_json(0, $result['errmsg']);
 		}
+
 
 		show_json(1, $result);
 	}
@@ -185,18 +192,20 @@ class Tmessage_EweiShopV2Page extends WebPage
 		$c = ihttp_request($url);
 		$result = @json_decode($c['content'], true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			show_json(0);
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			show_json(0, $result['errmsg']);
 		}
 
-		foreach ($result['template_list'] as $key => &$value) {
+
+		foreach ($result['template_list'] as $key => &$value ) {
 			preg_match_all('{{(.)*?}}', $value['content'], $matches);
 
-			foreach ($matches[0] as &$v) {
+			foreach ($matches[0] as &$v ) {
 				$v = str_replace(array('{', '}', '.DATA'), '', $v);
 			}
 
@@ -221,16 +230,19 @@ class Tmessage_EweiShopV2Page extends WebPage
 		$c = ihttp_request($url, $bb);
 		$result = @json_decode($c['content'], true);
 
-		if (!is_array($result)) {
+		if (!(is_array($result))) {
 			show_json(0);
 		}
 
-		if (!empty($result['errcode'])) {
+
+		if (!(empty($result['errcode']))) {
 			show_json(0, $result['errmsg']);
 		}
+
 
 		show_json(1, $result);
 	}
 }
+
 
 ?>

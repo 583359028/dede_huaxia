@@ -52,29 +52,18 @@
     {php $this->diyGotop(true, false, $page['merch'])}
 {/if}
 
-{if $_W['shopset']['shop']['order_flag']==1}
-    {if $page['type']==2 || $page['type']==5}
-        {php echo $this->diyOrder()}
-    {/if}
-    {/if}
+{if !empty($page['data']['page']['danmu'])}
+    {php $this->diyDanmu(true)}
+{/if}
+
+
+{if !empty($startadv)}
+    {template 'diypage/startadv'}
+{/if}
 
 
 <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=ZQiFErjQB7inrGpx27M1GR5w3TxZ64k7&s=1"></script>
 <script language="javascript">
-
-$(".fui-notice").each(function () {
-            var _this = $(this);
-            var speed = _this.data('speed') * 1000;
-            setInterval(function () {
-                var length = _this.find("li").length;
-                if (length > 1) {
-                    _this.find("ul").animate({marginTop: "-1rem"}, 500, function () {
-                        $(this).css({marginTop: "0px"}).find("li:first").appendTo(this)
-                    })
-                }
-            }, speed)
-        });
-
     require(['../addons/ewei_shopv2/plugin/diypage/static/js/mobile.js'], function(modal){
         modal.init();
     });

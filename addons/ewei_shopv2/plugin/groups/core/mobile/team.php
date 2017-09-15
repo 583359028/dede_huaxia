@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -17,6 +16,7 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 		if (empty($uid)) {
 			mc_oauth_userinfo($openid);
 		}
+
 
 		$this->model->groupsShare();
 		include $this->template();
@@ -39,23 +39,22 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 			$condition .= ' and o.success = :success ';
 			$params[':success'] = $success;
 		}
-		else if ($success == 1) {
+		 else if ($success == 1) {
 			$tab1 = true;
 			$condition .= ' and o.success = :success ';
 			$params[':success'] = $success;
 		}
-		else {
-			if ($success == -1) {
-				$tab2 = true;
-				$condition .= ' and o.success = :success ';
-				$params[':success'] = $success;
-			}
+		 else if ($success == -1) {
+			$tab2 = true;
+			$condition .= ' and o.success = :success ';
+			$params[':success'] = $success;
 		}
 
-		$orders = pdo_fetchall('select o.*,g.title,g.price as gprice,g.groupsprice,g.thumb,g.units,g.goodsnum from ' . tablename('ewei_shop_groups_order') . " as o\n\t\t\t\tleft join " . tablename('ewei_shop_groups_goods') . " as g on g.id = o.goodid\n\t\t\t\twhere 1 " . $condition . ' order by o.createtime desc LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
+
+		$orders = pdo_fetchall('select o.*,g.title,g.price as gprice,g.groupsprice,g.thumb,g.units,g.goodsnum from ' . tablename('ewei_shop_groups_order') . ' as o' . "\n\t\t\t\t" . 'left join ' . tablename('ewei_shop_groups_goods') . ' as g on g.id = o.goodid' . "\n\t\t\t\t" . 'where 1 ' . $condition . ' order by o.createtime desc LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(1) from ' . tablename('ewei_shop_groups_order') . ' as o where 1 ' . $condition, $params);
 
-		foreach ($orders as $key => $order) {
+		foreach ($orders as $key => $order ) {
 			$orders[$key]['amount'] = ($order['price'] + $order['freight']) - $order['creditmoney'];
 			$goods = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_groups_goods') . 'WHERE id = ' . $order['goodid']);
 			$sql2 = 'SELECT * FROM' . tablename('ewei_shop_groups_order') . 'where teamid = :teamid and success = 1';
@@ -63,7 +62,7 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 			$alltuan = pdo_fetchall($sql2, $params2);
 			$item = array();
 
-			foreach ($alltuan as $num => $all) {
+			foreach ($alltuan as $num => $all ) {
 				$item[$num] = $all['id'];
 			}
 
@@ -96,6 +95,7 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 			mc_oauth_userinfo($openid);
 		}
 
+
 		$uniacid = $_W['uniacid'];
 		$teamid = intval($_GPC['teamid']);
 		$condition = '';
@@ -104,15 +104,17 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 			$this->message('该团不存在!', mobileUrl('groups/index'), 'error');
 		}
 
+
 		$myorder = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_groups_order') . ' WHERE uniacid = ' . $uniacid . ' and openid = \'' . $_W['openid'] . '\' and teamid = ' . $teamid . ' and paytime>0');
 		$params = array(':teamid' => $teamid);
 		$orders = pdo_fetchall('select * from ' . tablename('ewei_shop_groups_order') . ' where uniacid = ' . $uniacid . ' and teamid = :teamid and paytime>0 order by id asc ', $params);
 		$profileall = array();
 
-		foreach ($orders as $key => $value) {
+		foreach ($orders as $key => $value ) {
 			if ($value['groupnum'] == 1) {
 				$single = 1;
 			}
+
 
 			$order['goodid'] = $value['goodid'];
 			$order['groupnum'] = $value['groupnum'];
@@ -125,22 +127,24 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 			if ($orders[$key]['avatar'] == '') {
 				$orders[$key]['avatar'] = '../addons/ewei_shopv2/plugin/groups/template/mobile/default/images/user/' . mt_rand(1, 20) . '.jpg';
 			}
+
 		}
 
-		$groupsset = pdo_fetch('select description,groups_description,discount,headstype,headsmoney,headsdiscount from ' . tablename('ewei_shop_groups_set') . "\n\t\t\t\t\twhere uniacid = :uniacid ", array(':uniacid' => $uniacid));
+		$groupsset = pdo_fetch('select description,groups_description,discount,headstype,headsmoney,headsdiscount from ' . tablename('ewei_shop_groups_set') . "\n\t\t\t\t\t" . 'where uniacid = :uniacid ', array(':uniacid' => $uniacid));
 		$groupsset['groups_description'] = m('ui')->lazy($groupsset['groups_description']);
 		$goods = pdo_fetch('SELECT * FROM' . tablename('ewei_shop_groups_goods') . 'WHERE  uniacid = ' . $uniacid . ' and id = ' . $order['goodid']);
 
-		if (!empty($goods['thumb_url'])) {
+		if (!(empty($goods['thumb_url']))) {
 			$goods['thumb_url'] = array_merge(iunserializer($goods['thumb_url']));
 		}
+
 
 		$sql = 'SELECT * FROM' . tablename('ewei_shop_groups_order') . ' where uniacid = :uniacid and teamid=:teamid and status > 0 ';
 		$params = array(':uniacid' => $_W['uniacid'], ':teamid' => $teamid);
 		$alltuan = pdo_fetchall($sql, $params);
 		$item = array();
 
-		foreach ($alltuan as $num => $all) {
+		foreach ($alltuan as $num => $all ) {
 			$item[$num] = $all['id'];
 		}
 
@@ -149,6 +153,7 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 		if ($n <= 0) {
 			pdo_update('ewei_shop_groups_order', array('success' => 1), array('teamid' => $teamid));
 		}
+
 
 		$nn = intval($order['groupnum']) - 1;
 		$arr = array();
@@ -168,7 +173,7 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 		$lasttime2 = strtotime($endtime) - strtotime($date1);
 		$tuan_first_order['endtime'] = strtotime(' ' . $date . ' + ' . $hours . ' hour');
 		$set = $_W['shopset'];
-		$_W['shopshare'] = array('title' => '还差' . $n . '人，我参加了“' . $goods['title'] . '”拼团，快来吧。盼你如南方人盼暖气~', 'imgUrl' => !empty($goods['share_icon']) ? tomedia($goods['share_icon']) : tomedia($goods['thumb']), 'desc' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'], 'link' => mobileUrl('groups/team/detail', array('teamid' => $teamid), true));
+		$_W['shopshare'] = array('title' => '还差' . $n . '人，我参加了“' . $goods['title'] . '”拼团，快来吧。盼你如南方人盼暖气~', 'imgUrl' => (!(empty($goods['share_icon'])) ? tomedia($goods['share_icon']) : tomedia($goods['thumb'])), 'desc' => (!(empty($goods['share_title'])) ? $goods['share_title'] : $goods['title']), 'link' => mobileUrl('groups/team/detail', array('teamid' => $teamid), true));
 		include $this->template();
 	}
 
@@ -180,5 +185,6 @@ class Team_EweiShopV2Page extends PluginMobileLoginPage
 		include $this->template();
 	}
 }
+
 
 ?>

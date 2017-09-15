@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -14,8 +13,9 @@ class History_EweiShopV2Page extends MobileLoginPage
 		$merch_data = m('common')->getPluginset('merch');
 		if ($merch_plugin && $merch_data['is_openmerch']) {
 			include $this->template('merch/member/history');
-			return NULL;
+			return;
 		}
+
 
 		include $this->template();
 	}
@@ -34,14 +34,15 @@ class History_EweiShopV2Page extends MobileLoginPage
 		$list = pdo_fetchall($sql, $params);
 		$merch_plugin = p('merch');
 		$merch_data = m('common')->getPluginset('merch');
-		if (!empty($list) && $merch_plugin && $merch_data['is_openmerch']) {
+		if (!(empty($list)) && $merch_plugin && $merch_data['is_openmerch']) {
 			$merch_user = $merch_plugin->getListUser($list, 'merch_user');
 		}
 
-		foreach ($list as &$row) {
+
+		foreach ($list as &$row ) {
 			$row['createtime'] = date('Y-m-d H:i:s', $row['createtime']);
 			$row['thumb'] = tomedia($row['thumb']);
-			$row['merchname'] = $merch_user[$row['merchid']]['merchname'] ? $merch_user[$row['merchid']]['merchname'] : $_W['shopset']['shop']['name'];
+			$row['merchname'] = (($merch_user[$row['merchid']]['merchname'] ? $merch_user[$row['merchid']]['merchname'] : $_W['shopset']['shop']['name']));
 		}
 
 		unset($row);
@@ -53,14 +54,16 @@ class History_EweiShopV2Page extends MobileLoginPage
 		global $_W;
 		global $_GPC;
 		$ids = $_GPC['ids'];
-		if (empty($ids) || !is_array($ids)) {
+		if (empty($ids) || !(is_array($ids))) {
 			show_json(0, '参数错误');
 		}
+
 
 		$sql = 'update ' . tablename('ewei_shop_member_history') . ' set deleted=1 where openid=:openid and id in (' . implode(',', $ids) . ')';
 		pdo_query($sql, array(':openid' => $_W['openid']));
 		show_json(1);
 	}
 }
+
 
 ?>

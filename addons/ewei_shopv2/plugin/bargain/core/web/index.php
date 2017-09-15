@@ -1,5 +1,4 @@
 <?php
-//米云网络科技www.symiyun.com
 class Index_EweiShopV2Page extends PluginWebPage
 {
 	public function __construct()
@@ -10,6 +9,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 		if (empty($res)) {
 			pdo_insert('ewei_shop_bargain_account', array('id' => $_W['uniacid'], 'mall_name' => '砍价商城'));
 		}
+
 	}
 
 	public function main()
@@ -25,7 +25,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.end_time )>' . time() . ' AND g.total > 0 AND unix_timestamp(goods.start_time )>' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND goods.account_id = :uniacid';
 			$all = pdo_fetchcolumn($all_sql, array(':uniacid' => $_W['uniacid']));
 		}
-		else {
+		 else {
 			$sql = 'SELECT goods.*,g.total,thumb,marketprice,sales,title FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE g.total > 0 AND unix_timestamp(goods.end_time )>' . time() . ' AND unix_timestamp(goods.start_time )<' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND goods.account_id = :uniacid AND g.title LIKE :keyword ORDER BY goods.id DESC LIMIT ' . (($page * $psize) - $psize) . ',' . $psize;
 			$onSell = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid'], ':keyword' => '%' . $_GPC['search'] . '%'));
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.end_time )>' . time() . ' AND g.total > 0 AND unix_timestamp(goods.start_time )>' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND g.title LIKE :keyword AND goods.account_id = :uniacid';
@@ -49,7 +49,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.end_time )>' . time() . ' AND g.total <= 0 AND unix_timestamp(goods.start_time )>' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND goods.account_id = :uniacid';
 			$all = pdo_fetchcolumn($all_sql, array(':uniacid' => $_W['uniacid']));
 		}
-		else {
+		 else {
 			$sql = 'SELECT goods.*,g.total,thumb,marketprice,sales,title FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE g.total <= 0 AND unix_timestamp(goods.end_time )>' . time() . ' AND unix_timestamp(goods.start_time )<' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND goods.account_id = :uniacid AND g.title LIKE :keyword ORDER BY goods.id DESC LIMIT ' . (($page * $psize) - $psize) . ',' . $psize;
 			$onSell = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid'], ':keyword' => '%' . $_GPC['search'] . '%'));
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.end_time )>' . time() . ' AND g.total <= 0 AND unix_timestamp(goods.start_time )>' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND g.title LIKE :keyword AND goods.account_id = :uniacid';
@@ -73,7 +73,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.start_time )>' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND goods.account_id = :uniacid';
 			$all = pdo_fetchcolumn($all_sql, array(':uniacid' => $_W['uniacid']));
 		}
-		else {
+		 else {
 			$sql = 'SELECT goods.*,g.total,thumb,marketprice,sales,title FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.start_time )>' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND g.title LIKE :keyword AND goods.account_id = :uniacid ORDER BY goods.id DESC LIMIT ' . (($page * $psize) - $psize) . ',' . $psize;
 			$onSell = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid'], ':keyword' => '%' . $_GPC['search'] . '%'));
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.start_time )>' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND g.title LIKE :keyword AND goods.account_id = :uniacid';
@@ -97,7 +97,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.end_time )<' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND goods.account_id = :uniacid AND unix_timestamp(goods.start_time )<' . time();
 			$all = pdo_fetchcolumn($all_sql, array(':uniacid' => $_W['uniacid']));
 		}
-		else {
+		 else {
 			$sql = 'SELECT goods.*,g.total,thumb,marketprice,sales,title FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.end_time )<' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND unix_timestamp(goods.start_time )<' . time() . ' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND g.title LIKE :keyword AND goods.account_id = :uniacid ORDER BY goods.id DESC LIMIT ' . (($page * $psize) - $psize) . ',' . $psize;
 			$onSell = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid'], ':keyword' => '%' . $_GPC['search'] . '%'));
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE unix_timestamp(goods.end_time )<' . time() . ' AND goods.status = \'0\' AND g.status = \'1\' AND g.uniacid = :uniacid AND g.deleted = \'0\' AND g.title LIKE :keyword AND goods.account_id = :uniacid AND unix_timestamp(goods.start_time )<' . time();
@@ -121,7 +121,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE (g.status = \'0\' or g.deleted=\'1\') AND goods.status = \'0\' AND g.uniacid = :uniacid';
 			$all = pdo_fetchcolumn($all_sql, array(':uniacid' => $_W['uniacid']));
 		}
-		else {
+		 else {
 			$sql = 'SELECT goods.*,g.total,thumb,marketprice,sales,title FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE (g.status = \'0\' or g.deleted=\'1\') AND goods.status = \'0\' AND g.title LIKE :keyword AND g.uniacid = :uniacid ORDER BY goods.id DESC LIMIT ' . (($page * $psize) - $psize) . ',' . $psize;
 			$onSell = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid'], ':keyword' => '%' . $_GPC['search'] . '%'));
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE (g.status = \'0\' or g.deleted=\'1\') AND goods.status = \'0\' AND g.uniacid = :uniacid AND g.title LIKE :keyword';
@@ -145,7 +145,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE goods.status = \'1\' AND g.uniacid = :uniacid';
 			$all = pdo_fetchcolumn($all_sql, array(':uniacid' => $_W['uniacid']));
 		}
-		else {
+		 else {
 			$sql = 'SELECT goods.*,g.total,thumb,marketprice,sales,title FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE goods.status = \'1\' AND g.title LIKE :keyword AND g.uniacid = :uniacid ORDER BY goods.id DESC LIMIT ' . (($page * $psize) - $psize) . ',' . $psize;
 			$onSell = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid'], ':keyword' => '%' . $_GPC['search'] . '%'));
 			$all_sql = 'SELECT COUNT(*) FROM' . tablename('ewei_shop_bargain_goods') . ' goods INNER JOIN' . tablename('ewei_shop_goods') . ' g ON goods.goods_id = g.id WHERE goods.status = \'1\' AND g.title LIKE :keyword AND g.uniacid = :uniacid';
@@ -163,7 +163,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 		$goods = intval($_GPC['goods']);
 
-		if (!empty($id)) {
+		if (!(empty($id))) {
 			$goods_id = pdo_fetch('SELECT goods_id FROM ' . tablename('ewei_shop_bargain_goods') . ' WHERE id = :id', array(':id' => $id));
 			$if_up = pdo_fetch('SELECT bargain FROM ' . tablename('ewei_shop_goods') . ' WHERE id = :id', array(':id' => $goods_id['goods_id']));
 
@@ -171,16 +171,15 @@ class Index_EweiShopV2Page extends PluginWebPage
 				pdo_update('ewei_shop_bargain_goods', array('status' => 0), array('status' => 1, 'id' => $id, 'account_id' => $_W['uniacid']));
 				pdo_update('ewei_shop_goods', array('bargain' => $id), array('id' => $goods_id['goods_id']));
 			}
-			else {
+			 else {
 				show_json(0, '恢复失败,另一个此商品的砍价活动已存在!');
-				return NULL;
+				return;
 			}
 		}
-		else {
-			if (!empty($goods)) {
-				pdo_query('UPDATE' . tablename('ewei_shop_goods') . 'SET status = \'1\' ,deleted = \'0\' WHERE (status = \'0\' OR deleted=\'1\') AND uniacid = :uniacid', array(':uniacid' => $_W['uniacid']));
-			}
+		 else if (!(empty($goods))) {
+			pdo_query('UPDATE' . tablename('ewei_shop_goods') . 'SET status = \'1\' ,deleted = \'0\' WHERE (status = \'0\' OR deleted=\'1\') AND uniacid = :uniacid', array(':uniacid' => $_W['uniacid']));
 		}
+
 
 		show_json(1, '恢复成功');
 	}
@@ -197,7 +196,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$allGoods = pdo_fetchall($get_all_goods_sql, array(':uniacid' => $_W['uniacid']));
 			$count = pdo_fetch('SELECT COUNT(*) FROM ' . tablename('ewei_shop_goods') . 'WHERE uniacid = :uniacid AND status = \'1\'', array(':uniacid' => $_W['uniacid']));
 		}
-		else {
+		 else {
 			$get_all_goods_sql = 'SELECT * FROM ' . tablename('ewei_shop_goods') . ' WHERE uniacid = :uniacid AND status = \'1\' AND title LIKE \'%' . $_GPC['search'] . '%\' ORDER BY id ASC LIMIT ' . (($page * $psize) - $psize) . ',' . $psize;
 			$allGoods = pdo_fetchall($get_all_goods_sql, array(':uniacid' => $_W['uniacid']));
 			$count = pdo_fetch('SELECT COUNT(*) FROM ' . tablename('ewei_shop_goods') . 'WHERE uniacid = :uniacid AND status = \'1\' AND title LIKE \'%' . $_GPC['search'] . '%\'', array(':uniacid' => $_W['uniacid']));
@@ -218,21 +217,24 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$end_price = (double) $_GPC['end_price'];
 		}
 
+
 		$myself = intval($_GPC['myself']);
 		$get_this_goods_sql = 'SELECT * FROM ' . tablename('ewei_shop_goods') . ' WHERE id = :id';
 		$this_goods = pdo_fetch($get_this_goods_sql, array(':id' => $id));
 		$temp = pdo_get('ewei_shop_goods', array('id' => $this_goods['id']), array('bargain'));
 
-		if (!empty($_W['ispost'])) {
+		if (!(empty($_W['ispost']))) {
 			$if_act_swi = false;
 		}
 
-		if (!empty($end_price) || ($end_price === 0)) {
+
+		if (!(empty($end_price)) || ($end_price === 0)) {
 			$market_price = (double) $_GPC['marketprice'];
 
 			if ($market_price < $end_price) {
 				show_json(0, '底价不得高于标价!');
 			}
+
 
 			$dispaly = (int) $_GPC['display'];
 			$order_set = (int) $_GPC['order_set'];
@@ -256,6 +258,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 				show_json(0, '概率相加必须为100%');
 			}
 
+
 			$goods_share_title = $_GPC['goods_share_title'];
 			$goods_share_describe = $_GPC['goods_share_describe'];
 			$bargain_share_title = $_GPC['bargain_share_title'];
@@ -265,10 +268,10 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$user_set_json = json_encode($user_set_arr);
 			$user_set_json = urlencode($user_set_json);
 
-			if (!empty($_GPC)) {
+			if (!(empty($_GPC))) {
 				$rule = NULL;
 			}
-			else {
+			 else {
 				$rule = $_GPC['rule'];
 			}
 
@@ -295,14 +298,15 @@ class Index_EweiShopV2Page extends PluginWebPage
 				if (empty($save_res)) {
 					show_json(0, '保存失败');
 				}
-				else {
+				 else {
 					show_json(1, '保存成功');
 				}
 			}
 
+
 			unset($_GPC['end_price']);
 		}
-		else {
+		 else {
 			include $this->template();
 		}
 	}
@@ -320,18 +324,20 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$end_price = (double) $_GPC['end_price'];
 		}
 
+
 		$myself = intval($_GPC['myself']);
 		$this_act['user_set'] = urldecode($this_act['user_set']);
 		$user_set = json_decode($this_act['user_set'], ture);
 		$tt = json_decode($this_act['probability'], true);
 		$get_this_goods_sql = 'SELECT * FROM ' . tablename('ewei_shop_goods') . ' WHERE id = :id';
 		$this_goods = pdo_fetch($get_this_goods_sql, array(':id' => $id));
-		if (!empty($end_price) || ($end_price === 0)) {
+		if (!(empty($end_price)) || ($end_price === 0)) {
 			$market_price = (double) $_GPC['marketprice'];
 
 			if ($market_price < $end_price) {
 				show_json(0, '底价不得高于标价!');
 			}
+
 
 			$dispaly = (int) $_GPC['display'];
 			$order_set = (int) $_GPC['order_set'];
@@ -354,6 +360,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 				show_json(0, '概率相加必须为100%');
 			}
 
+
 			$goods_share_title = $_GPC['goods_share_title'];
 			$goods_share_describe = $_GPC['goods_share_describe'];
 			$goods_share_logo = $_GPC['goods_share_logo'];
@@ -364,10 +371,10 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$user_set_json = json_encode($user_set_arr);
 			$user_set_json = urlencode($user_set_json);
 
-			if (!empty($_GPC['bang_swi'])) {
+			if (!(empty($_GPC['bang_swi']))) {
 				$rule = NULL;
 			}
-			else {
+			 else {
 				$rule = $_GPC['rule'];
 			}
 
@@ -388,7 +395,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			show_json(1, '保存成功');
 			unset($_GPC['end_price']);
 		}
-		else {
+		 else {
 			$this_act['custom'] = urldecode($this_act['custom']);
 			$this_act['custom'] = json_decode($this_act['custom'], true);
 			include $this->template();
@@ -416,6 +423,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			show_json(0);
 		}
 
+
 		pdo_delete('ewei_shop_bargain_goods', array('id' => $id, 'account_id' => $_W['uniacid']));
 		show_json('1', '删除成功');
 	}
@@ -436,8 +444,9 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$mall_logo = $_GPC['mall_logo'];
 			pdo_update('ewei_shop_bargain_account', array('mall_name' => $mall_name, 'banner' => $banner, 'mall_title' => $mall_title, 'mall_content' => $mall_content, 'mall_logo' => $mall_logo), array('id' => $_W['uniacid']));
 			show_json(1, '保存成功');
-			return NULL;
+			return;
 		}
+
 
 		include $this->template();
 	}
@@ -450,74 +459,83 @@ class Index_EweiShopV2Page extends PluginWebPage
 		$salers = array();
 
 		if (isset($data['openid'])) {
-			if (!empty($data['openid'])) {
+			if (!(empty($data['openid']))) {
 				$openids = array();
 				$strsopenids = explode(',', $data['openid']);
 
-				foreach ($strsopenids as $openid) {
+				foreach ($strsopenids as $openid ) {
 					$openids[] = '\'' . $openid . '\'';
 				}
 
 				$salers = pdo_fetchall('select id,nickname,avatar,openid from ' . tablename('ewei_shop_member') . ' where openid in (' . implode(',', $openids) . ') and uniacid=' . $_W['uniacid']);
 			}
+
 		}
+
 
 		if ($_W['ispost']) {
 			ca('sysset.notice.edit');
-			$data = (is_array($_GPC['data']) ? $_GPC['data'] : array());
+			$data = ((is_array($_GPC['data']) ? $_GPC['data'] : array()));
 
 			if (is_array($_GPC['openids'])) {
 				$data['openid'] = implode(',', $_GPC['openids']);
 			}
-			else {
+			 else {
 				$data['openid'] = '';
 			}
 
 			if (empty($data['willcancel_close_advanced'])) {
 				$uniacids = m('cache')->get('willcloseuniacid', 'global');
 
-				if (!is_array($uniacids)) {
+				if (!(is_array($uniacids))) {
 					$uniacids = array();
 				}
 
-				if (!in_array($_W['uniacid'], $uniacids)) {
+
+				if (!(in_array($_W['uniacid'], $uniacids))) {
 					$uniacids[] = $_W['uniacid'];
 					m('cache')->set('willcloseuniacid', $uniacids, 'global');
 				}
+
 			}
-			else {
+			 else {
 				$uniacids = m('cache')->get('willcloseuniacid', 'global');
 
 				if (is_array($uniacids)) {
 					if (in_array($_W['uniacid'], $uniacids)) {
 						$datas = array();
 
-						foreach ($uniacids as $uniacid) {
+						foreach ($uniacids as $uniacid ) {
 							if ($uniacid != $_W['uniacid']) {
 								$datas[] = $uniacid;
 							}
+
 						}
 
 						m('cache')->set('willcloseuniacid', $datas, 'global');
 					}
+
 				}
+
 			}
 
 			m('common')->updateSysset(array('notice' => $data));
 			show_json(1);
 		}
 
+
 		$template_list = pdo_fetchall('SELECT id,title,typecode FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE uniacid=:uniacid ', array(':uniacid' => $_W['uniacid']));
 		$templatetype_list = pdo_fetchall('SELECT * FROM  ' . tablename('ewei_shop_member_message_template_type'));
 		$template_group = array();
 
-		foreach ($templatetype_list as $type) {
+		foreach ($templatetype_list as $type ) {
 			$templates = array();
 
-			foreach ($template_list as $template) {
+			foreach ($template_list as $template ) {
 				if ($template['typecode'] == $type['typecode']) {
 					$templates[] = $template;
 				}
+
 			}
 
 			$template_group[$type['typecode']] = $templates;
@@ -537,19 +555,23 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$rule = $_GPC['rule'];
 			$swi = $_GPC['bang_swi'];
 			$partin = intval($_GPC['money_limit']);
+			$follow_swi = intval($_GPC['follow_swi']);
 
 			if (empty($swi)) {
 				$partin = -10000;
 			}
 
-			pdo_update('ewei_shop_bargain_account', array('partin' => $partin, 'rule' => $rule), array('id' => $_W['uniacid']));
+
+			pdo_update('ewei_shop_bargain_account', array('partin' => $partin, 'rule' => $rule, 'follow_swi' => $follow_swi), array('id' => $_W['uniacid']));
 			show_json(1, '保存成功');
-			return NULL;
+			return;
 		}
+
 
 		if ($res['partin'] == -10000) {
 			$res['partin'] = NULL;
 		}
+
 
 		include $this->template();
 	}
@@ -563,5 +585,6 @@ class Index_EweiShopV2Page extends PluginWebPage
 		show_json(1, '已开始');
 	}
 }
+
 
 ?>

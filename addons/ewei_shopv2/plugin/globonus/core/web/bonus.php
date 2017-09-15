@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -39,7 +38,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		$i = 1;
 
 		while ($i <= 12) {
-			$months[] = strlen($i) == 1 ? '0' . $i : $i;
+			$months[] = ((strlen($i) == 1 ? '0' . $i : $i));
 			++$i;
 		}
 
@@ -52,20 +51,24 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			$condition .= ' and `year`=' . intval($_GPC['year']);
 		}
 
+
 		if ($_GPC['month'] != '') {
 			$condition .= ' and `month`=' . intval($_GPC['month']);
 		}
+
 
 		if ($_GPC['week'] != '') {
 			$condition .= ' and `week`=' . intval($_GPC['week']);
 		}
 
+
 		$keyword = trim($_GPC['keyword']);
 
-		if (!empty($keyword)) {
+		if (!(empty($keyword))) {
 			$condition .= ' and billno like :keyword ';
 			$params[':keyword'] = '%' . $keyword . '%';
 		}
+
 
 		$sql = 'select *  from ' . tablename('ewei_shop_globonus_bill') . '  where 1 ' . $condition . ' ORDER BY createtime desc ';
 
@@ -73,33 +76,34 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			$sql .= '  limit ' . (($pindex - 1) * $psize) . ',' . $psize;
 		}
 
+
 		$list = pdo_fetchall($sql, $params);
 
 		if ($_GPC['export'] == 1) {
 			ca('globonus.bonus.export');
 			plog('globonus.bonus.export', '导出结算单');
 
-			foreach ($list as &$row) {
-				$row['createtime'] = empty($row['createtime']) ? '' : date('Y-m-d H:i', $row['createtime']);
+			foreach ($list as &$row ) {
+				$row['createtime'] = ((empty($row['createtime']) ? '' : date('Y-m-d H:i', $row['createtime'])));
 				$row['days'] = $row['year'] . '年' . $row['month'] . '月';
 
 				if ($row['paytype'] == 2) {
 					$row['days'] .= '第' . $row['week'] . '周';
 				}
 
+
 				if (empty($row['status'])) {
 					$row['statusstr'] = '待确认';
 				}
-				else if ($row['status'] == 1) {
+				 else if ($row['status'] == 1) {
 					$row['statusstr'] = '待结算';
 				}
-				else {
-					if ($row['status'] == 2) {
-						$row['statusstr'] = '已结算';
-					}
+				 else if ($row['status'] == 2) {
+					$row['statusstr'] = '已结算';
 				}
 
-				$row['paytype'] = $row['paytype'] == 2 ? '按周' : '按月';
+
+				$row['paytype'] = (($row['paytype'] == 2 ? '按周' : '按月'));
 			}
 
 			unset($row);
@@ -120,6 +124,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	));
 		}
 
+
 		$total = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_globonus_bill') . '  where 1 ' . $condition, $params);
 		$totalmoney = pdo_fetchcolumn('select sum(bonusmoney_send) from' . tablename('ewei_shop_globonus_bill') . '  where 1 ' . $condition, $params);
 		$pager = pagination($total, $pindex, $psize);
@@ -137,24 +142,27 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			$this->message('结算单未找到!');
 		}
 
+
 		$data['partnercount1'] = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and status=1 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':billid' => $id));
 		$condition = ' and b.billid=:billid and b.uniacid =:uniacid';
 		$params = array(':billid' => $id, ':uniacid' => $_W['uniacid']);
 		$keyword = trim($_GPC['keyword']);
 
-		if (!empty($keyword)) {
+		if (!(empty($keyword))) {
 			$condition .= ' and (m.realname like :keyword or m.nickname like :keyword or m.mobile like :keyword)';
 			$params[':keyword'] = '%' . $keyword . '%';
 		}
+
 
 		if ($_GPC['status'] != '') {
 			if ($_GPC['status'] == 1) {
 				$condition .= ' and b.status=1';
 			}
-			else {
+			 else {
 				$condition .= ' and b.status=0 or b.status=-1';
 			}
 		}
+
 
 		$sql = 'select b.*, m.nickname,m.avatar,m.realname,m.weixin,m.mobile,l.levelname,b.bonus,m.partnerlevel,m.id as mid from ' . tablename('ewei_shop_globonus_billp') . ' b ' . ' left join ' . tablename('ewei_shop_member') . ' m on m.openid = b.openid and m.uniacid = b.uniacid' . ' left join ' . tablename('ewei_shop_globonus_level') . ' l on l.id = m.partnerlevel' . ' where 1 ' . $condition . ' ORDER BY status asc ';
 		$list = pdo_fetchall($sql, $params);
@@ -163,10 +171,10 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			ca('globonus.bonus.detail.export');
 			plog('globonus.bonus.detail.export', '导出结算单股东数据 ID: ' . $data['id'] . ' 单号: ' . $data['billno']);
 
-			foreach ($list as &$row) {
-				$row['paytime'] = empty($row['paytime']) ? '' : date('Y-m-d H:i', $row['paytime']);
-				$row['createtime'] = empty($row['createtime']) ? '' : date('Y-m-d H:i', $row['createtime']);
-				$row['levelname'] = !empty($row['levelname']) ? $row['levelname'] : (empty($set['levelname']) ? '默认等级' : $set['levelname']);
+			foreach ($list as &$row ) {
+				$row['paytime'] = ((empty($row['paytime']) ? '' : date('Y-m-d H:i', $row['paytime'])));
+				$row['createtime'] = ((empty($row['createtime']) ? '' : date('Y-m-d H:i', $row['createtime'])));
+				$row['levelname'] = ((!(empty($row['levelname'])) ? $row['levelname'] : ((empty($set['levelname']) ? '默认等级' : $set['levelname']))));
 			}
 
 			unset($row);
@@ -189,6 +197,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 	));
 		}
 
+
 		$set = $this->getSet();
 		$levels = $this->model->getLevels();
 		include $this->template();
@@ -205,9 +214,11 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '结算单未找到!');
 		}
 
-		if (!empty($data['status'])) {
+
+		if (!(empty($data['status']))) {
 			show_json(0, '结算单已经结算，不能删除!');
 		}
+
 
 		pdo_query('delete from ' . tablename('ewei_shop_globonus_bill') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $id, ':uniacid' => $_W['uniacid']));
 		pdo_query('delete from ' . tablename('ewei_shop_globonus_billo') . ' where billid=:id and uniacid=:uniacid limit 1 ', array(':id' => $id, ':uniacid' => $_W['uniacid']));
@@ -240,19 +251,20 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 				show_json(1, array('old' => true));
 			}
 
+
 			$set = $this->getSet();
 			$bill = array('uniacid' => $_W['uniacid'], 'billno' => m('common')->createNO('globonus_bill', 'billno', 'GB'), 'paytype' => $set['paytype'], 'year' => $year, 'month' => $month, 'week' => $week, 'ordercount' => $data['ordercount'], 'ordermoney' => $data['ordermoney'], 'bonusmoney' => $data['bonusmoney'], 'bonusordermoney' => $data['bonusordermoney'], 'bonusrate' => $data['bonusrate'], 'bonusmoney_send' => $bonusmoney, 'bonusmoney_pay' => $bonusmoney, 'partnercount' => $data['partnercount'], 'starttime' => $data['starttime'], 'endtime' => $data['endtime'], 'createtime' => time());
 			pdo_insert('ewei_shop_globonus_bill', $bill);
 			$billid = pdo_insertid();
 
-			foreach ($data['orders'] as $order) {
+			foreach ($data['orders'] as $order ) {
 				$bo = array('uniacid' => $_W['uniacid'], 'billid' => $billid, 'orderid' => $order['id'], 'ordermoney' => $order['price']);
 				pdo_insert('ewei_shop_globonus_billo', $bo);
 			}
 
 			$rate = $bonusmoney / $data['bonusmoney'];
 
-			foreach ($data['partners'] as $partner) {
+			foreach ($data['partners'] as $partner ) {
 				$bp = array('uniacid' => $_W['uniacid'], 'billid' => $billid, 'payno' => m('common')->createNO('globonus_billp', 'payno', 'GP'), 'openid' => $partner['openid'], 'money' => $partner['bonusmoney'], 'realmoney' => $partner['bonusmoney_send'] * $rate, 'paymoney' => $partner['bonusmoney_send'] * $rate, 'bonus' => $partner['bonus'], 'charge' => $partner['charge'], 'chargemoney' => $partner['chargemoney'], 'status' => 0);
 				pdo_insert('ewei_shop_globonus_billp', $bp);
 			}
@@ -260,6 +272,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			plog('globonus.bonus.build', '创建结算单 ID:' . $billid . ' 单号: ' . $bill['billno'] . ' 分红金额: ' . $bill['bonusmoney_pay'] . ' 股东人数:  ' . $bill['partnercount']);
 			show_json(1, array('old' => false));
 		}
+
 
 		$years = array();
 		$current_year = date('Y');
@@ -274,7 +287,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		$i = 1;
 
 		while ($i <= 12) {
-			$months[] = strlen($i) == 1 ? '0' . $i : $i;
+			$months[] = ((strlen($i) == 1 ? '0' . $i : $i));
 			++$i;
 		}
 
@@ -284,6 +297,7 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 		if (empty($week)) {
 			$week = 1;
 		}
+
 
 		$bill = pdo_fetch('select * from ' . tablename('ewei_shop_globonus_bill') . ' where uniacid=:uniacid order by id desc limit 1 ', array(':uniacid' => $_W['uniacid']));
 		include $this->template();
@@ -312,9 +326,11 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '结算单未找到!');
 		}
 
-		if (!empty($data['status'])) {
+
+		if (!(empty($data['status']))) {
 			show_json(0, '结算单已经确认或已经结算!');
 		}
+
 
 		$time = time();
 		pdo_query('update ' . tablename('ewei_shop_globonus_bill') . ' set status=1,confirmtime=' . $time . ' where id=:id and uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
@@ -333,9 +349,11 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '结算单未找到!');
 		}
 
+
 		if ($data['status'] == 2) {
 			show_json(0, '结算单已经全部结算!');
 		}
+
 
 		if (empty($data['status'])) {
 			$orders = pdo_fetchall('select orderid from ' . tablename('ewei_shop_globonus_billo') . ' where billid=:billid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':billid' => $id), 'orderid');
@@ -344,8 +362,10 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 				show_json(0, '未找到任何结算订单!');
 			}
 
+
 			pdo_query('update ' . tablename('ewei_shop_order') . ' set isglobonus=1 where id in ( ' . implode(',', array_keys($orders)) . ' ) and uniacid=' . $_W['uniacid']);
 		}
+
 
 		$time = time();
 		pdo_query('update ' . tablename('ewei_shop_globonus_bill') . ' set paytime=' . $time . ' where id=:id and uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
@@ -367,13 +387,16 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '结算单未找到!');
 		}
 
+
 		if ($data['status'] == 2) {
 			show_json(0, '结算单已经全部结算!');
 		}
 
+
 		if (empty($bpid)) {
 			show_json(0, '参数错误!');
 		}
+
 
 		$partner = pdo_fetch('select *  from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and id=:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':billid' => $id, ':id' => $bpid));
 
@@ -381,13 +404,16 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '未找到股东!');
 		}
 
+
 		if ($partner['status'] == 1) {
 			show_json(0, '此股东已经结算!');
 		}
 
+
 		if (empty($partner['openid']) || ($partner['paymoney'] <= 0)) {
 			show_json(0, '结算数据错误!');
 		}
+
 
 		$pay = $partner['paymoney'];
 		$moneytype = intval($set['moneytype']);
@@ -397,29 +423,32 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			$moneytype = 0;
 		}
 
+
 		if (1 < $moneytype) {
 			show_json(0, '结算方式错误!');
 		}
+
 
 		if ($moneytype == 1) {
 			$pay *= 100;
 		}
 
+
 		$member = m('member')->getMember($partner['openid']);
 
-		if (!empty($member)) {
+		if (!(empty($member))) {
 			$result = m('finance')->pay($partner['openid'], $moneytype, $pay, $partner['payno'], '股东分红', false);
 
 			if (is_error($result)) {
 				pdo_update('ewei_shop_globonus_billp', array('reason' => $result['message'], 'status' => -1), array('billid' => $id, 'id' => $bpid));
 			}
-			else {
+			 else {
 				pdo_update('ewei_shop_globonus_billp', array('reason' => '', 'status' => 1, 'paytime' => time()), array('billid' => $id, 'id' => $bpid));
 				$this->model->upgradeLevelByBonus($partner['openid']);
-				$this->model->sendMessage($partner['openid'], array('money' => $partner['paymoney'], 'nickname' => $member['nickname'], 'type' => $moneytype ? '微信钱包' : '余额'), TM_GLOBONUS_PAY);
+				$this->model->sendMessage($partner['openid'], array('money' => $partner['paymoney'], 'nickname' => $member['nickname'], 'type' => ($moneytype ? '微信钱包' : '余额')), TM_GLOBONUS_PAY);
 			}
 		}
-		else {
+		 else {
 			pdo_update('ewei_shop_globonus_billp', array('reason' => '未找到会员', 'status' => -1), array('billid' => $id, 'id' => $bpid));
 		}
 
@@ -431,10 +460,11 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			pdo_query('update ' . tablename('ewei_shop_globonus_bill') . ' set status=2 where id=:id and uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
 		}
 
+
 		if (is_error($result)) {
 			show_json(0, array('message' => $result['message'], 'partnercount' => $partnercount, 'full' => $full));
 		}
-		else {
+		 else {
 			show_json(1, array('partnercount' => $partnercount, 'full' => $full));
 		}
 	}
@@ -448,11 +478,13 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '参数错误!');
 		}
 
+
 		$value = floatval($_GPC['value']);
 
 		if ($value <= 0) {
 			show_json(0, '参数错误!');
 		}
+
 
 		$id = intval($_GPC['id']);
 		$data = pdo_fetch('select * from ' . tablename('ewei_shop_globonus_bill') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $id, ':uniacid' => $_W['uniacid']));
@@ -461,32 +493,35 @@ class Bonus_EweiShopV2Page extends PluginWebPage
 			show_json(0, '结算单未找到!');
 		}
 
-		if (!empty($data['status'])) {
+
+		if (!(empty($data['status']))) {
 			show_json(0, '结算单已经确认或结算!');
 		}
+
 
 		if ($type == 'level') {
 			$level = intval($_GPC['level']);
 			$sql = 'update ' . tablename('ewei_shop_globonus_billp') . ' b ,' . tablename('ewei_shop_member') . ' m set b.paymoney = ' . $value . ' where b.openid = m.openid and b.uniacid = m.uniacid and m.partnerlevel=' . $level . ' and b.billid=' . $id . ' and b.uniacid=' . $_W['uniacid'];
 			pdo_query($sql);
 		}
-		else {
-			if ($type == 'partner') {
-				$bpid = intval($_GPC['bpid']);
-				$partner = pdo_fetch('select *  from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and id=:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':billid' => $id, ':id' => $bpid));
+		 else if ($type == 'partner') {
+			$bpid = intval($_GPC['bpid']);
+			$partner = pdo_fetch('select *  from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and id=:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':billid' => $id, ':id' => $bpid));
 
-				if (empty($partner)) {
-					show_json(0, '未找到股东!');
-				}
-
-				pdo_update('ewei_shop_globonus_billp', array('paymoney' => $value), array('id' => $bpid, 'billid' => $id, 'uniacid' => $_W['uniacid']));
+			if (empty($partner)) {
+				show_json(0, '未找到股东!');
 			}
+
+
+			pdo_update('ewei_shop_globonus_billp', array('paymoney' => $value), array('id' => $bpid, 'billid' => $id, 'uniacid' => $_W['uniacid']));
 		}
+
 
 		$totalmoney = pdo_fetchcolumn('select sum(paymoney)  from ' . tablename('ewei_shop_globonus_billp') . ' where billid=:billid and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':billid' => $id));
 		pdo_update('ewei_shop_globonus_bill', array('bonusmoney_pay' => $totalmoney), array('id' => $id, 'uniacid' => $_W['uniacid']));
 		show_json(1);
 	}
 }
+
 
 ?>

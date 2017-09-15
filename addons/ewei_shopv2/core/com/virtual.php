@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -13,31 +12,34 @@ class Virtual_EweiShopV2ComModel extends ComModel
 		$goods = pdo_fetch('select `virtual`,merchid from ' . tablename('ewei_shop_goods') . ' where id=:id and type=3 and uniacid=:uniacid limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
 
 		if (empty($goods)) {
-			return NULL;
+			return;
 		}
+
 
 		$merchid = $goods['merchid'];
 		$stock = 0;
 
-		if (!empty($goods['virtual'])) {
+		if (!(empty($goods['virtual']))) {
 			$stock = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_virtual_data') . ' where typeid=:typeid and uniacid=:uniacid and merchid = :merchid and openid=\'\' limit 1', array(':typeid' => $goods['virtual'], ':uniacid' => $_W['uniacid'], ':merchid' => $merchid));
 		}
-		else {
+		 else {
 			$virtuals = array();
 			$alloptions = pdo_fetchall('select id, `virtual` from ' . tablename('ewei_shop_goods_option') . ' where goodsid=' . $id);
 
-			foreach ($alloptions as $opt) {
+			foreach ($alloptions as $opt ) {
 				if (empty($opt['virtual'])) {
 					continue;
 				}
 
+
 				$c = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_virtual_data') . ' where typeid=:typeid and uniacid=:uniacid and merchid = :merchid and openid=\'\' limit 1', array(':typeid' => $opt['virtual'], ':uniacid' => $_W['uniacid'], ':merchid' => $merchid));
 				pdo_update('ewei_shop_goods_option', array('stock' => $c), array('id' => $opt['id']));
 
-				if (!in_array($opt['virtual'], $virtuals)) {
+				if (!(in_array($opt['virtual'], $virtuals))) {
 					$virtuals[] = $opt['virtual'];
 					$stock += $c;
 				}
+
 			}
 		}
 
@@ -50,19 +52,20 @@ class Virtual_EweiShopV2ComModel extends ComModel
 		$goodsids = array();
 		$goods = pdo_fetchall('select id from ' . tablename('ewei_shop_goods') . ' where type=3 and `virtual`=:virtual and uniacid=:uniacid limit 1', array(':virtual' => $typeid, ':uniacid' => $_W['uniacid']));
 
-		foreach ($goods as $g) {
+		foreach ($goods as $g ) {
 			$goodsids[] = $g['id'];
 		}
 
 		$alloptions = pdo_fetchall('select id, goodsid from ' . tablename('ewei_shop_goods_option') . ' where `virtual`=:virtual and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':virtual' => $typeid));
 
-		foreach ($alloptions as $opt) {
-			if (!in_array($opt['goodsid'], $goodsids)) {
+		foreach ($alloptions as $opt ) {
+			if (!(in_array($opt['goodsid'], $goodsids))) {
 				$goodsids[] = $opt['goodsid'];
 			}
+
 		}
 
-		foreach ($goodsids as $gid) {
+		foreach ($goodsids as $gid ) {
 			$this->updateGoodsStock($gid);
 		}
 	}
@@ -79,12 +82,12 @@ class Virtual_EweiShopV2ComModel extends ComModel
 		$virtual_info = array();
 		$virtual_str = array();
 
-		foreach ($virtual_data as $vd) {
+		foreach ($virtual_data as $vd ) {
 			$virtual_info[] = $vd['fields'];
 			$strs = array();
 			$vddatas = iunserializer($vd['fields']);
 
-			foreach ($vddatas as $vk => $vv) {
+			foreach ($vddatas as $vk => $vv ) {
 				$strs[] = $fields[$vk] . ': ' . $vv;
 			}
 
@@ -105,6 +108,7 @@ class Virtual_EweiShopV2ComModel extends ComModel
 			m('member')->setCredit($order['openid'], 'credit1', $credits, array(0, $shopset['name'] . '购物积分 订单号: ' . $order['ordersn']));
 		}
 
+
 		$salesreal = pdo_fetchcolumn('select ifnull(sum(total),0) from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_order') . ' o on o.id = og.orderid ' . ' where og.goodsid=:goodsid and o.status>=1 and o.uniacid=:uniacid limit 1', array(':goodsid' => $g['id'], ':uniacid' => $_W['uniacid']));
 		pdo_update('ewei_shop_goods', array('salesreal' => $salesreal), array('id' => $g['id']));
 		m('member')->upgradeLevel($order['openid']);
@@ -115,17 +119,21 @@ class Virtual_EweiShopV2ComModel extends ComModel
 			com('coupon')->sendcouponsbytask($order['id']);
 		}
 
-		if (com('coupon') && !empty($order['couponid'])) {
+
+		if (com('coupon') && !(empty($order['couponid']))) {
 			com('coupon')->backConsumeCoupon($order['id']);
 		}
+
 
 		if (p('commission')) {
 			p('commission')->checkOrderPay($order['id']);
 			p('commission')->checkOrderFinish($order['id']);
 		}
 
+
 		return true;
 	}
 }
+
 
 ?>

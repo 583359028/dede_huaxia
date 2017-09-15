@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -16,16 +15,18 @@ class Report_EweiShopV2Page extends PluginWebPage
 		$params = array(':uniacid' => $_W['uniacid']);
 		$condition = ' and a.uniacid=:uniacid';
 
-		if (!empty($cid)) {
+		if (!(empty($cid))) {
 			$condition .= ' and r.cate=\'' . $categorys[$cid] . '\'';
 		}
 
-		if (!empty($kw)) {
+
+		if (!(empty($kw))) {
 			$condition .= ' and ( r.cons like :keyword or a.article_title like :keyword)';
 			$params[':keyword'] = '%' . $kw . '%';
 		}
 
-		$page = (empty($_GPC['page']) ? '' : $_GPC['page']);
+
+		$page = ((empty($_GPC['page']) ? '' : $_GPC['page']));
 		$pindex = max(1, intval($page));
 		$psize = 15;
 		$datas = pdo_fetchall('SELECT r.id,r.mid,r.openid,r.aid,r.cate,r.cons,u.nickname,a.article_title, a.id as aid ' . ' FROM ' . tablename('ewei_shop_article_report') . ' r ' . ' left join ' . tablename('ewei_shop_member') . ' u on u.id=r.mid ' . ' left join ' . tablename('ewei_shop_article') . ' a on a.id=r.aid ' . ' where 1 ' . $condition . ' order by id desc limit ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
@@ -35,5 +36,6 @@ class Report_EweiShopV2Page extends PluginWebPage
 		include $this->template();
 	}
 }
+
 
 ?>

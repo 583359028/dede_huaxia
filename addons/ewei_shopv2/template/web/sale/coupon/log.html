@@ -135,7 +135,7 @@
         </td>
         <td>
             <span data-toggle='tooltip'  title='{$row['nickname']}'>
-            <img src='{$row['avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' />
+            <img src='{php echo tomedia($row['avatar'])}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' />
             {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}</span>
         </td>
         <td>

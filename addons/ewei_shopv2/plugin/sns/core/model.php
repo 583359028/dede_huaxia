@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 define('SNS_CREDIT_POST', 0);
 define('SNS_CREDIT_REPLY', 1);
@@ -17,7 +17,7 @@ define('SNS_CREDIT_DELETE_POST', 9);
 define('SNS_CREDIT_DELETE_REPLY', 10);
 define('SNS_MESSAGE_REPLY', 20);
 
-if (!class_exists('SnsModel')) {
+if (!(class_exists('SnsModel'))) {
 	class SnsModel extends PluginModel
 	{
 		public function checkMember()
@@ -25,19 +25,19 @@ if (!class_exists('SnsModel')) {
 			global $_W;
 			global $_GPC;
 
-			if (!empty($_W['openid'])) {
+			if (!(empty($_W['openid']))) {
 				$member = pdo_fetch('select * from ' . tablename('ewei_shop_sns_member') . ' where uniacid=:uniacid and openid=:openid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
 
 				if (empty($member)) {
 					$member = array('uniacid' => $_W['uniacid'], 'openid' => $_W['openid'], 'createtime' => time());
 					pdo_insert('ewei_shop_sns_member', $member);
 				}
-				else {
-					if (!empty($member['isblack'])) {
-						show_message('禁止访问，请联系客服!');
-					}
+				 else if (!(empty($member['isblack']))) {
+					show_message('禁止访问，请联系客服!');
 				}
+
 			}
+
 		}
 
 		public function getMember($openid)
@@ -52,7 +52,7 @@ if (!class_exists('SnsModel')) {
 				$member['sns_level'] = 0;
 				$member['notupgrade'] = 0;
 			}
-			else {
+			 else {
 				$member['sns_id'] = $sns_member['id'];
 				$member['sns_credit'] = $sns_member['credit'];
 				$member['sns_level'] = $sns_member['level'];
@@ -71,7 +71,7 @@ if (!class_exists('SnsModel')) {
 		public function getCategory($all = true)
 		{
 			global $_W;
-			$condition = ($all ? '' : ' and `status` = 1');
+			$condition = (($all ? '' : ' and `status` = 1'));
 			return pdo_fetchall('select * from ' . tablename('ewei_shop_sns_category') . ' where uniacid=:uniacid ' . $condition . ' and enabled = 1 order by displayorder desc', array(':uniacid' => $_W['uniacid']), 'id');
 		}
 
@@ -110,6 +110,7 @@ if (!class_exists('SnsModel')) {
 				$openid = $_W['openid'];
 			}
 
+
 			$count = pdo_fetchcolumn('select count(*)  from ' . tablename('ewei_shop_sns_manage') . ' where uniacid=:uniacid and bid=:bid and openid=:openid limit 1', array(':uniacid' => $_W['uniacid'], ':bid' => $bid, ':openid' => $openid));
 			return 0 < $count;
 		}
@@ -127,6 +128,7 @@ if (!class_exists('SnsModel')) {
 				$openid = $_W['openid'];
 			}
 
+
 			$set = $this->getSet();
 			$managers = explode(',', $set['managers']);
 			return in_array($openid, $managers);
@@ -140,7 +142,7 @@ if (!class_exists('SnsModel')) {
 		public function getPostCount($bid)
 		{
 			global $_W;
-			return pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_sns_post') . "\n            where uniacid=:uniacid and bid=:bid and pid=0 and deleted = 0 limit 1", array(':uniacid' => $_W['uniacid'], ':bid' => $bid));
+			return pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_sns_post') . "\n" . '            where uniacid=:uniacid and bid=:bid and pid=0 and deleted = 0 limit 1', array(':uniacid' => $_W['uniacid'], ':bid' => $bid));
 		}
 
 		/**
@@ -151,7 +153,7 @@ if (!class_exists('SnsModel')) {
 		public function getFollowCount($bid)
 		{
 			global $_W;
-			return pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_sns_board_follow') . "\n            where uniacid=:uniacid and bid=:bid limit 1", array(':uniacid' => $_W['uniacid'], ':bid' => $bid));
+			return pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_sns_board_follow') . "\n" . '            where uniacid=:uniacid and bid=:bid limit 1', array(':uniacid' => $_W['uniacid'], ':bid' => $bid));
 		}
 
 		/**
@@ -175,9 +177,10 @@ if (!class_exists('SnsModel')) {
 			global $_W;
 			$condition = ' and ( istop=1';
 
-			if (!empty($bid)) {
+			if (!(empty($bid))) {
 				$condition .= ' or (isboardtop=1 and bid=' . intval($bid) . ')';
 			}
+
 
 			$condition .= ')';
 			return pdo_fetchall('select id,title,istop,isboardtop from ' . tablename('ewei_shop_sns_post') . ' where uniacid=:uniacid ' . $condition . ' and pid=0 and deleted=0  order by istop desc,replytime desc', array(':uniacid' => $_W['uniacid']));
@@ -194,8 +197,9 @@ if (!class_exists('SnsModel')) {
 			$board = $this->getBoard($bid);
 
 			if (empty($board)) {
-				return NULL;
+				return;
 			}
+
 
 			$credit = 0;
 			$log = '';
@@ -204,60 +208,67 @@ if (!class_exists('SnsModel')) {
 				$log = '人人社区发表话题奖励积分: +' . $credit;
 
 				if ($type == SNS_CREDIT_DELETE_POST) {
-					$credit = 0 - $credit;
+					$credit = -$credit;
 					$log = '人人社区被删除话题扣除积分: -' . abs($credit);
 				}
+
 			}
-			else {
+			 else {
 				if (($type == SNS_CREDIT_REPLY) || ($type == SNS_CREDIT_DELETE_REPLY)) {
 					$credit = $board['replycredit'];
 					$log = '人人社区发表评论奖励积分: +' . $credit;
 
 					if ($type == SNS_CREDIT_DELETE_REPLY) {
 						$log = '人人社区被删除评论奖励积分: -' . abs($credit);
-						$credit = 0 - $credit;
+						$credit = -$credit;
 					}
+
 				}
-				else {
+				 else {
 					if (($type == SNS_CREDIT_TOP) || ($type == SNS_CREDIT_TOP_CANCEL)) {
 						$credit = $board['topcredit'];
 						$log = '人人社区话题被全站置顶奖励积分: +' . $credit;
 
 						if ($type == SNS_CREDIT_TOP_CANCEL) {
-							$credit = 0 - $credit;
+							$credit = -$credit;
 							$log = '人人社区话题被取消全站置顶扣除积分: ' . abs($credit);
 						}
+
 					}
-					else {
+					 else {
 						if (($type == SNS_CREDIT_TOP_BOARD) || ($type == SNS_CREDIT_TOP_BOARD_CANCEL)) {
 							$credit = $board['topboardcredit'];
 							$log = '人人社区话题被版块置顶奖励积分: +' . $credit;
 
 							if ($type == SNS_CREDIT_TOP_BOARD_CANCEL) {
-								$credit = 0 - $credit;
+								$credit = -$credit;
 								$log = '人人社区话题被版块置顶奖励积分: -' . abs($credit);
 							}
+
 						}
-						else {
+						 else {
 							if (($type == SNS_CREDIT_BEST) || ($type == SNS_CREDIT_BEST_CANCEL)) {
 								$credit = $board['bestcredit'];
 								$log = '人人社区话题被全站精华奖励积分: +' . $credit;
 
 								if ($type == SNS_CREDIT_TOP_BOARD_CANCEL) {
-									$credit = 0 - $credit;
+									$credit = -$credit;
 									$log = '人人社区话题被全站精华奖励积分: -' . abs($credit);
 								}
+
 							}
-							else {
+							 else {
 								if (($type == SNS_CREDIT_BEST_BOARD) || ($type == SNS_CREDIT_BEST_BOARD_CANCEL)) {
 									$credit = $board['bestboardcredit'];
 									$log = '人人社区话题被版块精华奖励积分: +' . $credit;
 
 									if ($type == SNS_CREDIT_BEST_BOARD_CANCEL) {
-										$credit = 0 - $credit;
+										$credit = -$credit;
 										$log = '人人社区话题被取消版块精华奖励积分: -' . abs($credit);
 									}
+
 								}
+
 							}
 						}
 					}
@@ -273,9 +284,11 @@ if (!class_exists('SnsModel')) {
 					$newcredit = 0;
 				}
 
+
 				pdo_update('ewei_shop_sns_member', array('credit' => $newcredit), array('id' => $member['sns_id']));
 				$this->upgradeLevel($openid);
 			}
+
 		}
 
 		public function getLevel($openid)
@@ -287,16 +300,20 @@ if (!class_exists('SnsModel')) {
 				return false;
 			}
 
+
 			$member = $this->getMember($openid);
-			if (!empty($member) && !empty($member['sns_level'])) {
+
+			if (!(empty($member)) && !(empty($member['sns_level']))) {
 				$level = pdo_fetch('select * from ' . tablename('ewei_shop_sns_level') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $member['sns_level'], ':uniacid' => $_W['uniacid']));
 
-				if (!empty($level)) {
+				if (!(empty($level))) {
 					return $level;
 				}
+
 			}
 
-			return array('levelname' => empty($set['levelname']) ? '社区粉丝' : $set['levelname'], 'color' => empty($set['levelcolor']) ? '#333' : $set['levelcolor'], 'bg' => empty($set['levelbg']) ? '#eee' : $set['levelbg']);
+
+			return array('levelname' => (empty($set['levelname']) ? '社区粉丝' : $set['levelname']), 'color' => (empty($set['levelcolor']) ? '#333' : $set['levelcolor']), 'bg' => (empty($set['levelbg']) ? '#eee' : $set['levelbg']));
 		}
 
 		public function upgradeLevel($openid)
@@ -305,8 +322,9 @@ if (!class_exists('SnsModel')) {
 			$member = $this->getMember($openid);
 
 			if ($member['sns_notupgrade']) {
-				return NULL;
+				return;
 			}
+
 
 			$credit = $member['sns_credit'];
 			$set = $this->getSet();
@@ -316,20 +334,21 @@ if (!class_exists('SnsModel')) {
 			if (empty($leveltype)) {
 				$level = pdo_fetch('select * from ' . tablename('ewei_shop_sns_level') . ' where uniacid=:uniacid  and enabled=1 and ' . $credit . ' >= credit and credit>0  order by credit desc limit 1', array(':uniacid' => $_W['uniacid']));
 			}
-			else {
-				if ($leveltype == 1) {
-					$post = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_sns_post') . ' where uniacid=:uniacid and openid=:openid and pid=0 and checked=1', array(':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
-					$level = pdo_fetch('select * from ' . tablename('ewei_shop_sns_level') . ' where uniacid=:uniacid and enabled=1 and ' . $post . ' >= `post` and `post`>0  order by `post` desc limit 1', array(':uniacid' => $_W['uniacid']));
-				}
+			 else if ($leveltype == 1) {
+				$post = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_sns_post') . ' where uniacid=:uniacid and openid=:openid and pid=0 and checked=1', array(':uniacid' => $_W['uniacid'], ':openid' => $_W['openid']));
+				$level = pdo_fetch('select * from ' . tablename('ewei_shop_sns_level') . ' where uniacid=:uniacid and enabled=1 and ' . $post . ' >= `post` and `post`>0  order by `post` desc limit 1', array(':uniacid' => $_W['uniacid']));
 			}
+
 
 			if (empty($level)) {
-				return NULL;
+				return;
 			}
 
+
 			if ($level['id'] == $member['sns_level']) {
-				return NULL;
+				return;
 			}
+
 
 			$oldlevel = $this->getLevel($openid);
 			$canupgrade = false;
@@ -337,21 +356,20 @@ if (!class_exists('SnsModel')) {
 			if (empty($oldlevel['id'])) {
 				$canupgrade = true;
 			}
-			else if (empty($leveltype)) {
+			 else if (empty($leveltype)) {
 				if ($oldlevel['credit'] < $level['credit']) {
 					$canupgrade = true;
 				}
-			}
-			else {
-				if ($oldlevel['post'] < $level['post']) {
-					$canupgrade = true;
-				}
-			}
 
+			}
+			 else if ($oldlevel['post'] < $level['post']) {
+				$canupgrade = true;
+			}
 			if ($canupgrade) {
 				pdo_update('ewei_shop_sns_member', array('level' => $level['id']), array('id' => $member['sns_id']));
 				$this->sendMemberUpgradeMessage($openid, $member['nickname'], $oldlevel, $level);
 			}
+
 		}
 
 		/**
@@ -366,8 +384,9 @@ if (!class_exists('SnsModel')) {
 			$tm = $set['tm'];
 
 			if (empty($tm['upgrade_content'])) {
-				return NULL;
+				return;
 			}
+
 
 			$message = $tm['upgrade_content'];
 			$message = str_replace('[昵称]', $nickname, $message);
@@ -375,14 +394,14 @@ if (!class_exists('SnsModel')) {
 			$message = str_replace('[旧等级]', $level['levelname'], $message);
 			$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 			$msg = array(
-				'keyword1' => array('value' => !empty($tm['upgrade_title']) ? $tm['upgrade_title'] : '社区等级升级', 'color' => '#73a68d'),
+				'keyword1' => array('value' => (!(empty($tm['upgrade_title'])) ? $tm['upgrade_title'] : '社区等级升级'), 'color' => '#73a68d'),
 				'keyword2' => array('value' => $message, 'color' => '#73a68d')
 				);
 
-			if (!empty($tm['templateid'])) {
+			if (!(empty($tm['templateid']))) {
 				m('message')->sendTplNotice($openid, $tm['templateid'], $msg);
 			}
-			else {
+			 else {
 				m('message')->sendCustomNotice($openid, $msg);
 			}
 		}
@@ -398,8 +417,9 @@ if (!class_exists('SnsModel')) {
 			$tm = $set['tm'];
 
 			if (empty($tm['reply_content'])) {
-				return NULL;
+				return;
 			}
+
 
 			$message = $tm['reply_content'];
 			$message = str_replace('[评论者]', $data['nickname'], $message);
@@ -408,15 +428,15 @@ if (!class_exists('SnsModel')) {
 			$message = str_replace('[内容]', $data['content'], $message);
 			$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['createtime']), $message);
 			$msg = array(
-				'keyword1' => array('value' => !empty($tm['reply_title']) ? $tm['reply_title'] : '您的话题有新的评论', 'color' => '#73a68d'),
+				'keyword1' => array('value' => (!(empty($tm['reply_title'])) ? $tm['reply_title'] : '您的话题有新的评论'), 'color' => '#73a68d'),
 				'keyword2' => array('value' => $message, 'color' => '#73a68d')
 				);
 			$url = mobileUrl('sns/post', array('id' => $data['id']), true);
 
-			if (!empty($tm['templateid'])) {
+			if (!(empty($tm['templateid']))) {
 				m('message')->sendTplNotice($openid, $tm['templateid'], $msg, $url);
 			}
-			else {
+			 else {
 				m('message')->sendCustomNotice($openid, $msg, $url);
 			}
 		}
@@ -430,21 +450,26 @@ if (!class_exists('SnsModel')) {
 				return $the_time;
 			}
 
+
 			if ($dur < 60) {
 				return '刚刚';
 			}
+
 
 			if ($dur < 3600) {
 				return floor($dur / 60) . '分钟前';
 			}
 
+
 			if ($dur < 86400) {
 				return floor($dur / 3600) . '小时前';
 			}
 
+
 			if ($dur < 259200) {
 				return floor($dur / 86400) . '天前';
 			}
+
 
 			return date('m-d', $the_time);
 		}
@@ -459,9 +484,10 @@ if (!class_exists('SnsModel')) {
 			global $_W;
 			$condition = '';
 
-			if (!$all) {
+			if (!($all)) {
 				$condition = ' and enabled=1';
 			}
+
 
 			return pdo_fetchall('select * from ' . tablename('ewei_shop_sns_level') . ' where uniacid=:uniacid' . $condition . ' order by id asc', array(':uniacid' => $_W['uniacid']));
 		}
@@ -477,107 +503,118 @@ if (!class_exists('SnsModel')) {
 			global $_GPC;
 			$levelid = $member['level'];
 			$groupid = $member['groupid'];
-			$levels = ($isPost ? $board['postlevels'] : $board['showlevels']);
+			$levels = (($isPost ? $board['postlevels'] : $board['showlevels']));
 
 			if ($levels != '') {
 				$arr = explode(',', $levels);
 
-				if (!in_array($levelid, $arr)) {
+				if (!(in_array($levelid, $arr))) {
 					if ($_W['isajax']) {
 						return error(-1, '会员等级限制');
 					}
 
+
 					return error(-1, '您的会员等级没有权限浏览此版块');
 				}
 			}
-
-			$levels = ($isPost ? $board['postgroups'] : $board['showgroups']);
+			$levels = (($isPost ? $board['postgroups'] : $board['showgroups']));
 
 			if ($levels != '') {
 				$arr = explode(',', $levels);
 
-				if (!in_array($groupid, $arr)) {
+				if (!(in_array($groupid, $arr))) {
 					if ($_W['isajax']) {
 						return error(-1, '会员组限制');
 					}
 
+
 					return error(-1, '您的会员组没有权限浏览此版块');
 				}
 			}
-
-			$levels = ($isPost ? $board['postsnslevels'] : $board['showsnslevels']);
+			$levels = (($isPost ? $board['postsnslevels'] : $board['showsnslevels']));
 
 			if ($levels) {
 				$arr = explode(',', $levels);
 
-				if (!in_array($member['sns_level'], $arr)) {
+				if (!(in_array($member['sns_level'], $arr))) {
 					if ($_W['isajax']) {
 						return error(-1, '社区等级限制');
 					}
 
+
 					return error(-1, '您的社区等级没有权限浏览此版块');
 				}
+
 			}
+
 
 			$plugin_commission = p('commission');
 
 			if ($plugin_commission) {
 				$set = $plugin_commission->getSet();
 
-				if (!empty($board['notagent'])) {
-					if (!$member['status'] && !$member['isagent']) {
+				if (!(empty($board['notagent']))) {
+					if (!($member['status']) && !($member['isagent'])) {
 						if ($_W['isajax']) {
 							return error(-1, '非' . $set['texts']['agent']);
 						}
 
+
 						return error(-1, '您不是' . $set['texts']['agent'] . '，没有权限浏览此版块');
 					}
 				}
-
-				$levels = ($isPost ? $board['postagentlevels'] : $board['showagentlevels']);
+				$levels = (($isPost ? $board['postagentlevels'] : $board['showagentlevels']));
 
 				if ($levels) {
 					$arr = explode(',', $levels);
 
-					if (!in_array($member['agentlevel'], $arr)) {
+					if (!(in_array($member['agentlevel'], $arr))) {
 						if ($_W['isajax']) {
 							return error(-1, $set['texts']['agent'] . '等级限制');
 						}
 
+
 						return error(-1, '您的' . $set['texts']['agent'] . '等级没有权限浏览此版块');
 					}
+
 				}
+
 			}
+
 
 			$plugin_globonus = p('globonus');
 
 			if ($plugin_globonus) {
 				$set = $plugin_globonus->getSet();
 
-				if (!empty($board['notpartner'])) {
-					if (!$member['partnerstatus'] && !$member['ispartner']) {
+				if (!(empty($board['notpartner']))) {
+					if (!($member['partnerstatus']) && !($member['ispartner'])) {
 						if ($_W['isajax']) {
 							return error(-1, '非' . $set['texts']['partner']);
 						}
 
+
 						return error(-1, '您不是' . $set['texts']['partner'] . '，没有权限浏览此版块');
 					}
 				}
-
-				$levels = ($isPost ? $board['postpartnerlevels'] : $board['showaagentlevels']);
+				$levels = (($isPost ? $board['postpartnerlevels'] : $board['showaagentlevels']));
 
 				if ($levels) {
 					$arr = explode(',', $levels);
 
-					if (!in_array($member['aagentlevel'], $arr)) {
+					if (!(in_array($member['aagentlevel'], $arr))) {
 						if ($_W['isajax']) {
 							return error(-1, $set['texts']['partner'] . '等级限制');
 						}
 
+
 						return error(-1, '您的' . $set['texts']['partner'] . '等级没有权限浏览此版块');
 					}
+
 				}
+
 			}
+
 
 			return true;
 		}
@@ -586,12 +623,15 @@ if (!class_exists('SnsModel')) {
 		{
 			if (empty($avatar)) {
 				$set = $this->getSet();
-				$avatar = (empty($set['head']) ? '../addons/ewei_shopv2/plugin/sns/static/images/head.jpg' : tomedia($set['head']));
+				$avatar = ((empty($set['head']) ? '../addons/ewei_shopv2/plugin/sns/static/images/head.jpg' : tomedia($set['head'])));
 			}
+
 
 			return $avatar;
 		}
 	}
+
 }
+
 
 ?>

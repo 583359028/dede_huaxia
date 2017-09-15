@@ -149,6 +149,7 @@
         }
     }
     $(document).ready(function () {
+        var changes = {php echo intval($has_changes);};
         buildpan();
         {if empty($_W['openid'])}
         require(['../addons/ewei_shopv2/plugin/lottery/static/js/indexpan.js'],function(modal){modal.init({is_login:0,id:{$lottery['lottery_id']}});});
@@ -156,7 +157,7 @@
         var click=false;
         var runcount = 1;
         $('#pointer').on('click', function(){
-            var changes = {php echo intval($has_changes);};
+
             if(click){
                 return false;
             }
@@ -175,7 +176,7 @@
                 taskget.show();
                 return ;
             }
-            changes--;
+            changes = changes - 1;
             $('#left_changes').html(changes);
             var reward = {};
             $.post('{php echo mobileUrl("lottery/index/getreward");}',{lottery:{$lottery['lottery_id']}},function (data) {

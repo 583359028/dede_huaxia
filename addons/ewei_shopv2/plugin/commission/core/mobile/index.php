@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require EWEI_SHOPV2_PLUGIN . 'commission/core/page_login_mobile.php';
 class Index_EweiShopV2Page extends CommissionMobileLoginPage
@@ -20,9 +20,11 @@ class Index_EweiShopV2Page extends CommissionMobileLoginPage
 			$level2 = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level1_agentids'])) . ') and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 		}
 
+
 		if ((3 <= $this->set['level']) && (0 < count($member['level2_agentids']))) {
 			$level3 = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where agentid in( ' . implode(',', array_keys($member['level2_agentids'])) . ') and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 		}
+
 
 		$member['downcount'] = $level1 + $level2 + $level3;
 		$member['applycount'] = pdo_fetchcolumn('select count(id) from ' . tablename('ewei_shop_commission_apply') . ' where mid=:mid and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':mid' => $member['id']));
@@ -32,51 +34,57 @@ class Index_EweiShopV2Page extends CommissionMobileLoginPage
 			if (empty($member['agentselectgoods']) || ($member['agentselectgoods'] == 2)) {
 				$openselect = true;
 			}
+
 		}
-		else {
-			if ($member['agentselectgoods'] == 2) {
-				$openselect = true;
-			}
+		 else if ($member['agentselectgoods'] == 2) {
+			$openselect = true;
 		}
+
 
 		$this->set['openselect'] = $openselect;
 		$level = $this->model->getLevel($_W['openid']);
 		$up = false;
 
-		if (!empty($member['agentid'])) {
+		if (!(empty($member['agentid']))) {
 			$up = m('member')->getMember($member['agentid']);
 		}
+
 
 		$hasglobonus = false;
 		$plugin_globonus = p('globonus');
 
 		if ($plugin_globonus) {
 			$plugin_globonus_set = $plugin_globonus->getSet();
-			$hasglobonus = !empty($plugin_globonus_set['open']) && empty($plugin_globonus_set['closecommissioncenter']);
+			$hasglobonus = !(empty($plugin_globonus_set['open'])) && empty($plugin_globonus_set['closecommissioncenter']);
 		}
+
 
 		$hasabonus = false;
 		$plugin_abonus = p('abonus');
 
 		if ($plugin_abonus) {
 			$plugin_abonus_set = $plugin_abonus->getSet();
-			$hasabonus = !empty($plugin_abonus_set['open']) && empty($plugin_abonus_set['closecommissioncenter']);
+			$hasabonus = !(empty($plugin_abonus_set['open'])) && empty($plugin_abonus_set['closecommissioncenter']);
 		}
+
 
 		$hasauthor = false;
 		$plugin_author = p('author');
 
 		if ($plugin_author) {
 			$plugin_author_set = $plugin_author->getSet();
-			$hasauthor = !empty($plugin_author_set['open']) && empty($plugin_author_set['closecommissioncenter']);
+			$hasauthor = !(empty($plugin_author_set['open'])) && empty($plugin_author_set['closecommissioncenter']);
 
 			if ($hasauthor) {
 				$team_money = $plugin_author->getTeamPay($member['id']);
 			}
+
 		}
+
 
 		include $this->template();
 	}
 }
+
 
 ?>

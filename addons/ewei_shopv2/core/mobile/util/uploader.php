@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -13,24 +12,26 @@ class Uploader_EweiShopV2Page extends MobilePage
 		load()->func('file');
 		$field = $_GPC['file'];
 
-		if (!empty($_FILES[$field]['name'])) {
+		if (!(empty($_FILES[$field]['name']))) {
 			if (is_array($_FILES[$field]['name'])) {
 				$files = array();
 
-				foreach ($_FILES[$field]['name'] as $key => $name) {
+				foreach ($_FILES[$field]['name'] as $key => $name ) {
 					$file = array('name' => $name, 'type' => $_FILES[$field]['type'][$key], 'tmp_name' => $_FILES[$field]['tmp_name'][$key], 'error' => $_FILES[$field]['error'][$key], 'size' => $_FILES[$field]['size'][$key]);
 					$files[] = $this->upload($file);
 				}
 
 				$ret = array('status' => 'success', 'files' => $files);
 				exit(json_encode($ret));
-				return NULL;
+				return;
 			}
+
 
 			$result = $this->upload($_FILES[$field]);
 			exit(json_encode($result));
-			return NULL;
+			return;
 		}
+
 
 		$result['message'] = '请选择要上传的图片！';
 		exit(json_encode($result));
@@ -47,12 +48,14 @@ class Uploader_EweiShopV2Page extends MobilePage
 			return $result;
 		}
 
+
 		load()->func('file');
 		$path = '/images/ewei_shop/' . $_W['uniacid'];
 
-		if (!is_dir(ATTACHMENT_ROOT . $path)) {
+		if (!(is_dir(ATTACHMENT_ROOT . $path))) {
 			mkdirs(ATTACHMENT_ROOT . $path);
 		}
+
 
 		$_W['uploadsetting'] = array();
 		$_W['uploadsetting']['image']['folder'] = $path;
@@ -65,6 +68,7 @@ class Uploader_EweiShopV2Page extends MobilePage
 			return $result;
 		}
 
+
 		if (function_exists('file_remote_upload')) {
 			$remote = file_remote_upload($file['path']);
 
@@ -72,7 +76,9 @@ class Uploader_EweiShopV2Page extends MobilePage
 				$result['message'] = $remote['message'];
 				return $result;
 			}
+
 		}
+
 
 		$result['status'] = 'success';
 		$result['url'] = $file['url'];
@@ -93,5 +99,6 @@ class Uploader_EweiShopV2Page extends MobilePage
 		exit(json_encode(array('status' => 'success')));
 	}
 }
+
 
 ?>

@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Account_EweiShopV2Model
 {
 	public function checkLogin()
@@ -10,20 +13,23 @@ class Account_EweiShopV2Model
 		if (empty($_W['openid'])) {
 			$openid = $this->checkOpenid();
 
-			if (!empty($openid)) {
+			if (!(empty($openid))) {
 				return $openid;
 			}
 
+
 			$url = urlencode(base64_encode($_SERVER['QUERY_STRING']));
-			$loginurl = mobileUrl('account/login', array('mid' => $_GPC['mid'], 'backurl' => $_W['isajax'] ? '' : $url));
+			$loginurl = mobileUrl('account/login', array('mid' => $_GPC['mid'], 'backurl' => ($_W['isajax'] ? '' : $url)));
 
 			if ($_W['isajax']) {
 				show_json(0, array('url' => $loginurl, 'message' => '请先登录!'));
 			}
 
+
 			header('location: ' . $loginurl);
 			exit();
 		}
+
 	}
 
 	public function checkOpenid()
@@ -43,25 +49,30 @@ class Account_EweiShopV2Model
 					return $member['openid'];
 				}
 
+
 				isetcookie($key, false, -100);
 			}
+
 		}
+
 	}
 
 	public function setLogin($member)
 	{
 		global $_W;
 
-		if (!is_array($member)) {
+		if (!(is_array($member))) {
 			$member = m('member')->getMember($member);
 		}
 
-		if (!empty($member)) {
+
+		if (!(empty($member))) {
 			$member['ewei_shopv2_member_hash'] = md5($member['pwd'] . $member['salt']);
 			$key = '__ewei_shopv2_member_session_' . $_W['uniacid'];
 			$cookie = base64_encode(json_encode($member));
 			isetcookie($key, $cookie, 7 * 86400);
 		}
+
 	}
 
 	public function getSalt()
@@ -75,6 +86,7 @@ class Account_EweiShopV2Model
 				break;
 			}
 
+
 			$salt = random(16);
 		}
 
@@ -82,8 +94,5 @@ class Account_EweiShopV2Model
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

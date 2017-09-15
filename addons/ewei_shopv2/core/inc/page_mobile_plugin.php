@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -30,5 +29,6 @@ class PluginMobilePage extends MobilePage
 		QRcode::png($url, false, QR_ECLEVEL_L, 16, 1);
 	}
 }
+
 
 ?>

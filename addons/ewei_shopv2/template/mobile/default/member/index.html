@@ -19,8 +19,10 @@
 				{if empty($_W['shopset']['trade']['closerecharge'])}<a href="{php echo mobileUrl('member/recharge')}"><div class="btn">充值</div></a>{/if}
 			</div>
 			<div class="child userinfo">
-				<div class="face"><img src="{$member['avatar']}" /></div>
-				<div class="name">{$member['nickname']}</div>
+				<a href="{php echo mobileUrl('member/info/face')}" data-nocache="true" style="color: white;">
+					<div class="face"><img src="{$member['avatar']}" /></div>
+					<div class="name">{$member['nickname']}</div>
+				</a>
 				<div class="level" {if !empty($_W['shopset']['shop']['levelurl'])}onclick='location.href="{$_W['shopset']['shop']['levelurl']}"'{/if}>
 				    {if empty($level['id'])}
 				    [{if empty($_W['shopset']['shop']['levelname'])}普通会员{else}{$_W['shopset']['shop']['levelname']}{/if}]
@@ -37,17 +39,16 @@
 			</div>
 		</div>
 
-	{if !$member['mobileverify'] && !empty($wapset['open'])}
-		<div class="fui-cell-group fui-cell-click external">
-			<a class="fui-cell"  href="{php echo mobileUrl('member/bind')}">
-				<div class="fui-cell-icon"><i class="icon icon-mobile"></i></div>
-				<div class="fui-cell-text"><p class="text text-danger">绑定手机号</p></div>
-				<div class="fui-cell-remark"></div>
-			</a>
-			<div class="fui-cell-tip">如果您用手机号注册过会员或您想通过微信外购物请绑定您的手机号码</div>
-		</div>
-
-	{/if}
+		{if $needbind}
+			<div class="fui-cell-group fui-cell-click external">
+				<a class="fui-cell"  href="{php echo mobileUrl('member/bind')}">
+					<div class="fui-cell-icon"><i class="icon icon-mobile"></i></div>
+					<div class="fui-cell-text"><p class="text text-danger">绑定手机号</p></div>
+					<div class="fui-cell-remark"></div>
+				</a>
+				<div class="fui-cell-tip">如果您用手机号注册过会员或您想通过微信外购物请绑定您的手机号码</div>
+			</div>
+		{/if}
 
 
 	<div class="fui-cell-group fui-cell-click">
@@ -79,7 +80,15 @@
 				</a>
 			</div>
 		</div>
-
+	{if $hasThreen}
+	<div class="fui-cell-group fui-cell-click">
+		<a class="fui-cell"  href="{php echo mobileUrl('threen')}">
+			<div class="fui-cell-icon"><i class="icon icon-profile"></i></div>
+			<div class="fui-cell-text"><p>{$plugin_threen_set['texts']['threen']}</p></div>
+			<div class="fui-cell-remark"></div>
+		</a>
+	</div>
+	{/if}
 	{if $hassign}
 	<div class="fui-cell-group fui-cell-click">
 		<a class="fui-cell" href="{php echo mobileUrl('sign')}">
@@ -186,6 +195,11 @@
 			<a class="fui-cell" href="{php echo mobileUrl('member/notice');}" data-nocache="true">
 				<div class="fui-cell-icon"><i class="icon icon-notice"></i></div>
 				<div class="fui-cell-text"><p>消息提醒设置</p></div>
+				<div class="fui-cell-remark"></div>
+			</a>
+			<a class="fui-cell external" href="{php echo mobileUrl('member/fullback');}" data-nocache="true">
+				<div class="fui-cell-icon"><i class="icon icon-countdown"></i></div>
+				<div class="fui-cell-text"><p>我的全返</p></div>
 				<div class="fui-cell-remark"></div>
 			</a>
 		</div>

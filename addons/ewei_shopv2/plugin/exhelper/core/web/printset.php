@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -17,21 +16,24 @@ class Printset_EweiShopV2Page extends PluginWebPage
 			$port = intval($_GPC['port']);
 			$ip = 'localhost';
 
-			if (!empty($port)) {
+			if (!(empty($port))) {
 				if (empty($sys)) {
 					pdo_insert('ewei_shop_exhelper_sys', array('port' => $port, 'ip' => $ip, 'uniacid' => $_W['uniacid'], 'merchid' => 0));
 				}
-				else {
+				 else {
 					pdo_update('ewei_shop_exhelper_sys', array('port' => $port, 'ip' => $ip), array('uniacid' => $_W['uniacid'], 'merchid' => 0));
 				}
 
 				plog('exhelper.printset.edit', '修改打印机端口 原端口: ' . $sys['port'] . ' 新端口: ' . $port);
 				show_json(1);
 			}
+
 		}
+
 
 		include $this->template();
 	}
 }
+
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -18,6 +17,7 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 			$this->message('系统未开启提现!', '', 'error');
 		}
 
+
 		$withdrawcharge = $set['withdrawcharge'];
 		$withdrawbegin = floatval($set['withdrawbegin']);
 		$withdrawend = floatval($set['withdrawend']);
@@ -29,44 +29,55 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 			$type_array[0]['title'] = '提现到微信钱包';
 		}
 
+
 		if ($set['withdrawcashalipay'] == 1) {
 			$type_array[2]['title'] = '提现到支付宝';
 
-			if (!empty($last_data)) {
+			if (!(empty($last_data))) {
 				if ($last_data['applytype'] != 2) {
 					$type_last = $this->getLastApply($openid, 2);
 
-					if (!empty($type_last)) {
+					if (!(empty($type_last))) {
 						$last_data['alipay'] = $type_last['alipay'];
 					}
+
 				}
+
 			}
+
 		}
+
 
 		if ($set['withdrawcashcard'] == 1) {
 			$type_array[3]['title'] = '提现到银行卡';
 
-			if (!empty($last_data)) {
+			if (!(empty($last_data))) {
 				if ($last_data['applytype'] != 3) {
 					$type_last = $this->getLastApply($openid, 3);
 
-					if (!empty($type_last)) {
+					if (!(empty($type_last))) {
 						$last_data['bankname'] = $type_last['bankname'];
 						$last_data['bankcard'] = $type_last['bankcard'];
 					}
+
 				}
+
 			}
+
 
 			$condition = ' and uniacid=:uniacid';
 			$params = array(':uniacid' => $_W['uniacid']);
 			$banklist = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_commission_bank') . ' WHERE 1 ' . $condition . '  ORDER BY displayorder DESC', $params);
 		}
 
-		if (!empty($last_data)) {
+
+		if (!(empty($last_data))) {
 			if (array_key_exists($last_data['applytype'], $type_array)) {
 				$type_array[$last_data['applytype']]['checked'] = 1;
 			}
+
 		}
+
 
 		include $this->template();
 	}
@@ -81,6 +92,7 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 			show_json(0, '系统未开启提现!');
 		}
 
+
 		$set_array = array();
 		$set_array['charge'] = $set['withdrawcharge'];
 		$set_array['begin'] = floatval($set['withdrawbegin']);
@@ -92,9 +104,11 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 			show_json(0, '提现金额错误!');
 		}
 
+
 		if ($credit < $money) {
 			show_json(0, '提现金额过大!');
 		}
+
 
 		$apply = array();
 		$type_array = array();
@@ -103,9 +117,11 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 			$type_array[0]['title'] = '提现到微信钱包';
 		}
 
+
 		if ($set['withdrawcashalipay'] == 1) {
 			$type_array[2]['title'] = '提现到支付宝';
 		}
+
 
 		if ($set['withdrawcashcard'] == 1) {
 			$type_array[3]['title'] = '提现到银行卡';
@@ -114,11 +130,13 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 			$banklist = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_commission_bank') . ' WHERE 1 ' . $condition . '  ORDER BY displayorder DESC', $params);
 		}
 
+
 		$applytype = intval($_GPC['applytype']);
 
-		if (!array_key_exists($applytype, $type_array)) {
+		if (!(array_key_exists($applytype, $type_array))) {
 			show_json(0, '未选择提现方式，请您选择提现方式后重试!');
 		}
+
 
 		if ($applytype == 2) {
 			$realname = trim($_GPC['realname']);
@@ -129,66 +147,76 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 				show_json(0, '请填写姓名!');
 			}
 
+
 			if (empty($alipay)) {
 				show_json(0, '请填写支付宝帐号!');
 			}
+
 
 			if (empty($alipay1)) {
 				show_json(0, '请填写确认帐号!');
 			}
 
+
 			if ($alipay != $alipay1) {
 				show_json(0, '支付宝帐号与确认帐号不一致!');
 			}
 
+
 			$apply['realname'] = $realname;
 			$apply['alipay'] = $alipay;
 		}
-		else {
-			if ($applytype == 3) {
-				$realname = trim($_GPC['realname']);
-				$bankname = trim($_GPC['bankname']);
-				$bankcard = trim($_GPC['bankcard']);
-				$bankcard1 = trim($_GPC['bankcard1']);
+		 else if ($applytype == 3) {
+			$realname = trim($_GPC['realname']);
+			$bankname = trim($_GPC['bankname']);
+			$bankcard = trim($_GPC['bankcard']);
+			$bankcard1 = trim($_GPC['bankcard1']);
 
-				if (empty($realname)) {
-					show_json(0, '请填写姓名!');
-				}
-
-				if (empty($bankname)) {
-					show_json(0, '请选择银行!');
-				}
-
-				if (empty($bankcard)) {
-					show_json(0, '请填写银行卡号!');
-				}
-
-				if (empty($bankcard1)) {
-					show_json(0, '请填写确认卡号!');
-				}
-
-				if ($bankcard != $bankcard1) {
-					show_json(0, '银行卡号与确认卡号不一致!');
-				}
-
-				$apply['realname'] = $realname;
-				$apply['bankname'] = $bankname;
-				$apply['bankcard'] = $bankcard;
+			if (empty($realname)) {
+				show_json(0, '请填写姓名!');
 			}
+
+
+			if (empty($bankname)) {
+				show_json(0, '请选择银行!');
+			}
+
+
+			if (empty($bankcard)) {
+				show_json(0, '请填写银行卡号!');
+			}
+
+
+			if (empty($bankcard1)) {
+				show_json(0, '请填写确认卡号!');
+			}
+
+
+			if ($bankcard != $bankcard1) {
+				show_json(0, '银行卡号与确认卡号不一致!');
+			}
+
+
+			$apply['realname'] = $realname;
+			$apply['bankname'] = $bankname;
+			$apply['bankcard'] = $bankcard;
 		}
+
 
 		$realmoney = $money;
 
-		if (!empty($set_array['charge'])) {
+		if (!(empty($set_array['charge']))) {
 			$money_array = m('member')->getCalculateMoney($money, $set_array);
 
 			if ($money_array['flag']) {
 				$realmoney = $money_array['realmoney'];
 				$deductionmoney = $money_array['deductionmoney'];
 			}
+
 		}
 
-		m('member')->setCredit($_W['openid'], 'credit2', 0 - $money, array(0, $_W['shopset']['set'][''] . '余额提现预扣除: ' . $money . ',实际到账金额:' . $realmoney . ',手续费金额:' . $deductionmoney));
+
+		m('member')->setCredit($_W['openid'], 'credit2', -$money, array(0, $_W['shopset']['set'][''] . '余额提现预扣除: ' . $money . ',实际到账金额:' . $realmoney . ',手续费金额:' . $deductionmoney));
 		$logno = m('common')->createNO('member_log', 'logno', 'RW');
 		$apply['uniacid'] = $_W['uniacid'];
 		$apply['logno'] = $logno;
@@ -219,10 +247,12 @@ class Withdraw_EweiShopV2Page extends MobileLoginPage
 			$params[':applytype'] = $applytype;
 		}
 
+
 		$sql .= ' order by id desc Limit 1';
 		$data = pdo_fetch($sql, $params);
 		return $data;
 	}
 }
+
 
 ?>

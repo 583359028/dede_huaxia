@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -15,14 +14,14 @@ class Index_EweiShopV2Page extends WebPage
 		if ($merch_plugin && $merch_data['is_openmerch']) {
 			$is_openmerch = 1;
 		}
-		else {
+		 else {
 			$is_openmerch = 0;
 		}
 
 		$order_sql = 'select id,ordersn,createtime,address,price,invoicename from ' . tablename('ewei_shop_order') . ' where uniacid = :uniacid and merchid=0 and isparent=0 and deleted=0 AND ( status = 1 or (status=0 and paytype=3) ) ORDER BY createtime ASC LIMIT 20';
 		$order = pdo_fetchall($order_sql, array(':uniacid' => $_W['uniacid']));
 
-		foreach ($order as &$value) {
+		foreach ($order as &$value ) {
 			$value['address'] = iunserializer($value['address']);
 		}
 
@@ -34,6 +33,7 @@ class Index_EweiShopV2Page extends WebPage
 		if (p('commission')) {
 			$hascommission = 0 < intval($_W['shopset']['commission']['level']);
 		}
+
 
 		include $this->template();
 	}
@@ -60,5 +60,6 @@ class Index_EweiShopV2Page extends WebPage
 		show_json(1, array('goods_totals' => $goods_totals, 'finance_total' => $finance_total, 'commission_agent_total' => $commission_agent_total, 'commission_agent_status0_total' => $commission_agent_status0_total, 'commission_apply_status1_total' => $commission_apply_status1_total, 'commission_apply_status2_total' => $commission_apply_status2_total));
 	}
 }
+
 
 ?>

@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class Excel_EweiShopV2Model
 {
 	protected function column_str($key)
@@ -24,28 +27,30 @@ class Excel_EweiShopV2Model
 			exit('This example should only be run from a Web Browser');
 		}
 
+
 		require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel.php';
 		$excel = new PHPExcel();
-		$excel->getProperties()->setCreator('人人店')->setLastModifiedBy('人人店')->setTitle('Office 2007 XLSX Test Document')->setSubject('Office 2007 XLSX Test Document')->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')->setKeywords('office 2007 openxml php')->setCategory('report file');
+		$excel->getProperties()->setCreator('人人商城')->setLastModifiedBy('人人商城')->setTitle('Office 2007 XLSX Test Document')->setSubject('Office 2007 XLSX Test Document')->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')->setKeywords('office 2007 openxml php')->setCategory('report file');
 		$sheet = $excel->setActiveSheetIndex(0);
 		$rownum = 1;
 
-		foreach ($params['columns'] as $key => $column) {
+		foreach ($params['columns'] as $key => $column ) {
 			$sheet->setCellValue($this->column($key, $rownum), $column['title']);
 
-			if (!empty($column['width'])) {
+			if (!(empty($column['width']))) {
 				$sheet->getColumnDimension($this->column_str($key))->setWidth($column['width']);
 			}
+
 		}
 
 		++$rownum;
 		$len = count($params['columns']);
 
-		foreach ($list as $row) {
+		foreach ($list as $row ) {
 			$i = 0;
 
 			while ($i < $len) {
-				$value = (isset($row[$params['columns'][$i]['field']]) ? $row[$params['columns'][$i]['field']] : '');
+				$value = ((isset($row[$params['columns'][$i]['field']]) ? $row[$params['columns'][$i]['field']] : ''));
 				$sheet->setCellValue($this->column($i, $rownum), $value);
 				++$i;
 			}
@@ -55,6 +60,7 @@ class Excel_EweiShopV2Model
 
 		$excel->getActiveSheet()->setTitle($params['title']);
 		$filename = urlencode($params['title'] . '-' . date('Y-m-d H:i', time()));
+		ob_end_clean();
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
 		header('Cache-Control: max-age=0');
@@ -74,18 +80,20 @@ class Excel_EweiShopV2Model
 			exit('This example should only be run from a Web Browser');
 		}
 
+
 		require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel.php';
 		$excel = new PHPExcel();
-		$excel->getProperties()->setCreator('人人店')->setLastModifiedBy('人人店')->setTitle('Office 2007 XLSX Test Document')->setSubject('Office 2007 XLSX Test Document')->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')->setKeywords('office 2007 openxml php')->setCategory('report file');
+		$excel->getProperties()->setCreator('人人商城')->setLastModifiedBy('人人商城')->setTitle('Office 2007 XLSX Test Document')->setSubject('Office 2007 XLSX Test Document')->setDescription('Test document for Office 2007 XLSX, generated using PHP classes.')->setKeywords('office 2007 openxml php')->setCategory('report file');
 		$sheet = $excel->setActiveSheetIndex(0);
 		$rownum = 1;
 
-		foreach ($columns as $key => $column) {
+		foreach ($columns as $key => $column ) {
 			$sheet->setCellValue($this->column($key, $rownum), $column['title']);
 
-			if (!empty($column['width'])) {
+			if (!(empty($column['width']))) {
 				$sheet->getColumnDimension($this->column_str($key))->setWidth($column['width']);
 			}
+
 		}
 
 		++$rownum;
@@ -122,10 +130,11 @@ class Excel_EweiShopV2Model
 		require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel/Reader/Excel5.php';
 		$path = IA_ROOT . '/addons/ewei_shop/data/tmp/';
 
-		if (!is_dir($path)) {
+		if (!(is_dir($path))) {
 			load()->func('file');
 			mkdirs($path, '0777');
 		}
+
 
 		$filename = $_FILES[$excefile]['name'];
 		$tmpname = $_FILES[$excefile]['tmp_name'];
@@ -134,20 +143,23 @@ class Excel_EweiShopV2Model
 			message('请选择要上传的Excel文件!', '', 'error');
 		}
 
+
 		$ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 		if (($ext != 'xlsx') && ($ext != 'xls')) {
 			message('请上传 xls 或 xlsx 格式的Excel文件!', '', 'error');
 		}
 
+
 		$file = time() . $_W['uniacid'] . '.' . $ext;
 		$uploadfile = $path . $file;
 		$result = move_uploaded_file($tmpname, $uploadfile);
 
-		if (!$result) {
+		if (!($result)) {
 			message('上传Excel 文件失败, 请重新上传!', '', 'error');
 		}
 
-		$reader = PHPExcel_IOFactory::createReader($ext == 'xls' ? 'Excel5' : 'Excel2007');
+
+		$reader = PHPExcel_IOFactory::createReader(($ext == 'xls' ? 'Excel5' : 'Excel2007'));
 		$excel = $reader->load($uploadfile);
 		$sheet = $excel->getActiveSheet();
 		$highestRow = $sheet->getHighestRow();
@@ -173,8 +185,5 @@ class Excel_EweiShopV2Model
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

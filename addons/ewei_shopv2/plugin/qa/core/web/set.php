@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -13,21 +12,24 @@ class Set_EweiShopV2Page extends PluginWebPage
 		$set = $this->model->getSet();
 
 		if ($_W['ispost']) {
-			$data = array('showmember' => intval($_GPC['showmember']), 'keyword' => trim($_GPC['keyword']), 'enter_title' => trim($_GPC['enter_title']), 'enter_img' => trim($_GPC['enter_img']), 'enter_desc' => trim($_GPC['enter_desc']), 'share' => intval($_GPC['share']));
+			$data = array('showmember' => intval($_GPC['showmember']), 'showtype' => intval($_GPC['showtype']), 'keyword' => trim($_GPC['keyword']), 'enter_title' => trim($_GPC['enter_title']), 'enter_img' => trim($_GPC['enter_img']), 'enter_desc' => trim($_GPC['enter_desc']), 'share' => intval($_GPC['share']));
 			$keyword = m('common')->keyExist($data['keyword']);
 
-			if (!empty($keyword)) {
+			if (!(empty($keyword))) {
 				if ($keyword['name'] != 'ewei_shopv2:qa') {
 					show_json(0, '关键字已存在！');
 				}
+
 			}
+
 
 			$rule = pdo_fetch('select * from ' . tablename('rule') . ' where uniacid=:uniacid and module=:module and name=:name limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'cover', ':name' => 'ewei_shopv2:qa'));
 
-			if (!empty($rule)) {
+			if (!(empty($rule))) {
 				$keyword = pdo_fetch('select * from ' . tablename('rule_keyword') . ' where uniacid=:uniacid and rid=:rid limit 1', array(':uniacid' => $_W['uniacid'], ':rid' => $rule['id']));
 				$cover = pdo_fetch('select * from ' . tablename('cover_reply') . ' where uniacid=:uniacid and rid=:rid limit 1', array(':uniacid' => $_W['uniacid'], ':rid' => $rule['id']));
 			}
+
 
 			$rule_data = array('uniacid' => $_W['uniacid'], 'name' => 'ewei_shopv2:qa', 'module' => 'cover', 'displayorder' => 0, 'status' => 1);
 
@@ -35,7 +37,7 @@ class Set_EweiShopV2Page extends PluginWebPage
 				pdo_insert('rule', $rule_data);
 				$rid = pdo_insertid();
 			}
-			else {
+			 else {
 				pdo_update('rule', $rule_data, array('id' => $rule['id']));
 				$rid = $rule['id'];
 			}
@@ -45,7 +47,7 @@ class Set_EweiShopV2Page extends PluginWebPage
 			if (empty($keyword)) {
 				pdo_insert('rule_keyword', $keyword_data);
 			}
-			else {
+			 else {
 				pdo_update('rule_keyword', $keyword_data, array('id' => $keyword['id']));
 			}
 
@@ -54,14 +56,14 @@ class Set_EweiShopV2Page extends PluginWebPage
 			if (empty($cover)) {
 				pdo_insert('cover_reply', $cover_data);
 			}
-			else {
+			 else {
 				pdo_update('cover_reply', $cover_data, array('id' => $cover['id']));
 			}
 
-			if (!empty($set)) {
+			if (!(empty($set))) {
 				pdo_update('ewei_shop_qa_set', $data, array('id' => $set['id']));
 			}
-			else {
+			 else {
 				$data['uniacid'] = $_W['uniacid'];
 				pdo_insert('ewei_shop_qa_set', $data);
 				$id = pdo_insertid();
@@ -71,10 +73,12 @@ class Set_EweiShopV2Page extends PluginWebPage
 			show_json(1);
 		}
 
+
 		$url = mobileUrl('qa', NULL, true);
 		$qrcode = m('qrcode')->createQrcode($url);
 		include $this->template();
 	}
 }
+
 
 ?>

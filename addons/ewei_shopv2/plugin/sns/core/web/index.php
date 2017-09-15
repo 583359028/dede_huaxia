@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -36,7 +35,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 
 		if ($_W['ispost']) {
 			ca('sns.set.edit');
-			$data = (is_array($_GPC['data']) ? $_GPC['data'] : array());
+			$data = ((is_array($_GPC['data']) ? $_GPC['data'] : array()));
 			$data['share_icon'] = save_media($data['share_icon']);
 			$data['avatar'] = save_media($data['avatar']);
 			$data['banner'] = save_media($data['banner']);
@@ -45,7 +44,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			if (is_array($_GPC['managers'])) {
 				$data['managers'] = implode(',', $_GPC['managers']);
 			}
-			else {
+			 else {
 				$data['managers'] = '';
 			}
 
@@ -54,6 +53,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			plog('sns.set.edit', '修改基本设置');
 			show_json(1);
 		}
+
 
 		$styles = array();
 		$dir = IA_ROOT . '/addons/ewei_shopv2/plugin/' . $this->pluginname . '/template/mobile/';
@@ -64,27 +64,32 @@ class Index_EweiShopV2Page extends PluginWebPage
 					if (is_dir($dir . '/' . $file)) {
 						$styles[] = $file;
 					}
+
 				}
+
 			}
 
 			closedir($handle);
 		}
 
+
 		$data = $this->set;
 		$managers = array();
 
 		if (isset($data['managers'])) {
-			if (!empty($data['managers'])) {
+			if (!(empty($data['managers']))) {
 				$openids = array();
 				$strsopenids = explode(',', $data['managers']);
 
-				foreach ($strsopenids as $openid) {
+				foreach ($strsopenids as $openid ) {
 					$openids[] = '\'' . $openid . '\'';
 				}
 
 				$managers = pdo_fetchall('select id,nickname,avatar,openid from ' . tablename('ewei_shop_member') . ' where openid in (' . implode(',', $openids) . ') and uniacid=' . $_W['uniacid']);
 			}
+
 		}
+
 
 		include $this->template();
 	}
@@ -97,29 +102,33 @@ class Index_EweiShopV2Page extends PluginWebPage
 
 		if ($_W['ispost']) {
 			ca('sns.notice.edit');
-			$data = (is_array($_GPC['tm']) ? $_GPC['tm'] : array());
+			$data = ((is_array($_GPC['tm']) ? $_GPC['tm'] : array()));
 			$this->updateSet(array('tm' => $data));
 			plog('sns.notice.edit', '修改通知设置');
 			show_json(1);
 		}
 
+
 		$salers = array();
 
 		if (isset($set['tm']['openids'])) {
-			if (!empty($set['tm']['openids'])) {
+			if (!(empty($set['tm']['openids']))) {
 				$openids = array();
 				$strsopenids = explode(',', $set['tm']['openids']);
 
-				foreach ($strsopenids as $openid) {
+				foreach ($strsopenids as $openid ) {
 					$openids[] = '\'' . $openid . '\'';
 				}
 
 				$salers = pdo_fetchall('select id,nickname,avatar,openid from ' . tablename('ewei_shop_member') . ' where openid in (' . implode(',', $openids) . ') and uniacid=' . $_W['uniacid']);
 			}
+
 		}
+
 
 		include $this->template();
 	}
 }
+
 
 ?>

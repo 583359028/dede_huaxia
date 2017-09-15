@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -16,9 +15,10 @@ class PluginWebPage extends WebPage
 		parent::__construct($_init);
 		global $_W;
 
-		if (!com('perm')->check_plugin($_W['plugin'])) {
+		if (!(com('perm')->check_plugin($_W['plugin']))) {
 			$this->message('你没有相应的权限查看');
 		}
+
 
 		$this->pluginname = $_W['plugin'];
 		$this->modulename = 'ewei_shopv2';
@@ -29,6 +29,7 @@ class PluginWebPage extends WebPage
 		if ($_W['ispost']) {
 			rc($this->pluginname);
 		}
+
 	}
 
 	public function getSet()
@@ -41,5 +42,6 @@ class PluginWebPage extends WebPage
 		$this->model->updateSet($data);
 	}
 }
+
 
 ?>

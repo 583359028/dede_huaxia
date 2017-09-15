@@ -1,11 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-function ranksort($a, $b)
-{
-	return $b['credit1'] < $a['credit1'] ? -1 : 1;
-}
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -22,8 +16,10 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 				show_json(0, $err);
 			}
 
+
 			$this->message($err, '', 'error');
 		}
+
 	}
 
 	protected function getRank($update = false)
@@ -40,6 +36,7 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 			m('cache')->set('member_rank', array('time' => TIMESTAMP + 3600, 'result' => $result));
 		}
 
+
 		return $rank_cache;
 	}
 
@@ -53,17 +50,18 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 		$result = $rank_cache['result'];
 		$paiming = 0;
 
-		foreach ($result as $key => $val) {
+		foreach ($result as $key => $val ) {
 			if ($val['openid'] == $_W['openid']) {
 				$paiming += $key + 1;
 			}
+
 		}
 
 		$num = intval($_W['shopset']['rank']['num']);
 		$user['credit1'] = intval($user['credit1']);
-		$user['paiming'] = empty($paiming) ? '未上榜' : $paiming;
+		$user['paiming'] = ((empty($paiming) ? '未上榜' : $paiming));
 		$seven = $this->creditChange($user['uid']);
-		$user['seven'] = empty($seven) ? 0 : $seven;
+		$user['seven'] = ((empty($seven) ? 0 : $seven));
 		include $this->template();
 	}
 
@@ -80,13 +78,15 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 			$num = 50;
 		}
 
+
 		$stop = false;
 
 		if ($num <= $pindex * $psize) {
-			$psize = (($num % $psize) == 0 ? 20 : $num % $psize);
+			$psize = ((($num % $psize) == 0 ? 20 : $num % $psize));
 			$pindex = ceil($num / $psize);
 			$stop = true;
 		}
+
 
 		$rank_cache = $this->getRank();
 		$result = $rank_cache['result'];
@@ -103,7 +103,7 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 			$createtime1 = strtotime(date('Y-m-d', time() - ($day * 3600 * 24)));
 			$createtime2 = strtotime(date('Y-m-d', time()));
 		}
-		else {
+		 else {
 			$createtime1 = strtotime(date('Y-m-d', time()));
 			$createtime2 = strtotime(date('Y-m-d', time() + (3600 * 24)));
 		}
@@ -124,8 +124,10 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 				show_json(0, $err);
 			}
 
+
 			$this->message($err, '', 'error');
 		}
+
 	}
 
 	public function order_rank()
@@ -134,11 +136,11 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 		global $_GPC;
 		$this->orderStatus();
 		$user = m('member')->getMember($_W['openid'], true);
-		$result_one = pdo_fetch("select a.openid, sum(price) as price,a.uniacid,a.status\r\n\t\t\tfrom (\r\n\t\t\t(select openid, sum(price) price,uniacid,status from " . tablename('ewei_shop_order') . " where uniacid = :uniacid and status >= 1 group by openid)\r\n\t\t\tunion  all (select openid, sum(price+freight) price,uniacid,status from " . tablename('ewei_shop_groups_order') . " where uniacid = :uniacid and status >= 1 group by openid)\r\n\t\t\t) a where a.openid = :openid group by a.openid ", array(':uniacid' => $_W['uniacid'], ':openid' => $user['openid']));
-		$result_all = pdo_fetchall("select a.openid, sum(price) as price,a.uniacid,a.status\r\n\t\t\tfrom (\r\n\t\t\t(select openid, sum(price) price,uniacid,status from " . tablename('ewei_shop_order') . " where uniacid = :uniacid and status >= 1 group by openid)\r\n\t\t\tunion  all (select openid, sum(price+freight) price,uniacid,status from " . tablename('ewei_shop_groups_order') . " where uniacid = :uniacid and status >= 1 group by openid)\r\n\t\t\t) a group by a.openid HAVING price>=:price ORDER BY price DESC", array(':uniacid' => $_W['uniacid'], ':price' => $result_one['price']));
+		$result_one = pdo_fetch('select a.openid, sum(price) as price,a.uniacid,a.status' . "\r\n\t\t\t" . 'from (' . "\r\n\t\t\t" . '(select openid, sum(price) price,uniacid,status from ' . tablename('ewei_shop_order') . ' where uniacid = :uniacid and status >= 1 group by openid)' . "\r\n\t\t\t" . 'union  all (select openid, sum(price+freight) price,uniacid,status from ' . tablename('ewei_shop_groups_order') . ' where uniacid = :uniacid and status >= 1 group by openid)' . "\r\n\t\t\t" . ') a where a.openid = :openid group by a.openid ', array(':uniacid' => $_W['uniacid'], ':openid' => $user['openid']));
+		$result_all = pdo_fetchall('select a.openid, sum(price) as price,a.uniacid,a.status' . "\r\n\t\t\t" . 'from (' . "\r\n\t\t\t" . '(select openid, sum(price) price,uniacid,status from ' . tablename('ewei_shop_order') . ' where uniacid = :uniacid and status >= 1 group by openid)' . "\r\n\t\t\t" . 'union  all (select openid, sum(price+freight) price,uniacid,status from ' . tablename('ewei_shop_groups_order') . ' where uniacid = :uniacid and status >= 1 group by openid)' . "\r\n\t\t\t" . ') a group by a.openid HAVING price>=:price ORDER BY price DESC', array(':uniacid' => $_W['uniacid'], ':price' => $result_one['price']));
 		$user['paiming'] = count($result_all);
 		$seven = $this->orderChange($user['openid']);
-		$user['seven'] = empty($seven) ? 0 : $seven;
+		$user['seven'] = ((empty($seven) ? 0 : $seven));
 		include $this->template('member/order_rank');
 	}
 
@@ -155,16 +157,18 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 			$num = 50;
 		}
 
+
 		$stop = false;
 
 		if ($num <= $pindex * $psize) {
-			$psize = (($num % $psize) == 0 ? 20 : $num % $psize);
+			$psize = ((($num % $psize) == 0 ? 20 : $num % $psize));
 			$pindex = ceil($num / $psize);
 			$stop = true;
 		}
 
+
 		$limit = ' LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize;
-		$result = pdo_fetchall("select m.id,m.uid,m.nickname,m.avatar,a.openid, sum(price) as price,a.uniacid,a.status\r\n\t\t\tfrom (\r\n\t\t\t(select openid, sum(price) price,uniacid,status from " . tablename('ewei_shop_order') . " where uniacid = :uniacid and status >= 1 group by openid)\r\n\t\t\tunion  all (select openid, sum(price+freight)  price,uniacid,status from " . tablename('ewei_shop_groups_order') . " where uniacid = :uniacid and status >= 1 group by openid)\r\n\t\t\t) a\r\n\t\t\tjoin " . tablename('ewei_shop_member') . " as m on m.openid = a.openid AND m.uniacid = a.uniacid\r\n\t\t\tgroup by a.openid ORDER BY price DESC " . $limit, array(':uniacid' => $_W['uniacid']));
+		$result = pdo_fetchall('select m.id,m.uid,m.nickname,m.avatar,a.openid, sum(price) as price,a.uniacid,a.status' . "\r\n\t\t\t" . 'from (' . "\r\n\t\t\t" . '(select openid, sum(price) price,uniacid,status from ' . tablename('ewei_shop_order') . ' where uniacid = :uniacid and status >= 1 group by openid)' . "\r\n\t\t\t" . 'union  all (select openid, sum(price+freight)  price,uniacid,status from ' . tablename('ewei_shop_groups_order') . ' where uniacid = :uniacid and status >= 1 group by openid)' . "\r\n\t\t\t" . ') a' . "\r\n\t\t\t" . 'join ' . tablename('ewei_shop_member') . ' as m on m.openid = a.openid AND m.uniacid = a.uniacid' . "\r\n\t\t\t" . 'group by a.openid ORDER BY price DESC ' . $limit, array(':uniacid' => $_W['uniacid']));
 		show_json(1, array('list' => $result, 'stop' => $stop));
 	}
 
@@ -177,7 +181,7 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 			$createtime1 = strtotime(date('Y-m-d', time() - ($day * 3600 * 24)));
 			$createtime2 = strtotime(date('Y-m-d', time()));
 		}
-		else {
+		 else {
 			$createtime1 = strtotime(date('Y-m-d', time()));
 			$createtime2 = strtotime(date('Y-m-d', time() + (3600 * 24)));
 		}
@@ -187,5 +191,11 @@ class Rank_EweiShopV2Page extends MobileLoginPage
 		return pdo_fetchcolumn($sql, $param);
 	}
 }
+
+function ranksort($a, $b)
+{
+	return ($b['credit1'] < $a['credit1'] ? -1 : 1);
+}
+
 
 ?>

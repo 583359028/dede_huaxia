@@ -1,7 +1,4 @@
 <?php
-//微 橙 微 信商 城系统
-?>
-<?php
 if (!(defined('IN_IA'))) 
 {
 	exit('Access Denied');
@@ -13,7 +10,6 @@ class Index_EweiShopV2Page extends MerchWebPage
 	{
 		global $_W;
 		global $_GPC;
-		$this->model->CheckPlugin('taobao');
 		if (!(empty($_GPC['keyword']))) 
 		{
 			$keyword = '%' . trim($_GPC['keyword']) . '%';

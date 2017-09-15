@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -14,44 +13,43 @@ class Index_EweiShopV2Page extends PluginWebPage
 			header('location: ' . webUrl('commission/agent'));
 			exit();
 		}
-		else if (cv('commission.apply.view1')) {
+		 else if (cv('commission.apply.view1')) {
 			header('location: ' . webUrl('commission/apply', array('status' => 1)));
 			exit();
 		}
-		else if (cv('commission.apply.view2')) {
+		 else if (cv('commission.apply.view2')) {
 			header('location: ' . webUrl('commission/apply', array('status' => 2)));
 			exit();
 		}
-		else if (cv('commission.apply.view3')) {
+		 else if (cv('commission.apply.view3')) {
 			header('location: ' . webUrl('commission/apply', array('status' => 3)));
 			exit();
 		}
-		else if (cv('commission.apply.view_1')) {
+		 else if (cv('commission.apply.view_1')) {
 			header('location: ' . webUrl('commission/apply', array('status' => -1)));
 			exit();
 		}
-		else if (cv('commission.increase')) {
+		 else if (cv('commission.increase')) {
 			header('location: ' . webUrl('commission/increase'));
 			exit();
 		}
-		else if (cv('commission.notice')) {
+		 else if (cv('commission.notice')) {
 			header('location: ' . webUrl('commission/notice'));
 			exit();
 		}
-		else if (cv('commission.cover')) {
+		 else if (cv('commission.cover')) {
 			header('location: ' . webUrl('commission/cover'));
 			exit();
 		}
-		else if (cv('commission.level')) {
+		 else if (cv('commission.level')) {
 			header('location: ' . webUrl('commission/level'));
 			exit();
 		}
-		else {
-			if (cv('commission.set')) {
-				header('location: ' . webUrl('commission/set'));
-				exit();
-			}
+		 else if (cv('commission.set')) {
+			header('location: ' . webUrl('commission/set'));
+			exit();
 		}
+
 	}
 
 	public function notice()
@@ -60,13 +58,14 @@ class Index_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 
 		if ($_W['ispost']) {
-			$data = (is_array($_GPC['data']) ? $_GPC['data'] : array());
+			$data = ((is_array($_GPC['data']) ? $_GPC['data'] : array()));
 			m('common')->updatePluginset(array(
 	'commission' => array('tm' => $data)
 	));
 			plog('commission.notice.edit', '修改通知设置');
 			show_json(1);
 		}
+
 
 		$data = m('common')->getPluginset('commission');
 		$template_list = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_member_message_template') . ' WHERE uniacid=:uniacid and typecode=:typecode ', array(':uniacid' => $_W['uniacid'], ':typecode' => 'commission'));
@@ -79,17 +78,18 @@ class Index_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 
 		if ($_W['ispost']) {
-			$data = (is_array($_GPC['data']) ? $_GPC['data'] : array());
+			$data = ((is_array($_GPC['data']) ? $_GPC['data'] : array()));
 			$data['cashcredit'] = intval($data['cashcredit']);
 			$data['cashweixin'] = intval($data['cashweixin']);
 			$data['cashother'] = intval($data['cashother']);
 			$data['cashalipay'] = intval($data['cashalipay']);
 			$data['cashcard'] = intval($data['cashcard']);
 
-			if (!empty($data['withdrawcharge'])) {
+			if (!(empty($data['withdrawcharge']))) {
 				$data['withdrawcharge'] = trim($data['withdrawcharge']);
 				$data['withdrawcharge'] = floatval(trim($data['withdrawcharge'], '%'));
 			}
+
 
 			$data['withdrawbegin'] = floatval(trim($data['withdrawbegin']));
 			$data['withdrawend'] = floatval(trim($data['withdrawend']));
@@ -97,11 +97,11 @@ class Index_EweiShopV2Page extends PluginWebPage
 			$data['applycontent'] = m('common')->html_images($data['applycontent']);
 			$data['regbg'] = save_media($data['regbg']);
 			$data['become_goodsid'] = intval($_GPC['become_goodsid']);
-			$data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
+			$data['texts'] = ((is_array($_GPC['texts']) ? $_GPC['texts'] : array()));
 			m('common')->updatePluginset(array('commission' => $data));
 			m('cache')->set('template_' . $this->pluginname, $data['style']);
-			$selfbuy = ($data['selfbuy'] ? '开启' : '关闭');
-			$become_child = ($data['become_child'] ? ($data['become_child'] == 1 ? '首次下单' : '首次付款') : '首次点击分享连接');
+			$selfbuy = (($data['selfbuy'] ? '开启' : '关闭'));
+			$become_child = (($data['become_child'] ? (($data['become_child'] == 1 ? '首次下单' : '首次付款')) : '首次点击分享连接'));
 
 			switch ($data['become']) {
 			case '0':
@@ -129,6 +129,7 @@ class Index_EweiShopV2Page extends PluginWebPage
 			show_json(1, array('url' => webUrl('commission/set', array('tab' => str_replace('#tab_', '', $_GPC['tab'])))));
 		}
 
+
 		$styles = array();
 		$dir = IA_ROOT . '/addons/ewei_shopv2/plugin/' . $this->pluginname . '/template/mobile/';
 
@@ -138,21 +139,26 @@ class Index_EweiShopV2Page extends PluginWebPage
 					if (is_dir($dir . '/' . $file)) {
 						$styles[] = $file;
 					}
+
 				}
+
 			}
 
 			closedir($handle);
 		}
 
+
 		$data = m('common')->getPluginset('commission');
 		$goods = false;
 
-		if (!empty($data['become_goodsid'])) {
+		if (!(empty($data['become_goodsid']))) {
 			$goods = pdo_fetch('select id,title,thumb from ' . tablename('ewei_shop_goods') . ' where id=:id and uniacid=:uniacid limit 1 ', array(':id' => $data['become_goodsid'], ':uniacid' => $_W['uniacid']));
 		}
+
 
 		include $this->template();
 	}
 }
+
 
 ?>

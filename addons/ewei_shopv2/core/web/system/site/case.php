@@ -1,6 +1,5 @@
 <?php
-
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -20,7 +19,7 @@ class Case_EweiShopV2Page extends SystemPage
 		}
 
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$_GPC['keyword'] = trim($_GPC['keyword']);
 			$condition .= ' and title like :keyword';
 			$params[':keyword'] = '%' . $_GPC['keyword'] . '%';
@@ -53,7 +52,7 @@ class Case_EweiShopV2Page extends SystemPage
 			empty($_GPC['title']) && show_json(0, array('message' => '合作伙伴名称不能为空', 'url' => referer()));
 			$data = array('title' => trim($_GPC['title']), 'thumb' => trim($_GPC['thumb']), 'qr' => trim($_GPC['qr']), 'displayorder' => intval($_GPC['displayorder']), 'status' => intval($_GPC['status']), 'cate' => intval($_GPC['cate']), 'description' => trim($_GPC['description']));
 
-			if (!empty($id)) {
+			if (!(empty($id))) {
 				pdo_update('ewei_shop_system_case', $data, array('id' => $id));
 				plog('system.site.case.edit', '修改 ID: ' . $id);
 			}
@@ -101,7 +100,7 @@ class Case_EweiShopV2Page extends SystemPage
 		$displayorder = intval($_GPC['value']);
 		$item = pdo_fetchall('SELECT id,title FROM ' . tablename('ewei_shop_system_case') . ' WHERE id in( ' . $id . ' )');
 
-		if (!empty($item)) {
+		if (!(empty($item))) {
 			pdo_update('ewei_shop_system_case', array('displayorder' => $displayorder), array('id' => $id));
 			plog('system.site.case.delete', '修改排序 ID: ' . $item['id'] . ' 标题: ' . $item['title'] . ' 排序: ' . $displayorder . ' ');
 		}

@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -12,10 +11,11 @@ class SeckillWebPage extends PluginWebPage
 		global $_W;
 		global $_GPC;
 
-		if (!function_exists('redis')) {
+		if (!(function_exists('redis'))) {
 			$this->message('请更新到最新版本才能使用秒杀应用', 'exit', 'error');
 			exit();
 		}
+
 
 		$redis = redis();
 
@@ -26,10 +26,13 @@ class SeckillWebPage extends PluginWebPage
 				$message .= '<br/><br/>错误信息: ' . $redis['message'];
 			}
 
+
 			$this->message($message, 'exit', 'error');
 			exit();
 		}
+
 	}
 }
+
 
 ?>

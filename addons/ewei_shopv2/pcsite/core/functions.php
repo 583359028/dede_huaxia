@@ -1,5 +1,4 @@
 <?php
-//米云网络科技www.symiyun.com
 function es_empty()
 {
 	$empty_file = ES_CONTROLLER_PATH . ES_EMPTY_CONTROLLER . '.php';
@@ -12,6 +11,7 @@ function es_empty()
 		exit();
 	}
 
+
 	trigger_error('Empty Controller Not Found!');
 	exit();
 }
@@ -23,12 +23,13 @@ function webUrl($route = '', $scheme = false)
 			ltrim($route[0], '/');
 		}
 
+
 		$routeArr = explode('/', strtolower($route[0]));
 
 		if (1 < count($routeArr)) {
 			$classMethod = '?c=' . $routeArr[0] . '&a=' . $routeArr[1];
 		}
-		else {
+		 else {
 			$classMethod = '?c=' . $routeArr[0] . '&a=index';
 		}
 
@@ -37,10 +38,11 @@ function webUrl($route = '', $scheme = false)
 		unset($route['a']);
 		$url = '';
 
-		foreach ($route as $key => $value) {
+		foreach ($route as $key => $value ) {
 			$url .= '&' . $key . '=' . $value;
 		}
 	}
+
 
 	if (is_string($route)) {
 		$routeArr = explode('/', strtolower($route));
@@ -48,18 +50,19 @@ function webUrl($route = '', $scheme = false)
 		if (1 < count($routeArr)) {
 			$classMethod = '?c=' . $routeArr[0] . '&a=' . $routeArr[1];
 		}
-		else {
+		 else {
 			$classMethod = '?c=' . $routeArr[0] . '&a=index';
 		}
 	}
 
+
 	if (($route == '') || is_bool($route)) {
 		$classMethod = '?c=' . ES_DEFAULT_CONTROLLER . '&a=' . ES_DEFAULT_ACTION;
 	}
-
 	if ($scheme) {
 		return ES_URL . 'index.php' . $classMethod . $url;
 	}
+
 
 	return ES_SCRIPT_NAME . $classMethod . $url;
 }
@@ -72,25 +75,29 @@ function pctomedia($src, $local_path = false)
 		return '';
 	}
 
+
 	if (strpos($src, './addons') === 0) {
 		return $_W['siteroot'] . str_replace('./', '', $src);
 	}
 
-	if (strexists($src, $_W['siteroot']) && !strexists($src, '/addons/')) {
+
+	if (strexists($src, $_W['siteroot']) && !(strexists($src, '/addons/'))) {
 		$urls = parse_url($src);
 		$src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
 	}
+
 
 	$t = strtolower($src);
 	if (strexists($t, 'http://') || strexists($t, 'https://')) {
 		return $src;
 	}
 
-	$http_type = ((isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://');
+
+	$http_type = (((isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 'on')) || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://'));
 	if ($local_path || empty($_W['setting']['remote']['type']) || file_exists(IA_ROOT . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
 		$src = $http_type . $_SERVER['SERVER_NAME'] . '/' . $_W['config']['upload']['attachdir'] . '/' . $src;
 	}
-	else {
+	 else {
 		$src = $_W['attachurl_remote'] . $src;
 	}
 

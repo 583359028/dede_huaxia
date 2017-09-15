@@ -1,5 +1,4 @@
 <?php
-//米云网络科技www.symiyun.com
 class RequestCheckUtil
 {
 	/**
@@ -11,6 +10,7 @@ class RequestCheckUtil
 		if (self::checkEmpty($value)) {
 			throw new Exception('client-check-error:Missing Required Arguments: ' . $fieldName, 40);
 		}
+
 	}
 
 	/**
@@ -19,9 +19,10 @@ class RequestCheckUtil
 	 **/
 	static public function checkMaxLength($value, $maxLength, $fieldName)
 	{
-		if (!self::checkEmpty($value) && ($maxLength < mb_strlen($value, 'UTF-8'))) {
+		if (!(self::checkEmpty($value)) && ($maxLength < mb_strlen($value, 'UTF-8'))) {
 			throw new Exception('client-check-error:Invalid Arguments:the length of ' . $fieldName . ' can not be larger than ' . $maxLength . '.', 41);
 		}
+
 	}
 
 	/**
@@ -31,14 +32,16 @@ class RequestCheckUtil
 	static public function checkMaxListSize($value, $maxSize, $fieldName)
 	{
 		if (self::checkEmpty($value)) {
-			return NULL;
+			return;
 		}
+
 
 		$list = preg_split('/,/', $value);
 
 		if ($maxSize < count($list)) {
 			throw new Exception('client-check-error:Invalid Arguments:the listsize(the string split by ",") of ' . $fieldName . ' must be less than ' . $maxSize . ' .', 41);
 		}
+
 	}
 
 	/**
@@ -48,14 +51,16 @@ class RequestCheckUtil
 	static public function checkMaxValue($value, $maxValue, $fieldName)
 	{
 		if (self::checkEmpty($value)) {
-			return NULL;
+			return;
 		}
+
 
 		self::checkNumeric($value, $fieldName);
 
 		if ($maxValue < $value) {
 			throw new Exception('client-check-error:Invalid Arguments:the value of ' . $fieldName . ' can not be larger than ' . $maxValue . ' .', 41);
 		}
+
 	}
 
 	/**
@@ -65,14 +70,16 @@ class RequestCheckUtil
 	static public function checkMinValue($value, $minValue, $fieldName)
 	{
 		if (self::checkEmpty($value)) {
-			return NULL;
+			return;
 		}
+
 
 		self::checkNumeric($value, $fieldName);
 
 		if ($value < $minValue) {
 			throw new Exception('client-check-error:Invalid Arguments:the value of ' . $fieldName . ' can not be less than ' . $minValue . ' .', 41);
 		}
+
 	}
 
 	/**
@@ -81,9 +88,10 @@ class RequestCheckUtil
 	 **/
 	static protected function checkNumeric($value, $fieldName)
 	{
-		if (!is_numeric($value)) {
+		if (!(is_numeric($value))) {
 			throw new Exception('client-check-error:Invalid Arguments:the value of ' . $fieldName . ' is not number : ' . $value . ' .', 41);
 		}
+
 	}
 
 	/**
@@ -95,21 +103,25 @@ class RequestCheckUtil
 	 **/
 	static public function checkEmpty($value)
 	{
-		if (!isset($value)) {
+		if (!(isset($value))) {
 			return true;
 		}
+
 
 		if ($value === NULL) {
 			return true;
 		}
 
+
 		if (is_array($value) && (count($value) == 0)) {
 			return true;
 		}
 
+
 		if (is_string($value) && (trim($value) === '')) {
 			return true;
 		}
+
 
 		return false;
 	}

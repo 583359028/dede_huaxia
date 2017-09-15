@@ -64,6 +64,12 @@ class User_EweiShopV2Page extends PluginWebPage
 			{
 				$manageopenid = m('member')->getMember($item['manageopenid']);
 			}
+			if (!(empty($item['management']))) 
+			{
+				$item['management'] = trim($item['management'], ',');
+				$item['management'] = str_replace(',', '\',\'', $item['management']);
+				$management = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_member') . ' WHERE  uniacid=:uniacid AND `openid` IN (\'' . $item['management'] . '\')', array(':uniacid' => $_W['uniacid']));
+			}
 		}
 		$diyform_flag = 0;
 		$diyform_plugin = p('diyform');
@@ -112,10 +118,12 @@ class User_EweiShopV2Page extends PluginWebPage
 				$userset['printer'] = ((isset($_GPC['printer']) ? implode(',', $_GPC['printer']) : ''));
 				$userset['printer_template'] = trim($_GPC['printer_template']);
 				$userset['printer_template_default'] = trim($_GPC['printer_template_default']);
+				$userset['credit1'] = trim($_GPC['credit1']);
+				$userset['credit1_double'] = ((empty($_GPC['credit1_double']) ? 1 : (double) $_GPC['credit1_double']));
 			}
 			$alipay = ((is_array($_GPC['alipay']) ? json_encode($_GPC['alipay']) : ''));
 			$lifetime = $_GPC['lifetime'];
-			$params = array('uniacid' => $_W['uniacid'], 'storeid' => $_GPC['storeid'], 'merchid' => $_GPC['merchid'], 'setmeal' => $_GPC['setmeal'], 'title' => $_GPC['title'], 'logo' => $_GPC['logo'], 'manageopenid' => $_GPC['manageopenid'], 'isopen_commission' => $_GPC['isopen_commission'], 'openid' => $_GPC['openid'], 'name' => $_GPC['name'], 'mobile' => $_GPC['mobile'], 'categoryid' => $_GPC['categoryid'], 'wechat_status' => $_GPC['wechat_status'], 'wechatpay' => $wechatpay, 'alipay_status' => $_GPC['alipay_status'], 'alipay' => $alipay, 'withdraw' => $_GPC['withdraw'], 'username' => $_GPC['username'], 'password' => (!(empty($_GPC['password'])) ? $_GPC['password'] : ''), 'status' => $_GPC['status'], 'lifetimestart' => strtotime($lifetime['start']), 'lifetimeend' => strtotime($lifetime['end']), 'set' => json_encode($userset), 'can_withdraw' => intval($_GPC['can_withdraw']), 'show_paytype' => intval($_GPC['show_paytype']), 'couponid' => (is_array($_GPC['couponid']) ? implode(',', $_GPC['couponid']) : ''));
+			$params = array('uniacid' => $_W['uniacid'], 'storeid' => $_GPC['storeid'], 'merchid' => $_GPC['merchid'], 'setmeal' => $_GPC['setmeal'], 'title' => $_GPC['title'], 'logo' => $_GPC['logo'], 'manageopenid' => $_GPC['manageopenid'], 'isopen_commission' => $_GPC['isopen_commission'], 'openid' => $_GPC['openid'], 'name' => $_GPC['name'], 'mobile' => $_GPC['mobile'], 'categoryid' => $_GPC['categoryid'], 'wechat_status' => $_GPC['wechat_status'], 'wechatpay' => $wechatpay, 'alipay_status' => $_GPC['alipay_status'], 'alipay' => $alipay, 'withdraw' => $_GPC['withdraw'], 'username' => $_GPC['username'], 'password' => (!(empty($_GPC['password'])) ? $_GPC['password'] : ''), 'status' => $_GPC['status'], 'lifetimestart' => strtotime($lifetime['start']), 'lifetimeend' => strtotime($lifetime['end']), 'set' => json_encode($userset), 'can_withdraw' => intval($_GPC['can_withdraw']), 'show_paytype' => intval($_GPC['show_paytype']), 'couponid' => (is_array($_GPC['couponid']) ? implode(',', $_GPC['couponid']) : ''), 'management' => (is_array($_GPC['management']) ? implode(',', $_GPC['management']) : ''));
 			$user_totle = (int) pdo_fetchcolumn('SELECT id FROM ' . tablename('ewei_shop_cashier_user') . ' WHERE username=:username AND uniacid=:uniacid AND deleted=0 LIMIT 1', array(':username' => $params['username'], ':uniacid' => $_W['uniacid']));
 			$store = pdo_fetch('SELECT id,storeid FROM ' . tablename('ewei_shop_cashier_user') . ' WHERE uniacid=:uniacid AND deleted=0 LIMIT 1', array(':uniacid' => $_W['uniacid']));
 			$merch = pdo_fetch('SELECT id,merchid FROM ' . tablename('ewei_shop_cashier_user') . ' WHERE uniacid=:uniacid AND deleted=0 LIMIT 1', array(':uniacid' => $_W['uniacid']));
@@ -147,7 +155,7 @@ class User_EweiShopV2Page extends PluginWebPage
 					$this->model->sendMessage(array('name' => $params['name'], 'mobile' => $params['mobile'], 'status' => $message, 'createtime' => time()), 'checked', $params['manageopenid']);
 				}
 			}
-			/*if ($user_totle) 
+			if ($user_totle) 
 			{
 				show_json(0, '该登录用户名称,已经存在!请更换!');
 			}
@@ -161,7 +169,7 @@ class User_EweiShopV2Page extends PluginWebPage
 				{
 					show_json(0, '该门店收银台,已经存在!请更换!');
 				}
-			}*/
+			}
 			$res = $this->model->savaUser($params);
 			if (isset($res['createtime'])) 
 			{

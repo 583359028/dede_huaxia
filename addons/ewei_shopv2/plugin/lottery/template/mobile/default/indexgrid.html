@@ -201,7 +201,6 @@
     var click=false;
     var reward={};
     var changes = "{php echo intval($has_changes);}";
-    console.log(changes);
     $("#lottery").click(function(){
         if(changes<=0){
             $('#model-failtitle').html('{$lottery['lottery_cannot']}');
@@ -230,7 +229,7 @@
                     lottery.speed=100;
                     click=true;
                     reward = data;
-                    changes--;
+//                    changes--;
                     roll();
                 }else{
                     $('#model-failtitle').html('{$lottery['lottery_cannot']}');

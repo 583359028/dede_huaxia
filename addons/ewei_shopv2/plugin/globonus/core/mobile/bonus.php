@@ -1,8 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
+
 
 require EWEI_SHOPV2_PLUGIN . 'globonus/core/page_login_mobile.php';
 class Bonus_EweiShopV2Page extends GlobonusMobileLoginPage
@@ -30,16 +30,16 @@ class Bonus_EweiShopV2Page extends GlobonusMobileLoginPage
 		if ($status == 1) {
 			$condition .= ' and status=1';
 		}
-		else {
-			if ($status == 2) {
-				$condition .= ' and (status=-1 or status=0)';
-			}
+		 else if ($status == 2) {
+			$condition .= ' and (status=-1 or status=0)';
 		}
+
 
 		$list = pdo_fetchall('select *  from ' . tablename('ewei_shop_globonus_billp') . ' where 1 ' . $condition . ' order by id desc LIMIT ' . (($pindex - 1) * $psize) . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_globonus_billp') . ' where 1 ' . $condition, $params);
 		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
 }
+
 
 ?>

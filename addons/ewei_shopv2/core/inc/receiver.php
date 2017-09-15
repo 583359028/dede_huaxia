@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -14,6 +13,7 @@ class Receiver extends WeModuleReceiver
 		if (($event == 'subscribe') && ($type == 'subscribe')) {
 			$this->saleVirtual();
 		}
+
 	}
 
 	public function saleVirtual($obj = NULL)
@@ -24,6 +24,7 @@ class Receiver extends WeModuleReceiver
 			$obj = $this;
 		}
 
+
 		$sale = m('common')->getSysset('sale');
 		$data = $sale['virtual'];
 
@@ -31,8 +32,20 @@ class Receiver extends WeModuleReceiver
 			return false;
 		}
 
+
 		$totalagent = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_member') . ' where uniacid =' . $_W['acid'] . ' and isagent =1');
 		$totalmember = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_member') . ' where uniacid =' . $_W['acid']);
+
+		if (empty($totalagent)) {
+			$totalagent = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_member') . ' where uniacid =' . $_W['uniacid'] . ' and isagent =1');
+		}
+
+
+		if (empty($totalmember)) {
+			$totalmember = pdo_fetchcolumn('select count(*) from' . tablename('ewei_shop_member') . ' where uniacid =' . $_W['uniacid']);
+		}
+
+
 		$member = abs((int) $data['virtual_people']) + (int) $totalmember;
 		$commission = abs((int) $data['virtual_commission']) + (int) $totalagent;
 		$user = m('member')->checkMemberFromPlatform($obj->message['from']);
@@ -41,7 +54,7 @@ class Receiver extends WeModuleReceiver
 			$message = str_replace('[会员数]', $member, $data['virtual_text']);
 			$message = str_replace('[排名]', $member + 1, $message);
 		}
-		else {
+		 else {
 			$message = str_replace('[会员数]', $member, $data['virtual_text2']);
 		}
 
@@ -61,5 +74,6 @@ class Receiver extends WeModuleReceiver
 		return $data;
 	}
 }
+
 
 ?>

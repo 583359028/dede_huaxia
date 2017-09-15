@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -17,15 +16,16 @@ class Qiniu_EweiShopV2Page extends ComWebPage
 		global $_GPC;
 
 		if ($_W['ispost']) {
-			$data = (is_array($_GPC['data']) ? $_GPC['data'] : array());
+			$data = ((is_array($_GPC['data']) ? $_GPC['data'] : array()));
 
 			if ($data['upload']) {
 				$check = com('qiniu')->save('addons/ewei_shopv2/static/images/nopic100.jpg', $data);
-
-				if (empty($check)) {
-					show_json(0, '您提交的七牛配置参数有误，请核对后重试!');
+				if (is_array($check) && is_error($check)) {
+					show_json(0, '保存失败: ' . $check['message']);
 				}
+
 			}
+
 
 			m('common')->updateSysset(array(
 	'qiniu' => array('user' => $data)
@@ -34,10 +34,12 @@ class Qiniu_EweiShopV2Page extends ComWebPage
 			show_json(1);
 		}
 
+
 		$qiniu = m('common')->getSysset('qiniu');
 		$data = $qiniu['user'];
 		include $this->template();
 	}
 }
+
 
 ?>

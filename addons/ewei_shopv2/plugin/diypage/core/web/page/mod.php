@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -12,10 +11,11 @@ class Mod_EweiShopV2Page extends PluginWebPage
 		global $_GPC;
 		$pagetype = 'mod';
 
-		if (!empty($_GPC['keyword'])) {
+		if (!(empty($_GPC['keyword']))) {
 			$keyword = '%' . trim($_GPC['keyword']) . '%';
 			$condition = ' and name like \'' . $keyword . '\' ';
 		}
+
 
 		$result = $this->model->getPageList('mod', $condition, intval($_GPC['page']));
 		extract($result);
@@ -46,7 +46,8 @@ class Mod_EweiShopV2Page extends PluginWebPage
 			$this->model->savePage($id, $data);
 		}
 
-		$hasplugins = json_encode(array('creditshop' => p('creditshop') ? 1 : 0, 'merch' => p('merch') ? 1 : 0, 'seckill' => p('seckill') ? 1 : 0));
+
+		$hasplugins = json_encode(array('creditshop' => (p('creditshop') ? 1 : 0), 'merch' => (p('merch') ? 1 : 0), 'seckill' => (p('seckill') ? 1 : 0)));
 		include $this->template('diypage/page/post');
 	}
 
@@ -57,8 +58,9 @@ class Mod_EweiShopV2Page extends PluginWebPage
 		$id = intval($_GPC['id']);
 
 		if (empty($id)) {
-			$id = (is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0);
+			$id = ((is_array($_GPC['ids']) ? implode(',', $_GPC['ids']) : 0));
 		}
+
 
 		$this->model->delPage($id);
 	}
@@ -72,5 +74,6 @@ class Mod_EweiShopV2Page extends PluginWebPage
 		include $this->template();
 	}
 }
+
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -20,7 +19,7 @@ class Batchsend_EweiShopV2Page extends WebPage
 			$i = 0;
 			$err_array = array();
 
-			foreach ($rows as $rownum => $col) {
+			foreach ($rows as $rownum => $col ) {
 				$ordersn = trim($col[0]);
 				$expresssn = trim($col[1]);
 				$refund_flag = 0;
@@ -29,26 +28,30 @@ class Batchsend_EweiShopV2Page extends WebPage
 					continue;
 				}
 
+
 				if (empty($expresssn)) {
 					$err_array[] = $ordersn;
 					continue;
 				}
 
+
 				$sql = 'select id,status,refundid from ' . tablename('ewei_shop_order') . ' where ordersn=:ordersn and uniacid=:uniacid and isparent=0 and merchid=:merchid';
 				$sql .= ' and status in (1,2) and `isverify`=0 and `isvirtual`=0 and `virtual`=0 and `addressid` >0 limit 1';
 				$order = pdo_fetch($sql, array(':ordersn' => $ordersn, ':uniacid' => $_W['uniacid'], ':merchid' => 0));
 
-				if (!empty($order)) {
+				if (!(empty($order))) {
 					$status = $order['status'];
 
-					if (!empty($order['refundid'])) {
+					if (!(empty($order['refundid']))) {
 						$refund = pdo_fetch('select id from ' . tablename('ewei_shop_order_refund') . ' where id=:id limit 1', array(':id' => $order['refundid']));
 
-						if (!empty($refund)) {
+						if (!(empty($refund))) {
 							$refund_flag = 1;
 							pdo_update('ewei_shop_order_refund', array('status' => -1, 'endtime' => $time), array('id' => $order['refundid']));
 						}
+
 					}
+
 
 					$data = array();
 					$data['status'] = 2;
@@ -60,9 +63,11 @@ class Batchsend_EweiShopV2Page extends WebPage
 						$data['sendtime'] = $time;
 					}
 
+
 					if ($refund_flag == 1) {
 						$data['refundstate'] = 0;
 					}
+
 
 					pdo_update('ewei_shop_order', $data, array('id' => $order['id']));
 
@@ -71,9 +76,10 @@ class Batchsend_EweiShopV2Page extends WebPage
 						plog('order.op.send', '订单发货 ID: ' . $order['id'] . ' 订单号: ' . $ordersn . ' <br/>快递公司: ' . $expresscom . ' 快递单号: ' . $expresssn);
 					}
 
+
 					++$i;
 				}
-				else {
+				 else {
 					$err_array[] = $ordersn;
 				}
 			}
@@ -84,27 +90,30 @@ class Batchsend_EweiShopV2Page extends WebPage
 			if ($i < $num) {
 				$url = '';
 
-				if (!empty($err_array)) {
+				if (!(empty($err_array))) {
 					$j = 1;
 					$tip .= '<br>' . count($err_array) . '个订单发货失败,失败的订单编号: <br>';
 
-					foreach ($err_array as $k => $v) {
+					foreach ($err_array as $k => $v ) {
 						$tip .= $v . ' ';
 
 						if (($j % 2) == 0) {
 							$tip .= '<br>';
 						}
 
+
 						++$j;
 					}
 				}
+
 			}
-			else {
+			 else {
 				$url = webUrl('order/batchsend');
 			}
 
 			$this->message($msg . $tip, $url, '');
 		}
+
 
 		$express_list = m('express')->getExpressList();
 		include $this->template();
@@ -118,5 +127,6 @@ class Batchsend_EweiShopV2Page extends WebPage
 		m('excel')->temp('批量发货数据模板', $columns);
 	}
 }
+
 
 ?>

@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -15,6 +14,7 @@ class Member_increase_EweiShopV2Page extends WebPage
 		if (empty($_GPC['search'])) {
 			$days = 7;
 		}
+
 
 		$years = array();
 		$current_year = date('Y');
@@ -36,11 +36,11 @@ class Member_increase_EweiShopV2Page extends WebPage
 			++$i;
 		}
 
-		$timefield = (empty($isagent) ? 'createtime' : 'agenttime');
+		$timefield = ((empty($isagent) ? 'createtime' : 'agenttime'));
 		$datas = array();
 		$title = '';
 
-		if (!empty($days)) {
+		if (!(empty($days))) {
 			$charttitle = '最近' . $days . '天增长趋势图';
 			$i = $days;
 
@@ -52,8 +52,8 @@ class Member_increase_EweiShopV2Page extends WebPage
 				--$i;
 			}
 		}
-		else {
-			if (!empty($year) && !empty($month)) {
+		 else {
+			if (!(empty($year)) && !(empty($month))) {
 				$charttitle = $year . '年' . $month . '月增长趋势图';
 				$lastday = get_last_day($year, $month);
 				$d = 1;
@@ -65,23 +65,23 @@ class Member_increase_EweiShopV2Page extends WebPage
 					++$d;
 				}
 			}
-			else {
-				if (!empty($year)) {
-					$charttitle = $year . '年增长趋势图';
+			 else if (!(empty($year))) {
+				$charttitle = $year . '年增长趋势图';
 
-					foreach ($months as $m) {
-						$lastday = get_last_day($year, $m['data']);
-						$condition = ' and uniacid=:uniacid and ' . $timefield . '>=:starttime and ' . $timefield . '<=:endtime';
-						$params = array(':uniacid' => $_W['uniacid'], ':starttime' => strtotime($year . '-' . $m['data'] . '-01 00:00:00'), ':endtime' => strtotime($year . '-' . $m['data'] . '-' . $lastday . ' 23:59:59'));
-						$datas[] = array('date' => $m['data'] . '月', 'mcount' => pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where isagent=0  ' . $condition, $params), 'acount' => pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where isagent=1  ' . $condition, $params));
-					}
+				foreach ($months as $m ) {
+					$lastday = get_last_day($year, $m['data']);
+					$condition = ' and uniacid=:uniacid and ' . $timefield . '>=:starttime and ' . $timefield . '<=:endtime';
+					$params = array(':uniacid' => $_W['uniacid'], ':starttime' => strtotime($year . '-' . $m['data'] . '-01 00:00:00'), ':endtime' => strtotime($year . '-' . $m['data'] . '-' . $lastday . ' 23:59:59'));
+					$datas[] = array('date' => $m['data'] . '月', 'mcount' => pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where isagent=0  ' . $condition, $params), 'acount' => pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where isagent=1  ' . $condition, $params));
 				}
 			}
+
 		}
 
 		load()->func('tpl');
 		include $this->template('statistics/member_increase');
 	}
 }
+
 
 ?>

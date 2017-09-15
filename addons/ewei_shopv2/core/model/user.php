@@ -1,5 +1,8 @@
 <?php
-//米云网络科技www.symiyun.com
+if (!(defined('IN_IA'))) {
+	exit('Access Denied');
+}
+
 class User_EweiShopV2Model
 {
 	private $sessionid;
@@ -22,32 +25,33 @@ class User_EweiShopV2Model
 		global $_GPC;
 		$userinfo = array();
 
-		if (EWEI_SHOPV2_DEBUG) {
-			$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
-			$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
-			$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
-			$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
-			$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
-		}
-		else {
-			load()->model('mc');
-			$userinfo = mc_oauth_userinfo();
-			$need_openid = true;
+		$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
+		$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
+		$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
+		$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
+		$userinfo = array('openid' => 'oT-ihv9XGkJbX9owJiLZcZPAJcog', 'nickname' => '狸小狐', 'headimgurl' => 'https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png', 'province' => '山东', 'city' => '青岛');
 
-			if ($_W['container'] != 'wechat') {
-				if (($_GPC['do'] == 'order') && ($_GPC['p'] == 'pay')) {
-					$need_openid = false;
-				}
+		load()->model('mc');
+		$userinfo = mc_oauth_userinfo();
+		$need_openid = true;
 
-				if (($_GPC['do'] == 'member') && ($_GPC['p'] == 'recharge')) {
-					$need_openid = false;
-				}
-
-				if (($_GPC['do'] == 'plugin') && ($_GPC['p'] == 'article') && ($_GPC['preview'] == '1')) {
-					$need_openid = false;
-				}
+		if ($_W['container'] != 'wechat') {
+			if (($_GPC['do'] == 'order') && ($_GPC['p'] == 'pay')) {
+				$need_openid = false;
 			}
+
+
+			if (($_GPC['do'] == 'member') && ($_GPC['p'] == 'recharge')) {
+				$need_openid = false;
+			}
+
+
+			if (($_GPC['do'] == 'plugin') && ($_GPC['p'] == 'article') && ($_GPC['preview'] == '1')) {
+				$need_openid = false;
+			}
+
 		}
+
 
 		if ($base64) {
 			return urlencode(base64_encode(json_encode($userinfo)));
@@ -64,19 +68,17 @@ class User_EweiShopV2Model
 	public function followed($openid = '')
 	{
 		global $_W;
-		$followed = !empty($openid);
+		$followed = !(empty($openid));
 
 		if ($followed) {
 			$mf = pdo_fetch('select follow from ' . tablename('mc_mapping_fans') . ' where openid=:openid and uniacid=:uniacid limit 1', array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 			$followed = $mf['follow'] == 1;
 		}
 
+
 		return $followed;
 	}
 }
 
-if (!defined('IN_IA')) {
-	exit('Access Denied');
-}
 
 ?>

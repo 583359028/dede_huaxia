@@ -75,6 +75,12 @@
                     <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['taskdiscountprice'],2)}</td>
                 </tr>
                 {/if}
+                {if $item['lotterydiscountprice']>0}
+                <tr>
+                    <td  style='border:none;text-align:right;'>游戏活动优惠：</td>
+                    <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['lotterydiscountprice'],2)}</td>
+                </tr>
+                {/if}
                 {if $item['discountprice']>0}
                 <tr>
                     <td  style='border:none;text-align:right;'>会员折扣：</td>
@@ -270,7 +276,7 @@
                                 {if $item['isverify'] == 1}
                                     线下核销
                                 {elseif !empty($item['addressid'])}
-                                    快递
+                                    快递{if !empty($dispatch['dispatchname'])}({$dispatch['dispatchname']}){/if}
                                 {elseif !empty($item['isvirtualsend']) || !empty($item['virtual'])}
                                     自动发货{if !empty($item['isvirtualsend'])}(虚拟物品){else}(虚拟卡密){/if}
                                 {elseif $item['dispatchtype']}
@@ -653,7 +659,7 @@
                                                                                                                                                                     data-content="<table style='width:100%;'>
 
                 <tr>
-                    <td  style='border:none;text-align:right;' colspan='2'><img src='{$value['avatar']}' style='width:100px;height:100px;padding:1px;border:1px solid #ccc' /></td>
+                    <td  style='border:none;text-align:right;' colspan='2'><img src='{php echo tomedia($value['avatar'])}' style='width:100px;height:100px;padding:1px;border:1px solid #ccc' /></td>
                 </tr>
                 <tr>
                     <td  style='border:none;text-align:right;'>ID：</td>

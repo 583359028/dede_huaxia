@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -15,6 +14,7 @@ class Increase_EweiShopV2Page extends PluginWebPage
 		if (empty($_GPC['search'])) {
 			$days = 7;
 		}
+
 
 		$years = array();
 		$current_year = date('Y');
@@ -40,7 +40,7 @@ class Increase_EweiShopV2Page extends PluginWebPage
 		$datas = array();
 		$title = '';
 
-		if (!empty($days)) {
+		if (!(empty($days))) {
 			$charttitle = '最近' . $days . '天增长趋势图';
 			$i = $days;
 
@@ -52,8 +52,8 @@ class Increase_EweiShopV2Page extends PluginWebPage
 				--$i;
 			}
 		}
-		else {
-			if (!empty($year) && !empty($month)) {
+		 else {
+			if (!(empty($year)) && !(empty($month))) {
 				$charttitle = $year . '年' . $month . '月增长趋势图';
 				$lastday = get_last_day($year, $month);
 				$d = 1;
@@ -65,22 +65,22 @@ class Increase_EweiShopV2Page extends PluginWebPage
 					++$d;
 				}
 			}
-			else {
-				if (!empty($year)) {
-					$charttitle = $year . '年增长趋势图';
+			 else if (!(empty($year))) {
+				$charttitle = $year . '年增长趋势图';
 
-					foreach ($months as $m) {
-						$lastday = get_last_day($year, $m['data']);
-						$condition = ' and uniacid=:uniacid and ' . $timefield . '>=:starttime and ' . $timefield . '<=:endtime';
-						$params = array(':uniacid' => $_W['uniacid'], ':starttime' => strtotime($year . '-' . $m['data'] . '-01 00:00:00'), ':endtime' => strtotime($year . '-' . $m['data'] . '-' . $lastday . ' 23:59:59'));
-						$datas[] = array('date' => $m['data'] . '月', 'acount' => pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where isagent=1  ' . $condition, $params));
-					}
+				foreach ($months as $m ) {
+					$lastday = get_last_day($year, $m['data']);
+					$condition = ' and uniacid=:uniacid and ' . $timefield . '>=:starttime and ' . $timefield . '<=:endtime';
+					$params = array(':uniacid' => $_W['uniacid'], ':starttime' => strtotime($year . '-' . $m['data'] . '-01 00:00:00'), ':endtime' => strtotime($year . '-' . $m['data'] . '-' . $lastday . ' 23:59:59'));
+					$datas[] = array('date' => $m['data'] . '月', 'acount' => pdo_fetchcolumn('select count(*) from ' . tablename('ewei_shop_member') . ' where isagent=1  ' . $condition, $params));
 				}
 			}
+
 		}
 
 		include $this->template();
 	}
 }
+
 
 ?>

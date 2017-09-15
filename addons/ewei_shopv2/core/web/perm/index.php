@@ -1,6 +1,5 @@
 <?php
-//米云网络科技www.symiyun.com
-if (!defined('IN_IA')) {
+if (!(defined('IN_IA'))) {
 	exit('Access Denied');
 }
 
@@ -11,20 +10,24 @@ class Index_EweiShopV2Page extends WebPage
 		if (cv('perm.role')) {
 			header('location: ' . webUrl('perm/role'));
 			exit();
-			return NULL;
+			return;
 		}
+
 
 		if (cv('perm.user')) {
 			header('location: ' . webUrl('perm/user'));
 			exit();
-			return NULL;
+			return;
 		}
+
 
 		if (cv('perm.log')) {
 			header('location: ' . webUrl('perm/log'));
 			exit();
 		}
+
 	}
 }
+
 
 ?>
