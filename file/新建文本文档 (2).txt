@@ -1,0 +1,59 @@
+数据库:www.xingfuyun520.com/phpMyAdmin
+reben
+liu123456
+ftp: 39.108.125.72 端口:21
+reben
+liu123456
+网站:reben.xingfuyun520.com
+
+
+
+数据库:www.xingfuyun520.com/phpMyAdmin
+rbq
+liu123456
+ftp: 39.108.125.72 端口:21
+rbq
+liu123456
+网站:rbq.xingfuyun520.com
+
+
+
+数据库:www.xingfuyun520.com/phpMyAdmin
+jinhua
+liu123456
+ftp: 39.108.125.72 端口:21
+jinhua
+liu123456
+网站:jinhua.xingfuyun520.com
+
+
+数据库:www.xingfuyun520.com/phpMyAdmin
+jindao
+liu123456
+ftp: 39.108.125.72 端口:21
+jindao
+liu123456
+网站:jindao.xingfuyun520.com
+
+
+数据库:www.xingfuyun520.com/phpMyAdmin
+lingding
+liu123456
+ftp: 39.108.125.72 端口:21
+lingding
+liu123456
+网站:lingding.xingfuyun520.com
+
+
+
+
+luyang
+数据库库:www.xingfuyun520.com/phpMyAdmin
+luyang
+liu123456
+ftp: 39.108.125.72 端口:21
+liush
+liu123456
+网站:luyang.xingfuyun520.com
+
+ 

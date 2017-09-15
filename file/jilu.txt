@@ -1,0 +1,108 @@
+SELECT TABLE_SCHEMA AS 'theme1320', TABLE_NAME AS `表名` FROM information_schema.COLUMNS WHERE COLUMN_NAME = 'cfg_qgzc'
+
+查询数据库中 哪张表存在这个字段
+
+<?php echo $cfg_ml->M_UserName ?>
+
+网站数据库：http://theme1320.leixunkj.com/hxfrphpmyadmin/
+账号:theme1320 密码:Na9bAqLH9CDKYpHw
+http://theme1320.leixunkj.com/
+用户名:huaxia 密码：HuaXia2017123
+119.123.120.34
+FTP服务器: 123.57.164.156:21000 
+端口: 21000
+账号: huaxiafurenuser
+密码: x3iPf9kq
+
+www.juhe.cn
+13923834074@163.com
+Huaxiafuren2017
+
+
+微信公众号
+1851464566@qq.com
+TYMhuaxiafuren2017
+
+商户号:1486899232
+登录:1486899232@1486899232
+密码:818018
+key:agRdDwIm8swUMxZDQuIIsnelhVLjFHn7   api秘钥
+  
+119.123.121.79
+appid:wxb5e3b7eacdee3bf5
+appsecret:14504880f0f55baae5bed89179284bb3
+EncodingAESKey:4GQ3oLq4DjQfSLru9C3ZCGKFMFy4whEvyVJA8Ewfhn6
+ToKen:huaxia2017
+腾讯云
+139.199.154.250
+root  danny123!@#
+
+  
+
+47.52.103.32
+172.31.153.156   
+
+使用的服务器
+47.52.88.189
+182.31.153.155
+
+47.52.106.14
+172.31.153.154
+
+root
+danny123!@# 
+
+ 
+支付宝账号：13923834074@163.com  支付宝登录密码：TYMhuaxiafuren2017
+https://docs.open.alipay.com/270/105900/  文档地址
+appid:2017080408033524
+
+
+
+
+ 
+阿里云
+账号：雅媛堂
+密码：huaxiafuren2017
+
+-7788859 1234   [退出]
+首页 [field:typename/] [field:typename/] [field:typename/]
+
+chown group:user   file  -R 代表递归   更改文件所属
+chgrp grp   file   
+chmod   权限  file
+cat /etc/redhat-release  检查版本
+mysql -u root -p   去控制台命令
+create schema  数据库名称 default character set  utf8 collate utf8_general_ci;  创建数据库
+create user '用户名称'@'%' identified by '密码'; 创建用户 
+密码8位以上，包括：大写字母、小写字母、数字、特殊字符
+%：匹配所有主机，该地方还可以设置成‘localhost’，代表只能本地访问，例如root账户默认为‘localhost‘
+grant select,insert,update,delete,drop,create on 数据库名.* to 用户名;  授权用户权限
+flush privileges;  立即启用修改
+revoke all on *.* from 用户名;--取消用户所有数据库（表）的所有权限
+
+算法:ase   enty  authcode  encrypt
+
+MemberLogin Object ( [M_ID] => 17 [M_LoginID] => 1234 [M_MbType] => 个人 [M_Money] => 0 [M_Scores] => 122 [M_UserName] => 1234 [M_Rank] => 10 [M_Face] => [M_LoginTime] => 1503905111 [M_KeepTime] => 604800 [M_Spacesta] => -10 [fields] => Array ( [mid] => 17 [mtype] => 个人 [userid] => 1234 [pwd] => e10adc3949ba59abbe56e057f20f883e [uname] => 1234 [sex] => [rank] => 10 [uptime] => 0 [exptime] => 0 [money] => 0 [email] => 123456@qq.com [scores] => 122 [matt] => 0 [spacesta] => -10 [face] => [safequestion] => 0 [safeanswer] => [jointime] => 1501233983 [joinip] => 119.123.121.11 [logintime] => 1503905111 [loginip] => 127.0.0.1 [checkmail] => -1 [appid] => [userSig] => [token] => [honor] => 列兵 ) [isAdmin] => [M_UpTime] => 0 [M_ExpTime] => 0 [M_HasDay] => [M_JoinTime] => 2017-07-28 [M_Honor] => 列兵 [memberCache] => memberlogin )
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
